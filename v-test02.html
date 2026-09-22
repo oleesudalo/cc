@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>엔트리 CBT 모의고사</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f3f4f6;
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
+        
+        #blind-screen {
+            transition: opacity 1.5s ease-in-out;
+        }
+        
+        /* 파이썬 에디터 영역 스타일 */
+        #python-editor:focus {
+            outline: none;
+            box-shadow: inset 0 0 0 2px #3b82f6;
+        }
+    </style>
+</head>
+<body class="h-screen w-screen overflow-hidden text-gray-800">
+
+    <!-- 0. 대기실 (런처) 화면 -->
+    <div id="launcher-screen" class="hidden flex-col items-center justify-center h-full w-full bg-gray-100 p-6">
+        <div id="launcher-content" class="bg-white p-10 rounded-2xl shadow-xl w-full max-w-md text-center border-t-4 border-blue-600">
+            <h1 class="text-3xl font-bold text-gray-800 mb-4">엔트리 코딩 활용능력 평가</h1>
+            <p class="text-gray-600 mb-6">준비가 완료되면 비밀번호를 입력하고 아래 버튼을 눌러주세요.</p>
+            
+            <div class="mb-6">
+                <input type="password" id="exam-password" placeholder="비밀번호 입력" class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500 text-center text-xl tracking-[0.2em] transition-colors" onkeypress="if(event.key === 'Enter') verifyPassword()">
+                <p id="password-error" class="hidden text-red-500 text-sm mt-2 font-bold animate-pulse">비밀번호가 올바르지 않습니다.</p>
+            </div>
+
+            <button onclick="verifyPassword()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl text-lg shadow-lg transition-colors">
+                시험장 입장하기
+            </button>
+        </div>
+    </div>
+
+    <!-- 1. 시작 화면 (급수 선택) -->
+    <div id="intro-screen" class="hidden flex-col items-center justify-center h-full w-full bg-gray-100 p-6">
+        <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-2xl text-center">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold text-gray-800">엔트리·파이썬 코딩 평가</h1>
+                <!-- 엔트리 새창 열기 버튼 -->
+                <button onclick="openEntry()" class="bg-yellow-400 hover:bg-yellow-500 text-gray-800 font-bold py-2 px-4 rounded-lg shadow transition-colors flex items-center space-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
+                        <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
+                    </svg>
+                    <span>엔트리 화면 열기</span>
+                </button>
+            </div>
+            <p class="text-gray-500 mb-8">응시할 시험의 급수를 선택한 후 시작 버튼을 눌러주세요.</p>
+            
+            <div class="grid grid-cols-2 gap-6 mb-10">
+                <div id="card-level-3" onclick="selectLevel('3급')" class="cursor-pointer border-2 border-blue-500 bg-blue-50 rounded-xl p-6 transition-all transform hover:scale-105">
+                    <h2 class="text-2xl font-bold text-blue-700 mb-2">3급</h2>
+                    <ul class="text-sm text-gray-600 space-y-1 text-left inline-block list-none">
+                        <li>• 제한 시간: <strong>50분</strong></li>
+                        <li>• 출제 문항: <strong>10문제</strong></li>
+                    </ul>
+                </div>
+                
+                <div id="card-level-2" onclick="selectLevel('2급')" class="cursor-pointer border-2 border-gray-200 bg-white rounded-xl p-6 transition-all transform hover:scale-105">
+                    <h2 class="text-2xl font-bold text-gray-700 mb-2">2급</h2>
+                    <ul class="text-sm text-gray-600 space-y-1 text-left inline-block list-none">
+                        <li>• 제한 시간: <strong>60분</strong></li>
+                        <li>• 출제 문항: <strong>7문제</strong></li>
+                    </ul>
+                </div>
+            </div>
+            <button onclick="startExam()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl text-lg shadow-lg transition-colors">
+                시험 시작하기
+            </button>
+        </div>
+    </div>
+
+    <!-- 2. 시험 화면 -->
+    <div id="exam-screen" class="hidden flex-col h-full w-full bg-white shadow-xl max-w-5xl mx-auto border-x border-gray-200 relative transition-all duration-300">
+        
+        <!-- 상단 헤더 -->
+        <div class="bg-gray-800 text-white p-4 flex justify-between items-center shadow-md shrink-0">
+            <div>
+                <h1 id="exam-title" class="text-lg font-bold tracking-wide">2026 엔트리·파이썬 코딩 평가</h1>
+                <p id="exam-progress" class="text-xs text-gray-400 mt-1">문제 1 / 10</p>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button id="pause-btn" onclick="togglePause()" class="hidden bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold px-3 py-2 rounded-lg text-sm transition-colors shadow">
+                    일시정지
+                </button>
+                <div id="timer-box" class="flex items-center space-x-2 bg-gray-900 px-4 py-2 rounded-lg border border-gray-600 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span id="timer" class="text-red-400 font-mono text-xl font-bold tracking-widest">00:00</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 문항 번호 네비게이션 -->
+        <div id="question-nav" class="bg-gray-100 px-6 py-4 border-b border-gray-200 flex space-x-3 overflow-x-auto items-center shrink-0 shadow-inner"></div>
+
+        <!-- 문제 내용 영역 & 파이썬 에디터 (Flex Container) -->
+        <div class="flex flex-1 overflow-hidden">
+            <!-- 기존 왼쪽: 문제 설명 영역 -->
+            <div id="question-content-area" class="w-full h-full overflow-y-auto p-8 bg-white relative transition-all duration-300">
+                <!-- 일시정지 오버레이 -->
+                <div id="pause-overlay" class="hidden absolute inset-0 bg-white/90 backdrop-blur-sm z-10 flex flex-col items-center justify-center">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">시험 일시정지</h2>
+                    <p class="text-gray-600 mb-6">파일을 교체하거나 준비가 완료되면 다시 시작하세요.</p>
+                    <button onclick="togglePause()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-colors text-lg">
+                        이어서 풀기
+                    </button>
+                </div>
+
+                <div class="border-b-2 border-gray-800 pb-4 mb-6 flex justify-between items-center">
+                    <h2 id="q-title" class="text-2xl font-bold text-gray-800">로딩 중...</h2>
+                    <button id="download-btn" class="hidden bg-green-100 hover:bg-green-200 text-green-800 font-bold py-2 px-4 rounded-lg shadow transition-colors flex items-center space-x-2 border border-green-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        <span id="download-filename">다운로드</span>
+                    </button>
+                </div>
+                <div class="space-y-6">
+                    <div id="q-content-container">
+                        <h3 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
+                            <span class="w-1.5 h-4 bg-blue-600 mr-2 block"></span>문제 설명
+                        </h3>
+                        <p id="q-content" class="text-gray-700 leading-relaxed text-justify whitespace-pre-line"></p>
+                    </div>
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-5">
+                        <h3 class="font-bold text-blue-800 mb-3 text-lg">[ 세부 지시 사항 ]</h3>
+                        <ul id="q-instructions" class="list-none ml-2 text-gray-800 space-y-2 leading-relaxed"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 신규 오른쪽: 파이썬 에디터 영역 (초기 숨김) -->
+            <div id="python-editor-pane" class="hidden w-1/2 h-full bg-[#1e1e1e] flex-col transition-all duration-300 border-l border-gray-300 shadow-inner">
+                <div class="bg-[#2d2d2d] text-gray-300 text-sm px-4 py-2 flex justify-between items-center shrink-0 border-b border-black">
+                    <div class="flex items-center space-x-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+                        <span class="font-bold font-mono">solution.py</span>
+                    </div>
+                    <span class="text-xs text-yellow-500 font-bold animate-pulse">※ 빈칸(____)을 지우고 올바른 코드를 작성하세요!</span>
+                </div>
+                <textarea id="python-editor" class="flex-1 w-full bg-[#1e1e1e] text-[#d4d4d4] font-mono p-4 resize-none leading-relaxed text-lg" spellcheck="false" placeholder="코드를 작성하세요..."></textarea>
+            </div>
+        </div>
+
+        <!-- 하단 네비게이션 -->
+        <div class="bg-gray-50 border-t border-gray-200 p-4 flex justify-between items-center shrink-0 z-20 shadow-[0_-5px_15px_-10px_rgba(0,0,0,0.1)]">
+            <div id="bottom-notice" class="text-sm text-gray-500 font-medium px-2">※ 문제를 꼼꼼히 읽고 코딩을 완성하세요.</div>
+            <div class="flex items-center space-x-4">
+                <span id="save-msg" class="text-green-600 font-bold text-sm transition-opacity duration-300 opacity-0">저장되었습니다.</span>
+                <button id="save-btn" onclick="saveQuestion()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-colors flex items-center space-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                    </svg>
+                    <span>저장</span>
+                </button>
+                <button id="next-btn" onclick="nextQuestion()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-colors flex items-center space-x-2">
+                    <span id="next-btn-text">다음문제풀기</span>
+                    <svg id="next-btn-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 미제출 문항 확인 모달 -->
+    <div id="modal-overlay" class="hidden absolute inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-xl shadow-2xl p-8 max-w-sm w-full mx-4 text-center">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+            </div>
+            <h3 class="text-lg leading-6 font-bold text-gray-900 mb-2">제출되지 않은 문항이 있습니다!</h3>
+            <p class="text-sm text-gray-500 mb-4">아래 문항의 저장이 완료되지 않았습니다.<br>다시 한번 확인해 주세요.</p>
+            <div id="unsaved-list" class="flex flex-wrap justify-center gap-2 mb-6"></div>
+            <p class="text-sm font-bold text-gray-700 mb-6">정말 이대로 제출하시겠습니까?</p>
+            <div class="flex space-x-3">
+                <button onclick="closeModal()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 rounded-lg transition-colors">돌아가기</button>
+                <button onclick="forceSubmit()" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded-lg transition-colors">제출하기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 타임아웃 블라인드 화면 -->
+    <div id="blind-screen" class="hidden absolute inset-0 bg-gray-900 z-50 flex flex-col items-center justify-center opacity-0 pointer-events-none">
+        <div class="text-center">
+            <svg class="mx-auto h-16 w-16 text-white mb-4 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h2 class="text-4xl font-bold text-white mb-2">시험 종료</h2>
+            <p class="text-xl text-gray-300">제한 시간이 초과되어 답안이 자동 제출됩니다.</p>
+        </div>
+    </div>
+
+    <!-- 3. 종료 화면 -->
+    <div id="result-screen" class="hidden flex-col items-center justify-center h-full w-full bg-gray-100 p-6 relative z-40">
+        <div class="bg-white p-10 rounded-2xl shadow-xl w-full max-w-md text-center">
+            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">시험이 종료되었습니다</h2>
+            <p class="text-gray-600 mb-8">답안이 성공적으로 제출되었습니다. 수고하셨습니다!</p>
+            <button onclick="window.close()" class="bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 px-6 rounded-lg transition-colors">
+                창 닫기
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const questionsData = {
+            '3급': [
+                {
+                    title: "문제 1. 춤추는 엔트리봇",
+                    content: "엔트리봇이 신나게 춤을 추는 애니메이션을 완성하시오.",
+                    instructions: [
+                        "ㄱ. 프로그램을 시작하면 준비된 배경음악 소리를 재생한다.",
+                        "ㄴ. 엔트리봇의 모양을 '다음 모양'으로 바꾼다.",
+                        "ㄷ. 0.5초 기다린다.",
+                        "ㄹ. 모양 바꾸기와 기다리기 과정을 총 10번 반복한다."
+                    ]
+                },
+                {
+                    title: "문제 2. 무한 스크롤 배경 만들기",
+                    content: "두 개의 배경 이미지가 계속해서 왼쪽으로 이동하며 무한히 반복되는 화면을 완성하시오.",
+                    isPython: false,
+                    instructions: [
+                        "ㄱ. 시작하면 '배경1'과 '배경2'가 각각 이동 방향(왼쪽)으로 계속 움직인다.",
+                        "ㄴ. 배경이 화면 왼쪽 끝(x좌표 -480)에 닿아 완전히 사라지면, 다시 화면 오른쪽 끝(x좌표 480)으로 이동한다.",
+                        "ㄷ. 오른쪽으로 이동한 배경은 다시 왼쪽으로 움직이는 것을 계속 반복한다.",
+                        "ㄹ. 두 배경이 끊기지 않고 자연스럽게 이어지도록 좌표를 설정한다."
+                    ]
+                },
+                {
+                    title: "문제 3. 장애물 달리기 게임",
+                    content: "스페이스바를 누르면 엔트리봇이 점프하여 다가오는 장애물을 피하는 게임을 완성하시오.",
+                    isPython: false,
+                    instructions: [
+                        "ㄱ. 장애물은 화면 오른쪽 끝에서 왼쪽으로 계속 이동한다.",
+                        "ㄴ. 스페이스바 키를 누르면 엔트리봇이 위로 50만큼 올라갔다가 0.5초 뒤 다시 아래로 50만큼 내려온다.",
+                        "ㄷ. 엔트리봇이 장애물에 닿으면 '앗, 부딪혔다!'를 2초 동안 말하고 모든 코드를 멈춘다."
+                    ]
+                },
+                {
+                    title: "문제 4. 우주 쓰레기 청소선",
+                    content: "청소선이 마우스를 따라다니며 우주 쓰레기를 치우는 프로그램을 완성하시오.",
+                    isPython: false,
+                    instructions: [
+                        "ㄱ. 우주 청소선은 마우스 포인터 위치로 0.1초마다 계속 이동한다.",
+                        "ㄴ. 쓰레기 오브젝트는 화면 곳곳에 무작위 위치로 나타난다.",
+                        "ㄷ. 청소선이 쓰레기에 닿으면 '쓰레기 수거' 소리를 재생하고 쓰레기 오브젝트의 모양을 숨긴다.",
+                        "ㄹ. 쓰레기를 숨긴 후, '쓰레기 수' 변수에 1을 더한다."
+                    ]
+                },
+                {
+                    title: "문제 5. 신호등 건너기",
+                    content: "신호등의 신호에 따라 엔트리봇이 길을 건너거나 멈추는 프로그램을 완성하시오.",
+                    isPython: false,
+                    instructions: [
+                        "ㄱ. [신호등] 시작하면 '초록불' 신호를 보내고 5초 기다린 뒤, '빨간불' 신호를 보내고 3초 기다리는 것을 무한히 반복한다.",
+                        "ㄴ. [엔트리봇] '초록불' 신호를 받으면 오른쪽으로 10만큼씩 계속 이동한다.",
+                        "ㄷ. [엔트리봇] '빨간불' 신호를 받으면 이동을 멈추고 '기다리세요'라고 2초 동안 말한다."
+                    ]
+                },
+                {
+                    title: "문제 6. 덧셈 퀴즈 봇",
+                    content: "화면에 두 개의 숫자를 보여주고 더한 값을 맞추는 퀴즈 프로그램을 완성하시오.",
+                    isPython: false,
+                    instructions: [
+                        "ㄱ. 변수 'A'와 'B'에 각각 1부터 10 사이의 무작위 수를 정한다.",
+                        "ㄴ. '숫자1' 글상자에는 변수 A의 값을, '숫자2' 글상자에는 변수 B의 값을 쓴다.",
+                        "ㄷ. 변수 A와 B를 더한 값을 묻고 기다린다.",
+                        "ㄹ. 대답이 두 변수를 더한 정답과 같으면 '정답입니다!', 틀리면 '틀렸습니다!'라고 말한다."
+                    ]
+                },
+                {
+                    title: "문제 7. 우리 반 학생 이름",
+                    content: "사용자가 입력한 이름을 명단에 저장하고 참가자 수를 알려주는 프로그램을 완성하시오.",
+                    isPython: false,
+                    instructions: [
+                        "ㄱ. 시작하면 '명단' 리스트의 모든 항목을 삭제한다.",
+                        "ㄴ. 대답으로 '끝'이 입력될 때까지 이름을 묻고 기다리며, 입력된 대답을 리스트에 계속 추가한다.",
+                        "ㄷ. '끝'이 입력되면 반복을 멈추고, 리스트의 항목 수를 이용하여 '총 O명입니다'라고 말한다."
+                    ]
+                },
+                {
+                    title: "문제 8. 눈 내리는 밤하늘",
+                    content: "눈송이 오브젝트가 화면 위에서 지속적으로 복제되어 아래로 떨어지는 애니메이션을 완성하시오.",
+                    isPython: false,
+                    instructions: [
+                        "ㄱ. [원본 눈송이] 시작하면 0.5초마다 자신의 복제본을 계속해서 만든다.",
+                        "ㄴ. [복제본] 복제본이 처음 생성되면, x좌표는 -240부터 240 사이의 무작위 수, y좌표는 130 위치로 이동한다.",
+                        "ㄷ. [복제본] 복제본은 아래로 떨어지도록 y좌표를 -5만큼씩 계속 바꾼다.",
+                        "ㄹ. [복제본] 떨어지던 복제본이 화면 아래쪽 끝(바닥)에 닿으면 해당 복제본을 삭제한다."
+                    ]
+                },
+                {
+                    title: "문제 9. AI 재활용 분리수거",
+                    content: "카메라에 인식된 사물에 따라 올바른 분리수거 방법을 안내하는 인공지능 프로그램을 완성하시오.",
+                    isPython: false,
+                    instructions: [
+                        "ㄱ. 사물 인식을 시작하고 비디오 화면을 켠다.",
+                        "ㄴ. 카메라에 '컵(cup)' 또는 '병(bottle)'이 인식되면 '재활용 쓰레기입니다.'라고 말한다.",
+                        "ㄷ. 인식된 사물이 위 두 가지가 아니라면 '일반 쓰레기입니다.'라고 말한다.",
+                        "ㄹ. 이 과정을 계속 반복하여 다양한 사물을 확인할 수 있도록 한다."
+                    ]
+                },
+                {
+                    title: "문제 10. AI 음성 인식 스마트 전등",
+                    content: "사용자의 음성 명령을 알아듣고 화면의 전등을 켜거나 끄는 프로그램을 완성하시오.",
+                    isPython: false,
+                    instructions: [
+                        "ㄱ. '음성 인식 버튼'을 클릭하면 마이크를 켜고 음성을 인식한다.",
+                        "ㄴ. 인식된 음성이 '불켜' 라면 전등을 켜짐 상태로 바꾼다.",
+                        "ㄷ. 인식된 음성이 '불꺼' 라면 전등을 꺼짐 상태로 바꾼다.",
+                        "ㄹ. 전등 모양을 바꾼 뒤, 인식된 글자를 2초 동안 화면에 말풍선으로 띄워준다."
+                    ]
+                }
+            ],
+            '2급': [
+                {
+                    title: "문제 1. 미로 탈출 탐험대",
+                    content: "",
+                    isPython: false,
+                    instructions: [
+                        "[1-1]<br>키보드의 상하좌우 방향키를 이용하여 로봇청소기를 움직일 수 있게 한다. 로봇청소기의 이동 기능은 <strong>함수</strong>를 만들어 사용한다.",
+                        "[1-2]<br>게임이 시작되면 로봇청소기 위치를 x:-200, y:100으로 정하고 로봇청소기가 미로의 벽(검정색)에 닿으면 '앗, 조심해!'라고 1초 동안 말한 뒤, 처음 출발 위치(x: -200, y: 100)로 다시 되돌아간다.",
+                        "[1-3]<br>게임이 시작되면 '남은 시간' 변수를 30으로 정하고, 1초마다 1씩 감소시킨다. 남은 시간이 0이 되면 '시간 초과!'를 말하고 모든 코드를 멈춘다.",
+                        "[1-4]<br>남은 시간이 0이 되기 전에 로봇청소기가 도착점(문) 오브젝트에 닿으면 '탈출 성공!'을 2초 동안 말하고 모든 코드를 멈춘다."
+                    ]
+                },
+                {
+                    title: "문제 2. AI 아이스크림 판매량 예측",
+                    content: "",
+                    file: "02_선형회귀_아이스크림판매량.xlsx",
+                    fileUrl: "https://github.com/oleesudalo/study-entry/raw/refs/heads/main/02_%EC%84%A0%ED%98%95%ED%9A%8C%EA%B7%80_%EC%95%84%EC%9D%B4%EC%8A%A4%ED%81%AC%EB%A6%BC%ED%8C%90%EB%A7%A4%EB%9F%89.xlsx",
+                    isPython: false,
+                    instructions: [
+                        "[2-1]<br>평균 기온을 이용하여 아이스크림 판매량을 예측하는 선형 회귀 인공지능 모델을 만든다.",
+                        "[2-2]<br>프로그램을 시작하면 사용자가 '평균 기온'을 입력할 수 있도록 묻고 기다린다.",
+                        "[2-3]<br>입력한 기온 값을 학습한 모델에 적용하여 예상되는 아이스크림 판매량을 예측한 후 '예측판매량' 변수에 저장하고 이것을 2초동안 말한다.",
+                        "[2-4]<br>만약 예측된 판매량이 250개 이상이라면, 배경을 '여름 해변'으로 바꾸고 '오늘은 불티나게 팔리겠어!'라고 3초 동안 말한다.",
+                        "[2-5]<br>만약 예측된 판매량이 250개 미만이라면, 배경을 '동네 공원'으로 바꾸고 '오늘은 평범한 하루겠군.'이라고 3초 동안 말한다."
+                    ]
+                },
+                {
+                    title: "문제 3. AI 붓꽃 종류 분류",
+                    content: "",
+                    file: "03_KNN_붓꽃분류데이터.xlsx",
+                    fileUrl: "https://github.com/oleesudalo/study-entry/raw/refs/heads/main/03_KNN_%EB%B6%93%EA%BD%83%EB%B6%84%EB%A5%98%EB%8D%B0%EC%9D%B4%ED%84%B0.xlsx",
+                    isPython: false,
+                    instructions: [
+                        "[3-1]<br>꽃받침 길이, 꽃받침 너비, 꽃잎 길이, 꽃잎 너비를 이용하여 붓꽃의 종류(세토사, 버시칼라, 버지니카)를 분류하는 KNN 모델(이웃 개수: 5개)을 만든다.",
+                        "[3-2]<br>프로그램을 시작하면 4가지 항목의 수치를 차례대로 묻고 대답을 '입력데이터' 리스트에 차례대로 추가(저장)한다.",
+                        "[3-3]<br>리스트에 저장된 4개의 항목 값을 학습된 모델에 적용하여 붓꽃의 종류를 판별한다.",
+                        "[3-4]<br>꽃 오브젝트의 모양을 인공지능이 '분류한 붓꽃의 종류' 모양으로 바꾼다.",
+                        "[3-5]<br>'분류된 붓꽃은 [분류결과] 입니다.'라고 3초 동안 말한다."
+                    ]
+                },
+                {
+                    title: "문제 4. [파이썬] 입장료 계산기",
+                    content: "나이를 입력받아 놀이공원 입장료를 계산하는 파이썬 코드를 작성하시오.",
+                    isPython: true,
+                    skeletonCode: "age = int(input(\"나이를 입력하세요: \"))\n\n______________________________\n    print(\"무료입니다.\")\n______________________________\n    print(\"입장료는 5000원입니다.\")\n______________________________\n    print(\"입장료는 10000원입니다.\")",
+                    instructions: [
+                        "[4-1]<br>사용자에게 <code>나이를 입력하세요: </code>라고 묻고 정수로 입력받아 <code>age</code> 변수에 저장한다.",
+                        "[4-2]<br>나이가 8 미만이거나 65 이상이면 <code>무료입니다.</code>를 출력한다.",
+                        "[4-3]<br>나이가 8 이상 19 이하이면 <code>입장료는 5000원입니다.</code>를 출력한다.",
+                        "[4-4]<br>그 외의 나이(성인)는 <code>입장료는 10000원입니다.</code>를 출력한다."
+                    ]
+                },
+                {
+                    title: "문제 5. [파이썬] 짝수의 합 구하기",
+                    content: "1부터 입력받은 숫자 N까지의 정수 중 짝수만 더하는 파이썬 코드를 작성하시오.",
+                    isPython: true,
+                    skeletonCode: "n = int(input(\"숫자를 입력하세요: \"))\ntotal = 0\n\n______________________________\n    if i % 2 == 0:\n        ______________________________\n\nprint(\"짝수의 합:\", total)",
+                    instructions: [
+                        "[5-1]<br>사용자에게 <code>숫자를 입력하세요: </code>라고 묻고 정수로 변환하여 <code>n</code> 변수에 저장한다.",
+                        "[5-2]<br>반복문(<code>for</code>)을 사용하여 1부터 <code>n</code>까지의 숫자 중 짝수를 판별한다.",
+                        "[5-3]<br>짝수인 숫자들만 합계 변수 <code>total</code>에 누적하여 더한다.",
+                        "[5-4]<br>반복이 끝나면 <code>짝수의 합: [합계결과]</code> 형태로 출력한다."
+                    ]
+                },
+                {
+                    title: "문제 6. [파이썬] 리스트에서 최댓값 찾기",
+                    content: "5명의 학생 점수 리스트에서 가장 높은 점수를 찾아 출력하는 파이썬 코드를 작성하시오.",
+                    isPython: true,
+                    skeletonCode: "scores = [78, 92, 85, 99, 88]\n\n# max_score 변수를 리스트의 첫 번째 값으로 초기화\n______________________________\n\nfor score in scores:\n    ______________________________\n        max_score = score\n\nprint(\"최고 점수는\", max_score, \"점입니다.\")",
+                    instructions: [
+                        "[6-1]<br>점수 리스트 <code>scores = [78, 92, 85, 99, 88]</code>가 주어졌다.",
+                        "[6-2]<br>파이썬의 내장 함수 <code>max()</code>를 사용하지 않고 <code>for</code> 반복문을 활용하여 최댓값을 찾는다.",
+                        "[6-3]<br>최댓값을 저장할 변수 <code>max_score</code>를 리스트의 첫 번째 값으로 초기화한다.",
+                        "[6-4]<br>리스트를 순회하며 더 큰 값을 발견하면 <code>max_score</code>를 업데이트하고 출력한다."
+                    ]
+                },
+                {
+                    title: "문제 7. [파이썬] 구구단 함수 만들기",
+                    content: "원하는 단을 입력받아 구구단을 출력하는 파이썬 함수를 작성하시오.",
+                    isPython: true,
+                    skeletonCode: "# print_gugudan 함수 정의 (매개변수 dan)\n______________________________\n    for i in range(1, 10):\n        print(f\"{dan} x {i} = {dan * i}\")\n\nnum = int(input(\"출력할 단을 입력하세요: \"))\n\n______________________________",
+                    instructions: [
+                        "[7-1]<br><code>print_gugudan(dan)</code> 이라는 이름의 함수를 정의한다.",
+                        "[7-2]<br>함수 내부에서 반복문을 사용하여 입력받은 <code>dan</code>의 1부터 9까지 곱한 결과를 출력한다.",
+                        "[7-3]<br>사용자에게 <code>출력할 단을 입력하세요: </code>라고 묻고 정수를 입력받는다.",
+                        "[7-4]<br>입력받은 정수를 인자로 전달하여 <code>print_gugudan</code> 함수를 호출한다."
+                    ]
+                }
+            ]
+        };
+
+        let currentLevel = '3급';
+        let currentQuestionIndex = 0;
+        let timeRemaining = 0;
+        let timerInterval = null;
+        let savedStatus = [];
+        let pythonAnswers = {}; // 파이썬 코드 입력 저장용 딕셔너리
+        let isPaused = false;
+
+        window.onload = function() {
+            if (window.name === "EntryCBTWindow") {
+                document.getElementById('intro-screen').classList.remove('hidden');
+                document.getElementById('intro-screen').classList.add('flex');
+            } else {
+                document.getElementById('launcher-screen').classList.remove('hidden');
+                document.getElementById('launcher-screen').classList.add('flex');
+            }
+            
+            // 파이썬 에디터 이벤트 리스너 바인딩
+            const pyEditor = document.getElementById('python-editor');
+            
+            // 값 변경 시 임시 저장
+            pyEditor.addEventListener('input', function(e) {
+                pythonAnswers[currentQuestionIndex] = e.target.value;
+            });
+            
+            // Tab 키 동작 처리 (들여쓰기 4칸 적용)
+            pyEditor.addEventListener('keydown', function(e) {
+                if (e.key === 'Tab') {
+                    e.preventDefault();
+                    const start = this.selectionStart;
+                    const end = this.selectionEnd;
+                    this.value = this.value.substring(0, start) + "    " + this.value.substring(end);
+                    this.selectionStart = this.selectionEnd = start + 4;
+                    this.dispatchEvent(new Event('input')); // 저장 이벤트 트리거
+                }
+            });
+        };
+
+        /* 비밀번호 확인 로직 */
+        function verifyPassword() {
+            const pwdInput = document.getElementById('exam-password');
+            const errorMsg = document.getElementById('password-error');
+            
+            if (pwdInput.value === 'alfocodna') {
+                errorMsg.classList.add('hidden');
+                openExamWindow();
+            } else {
+                errorMsg.classList.remove('hidden');
+                pwdInput.classList.add('border-red-500', 'bg-red-50');
+                setTimeout(() => {
+                    pwdInput.classList.remove('border-red-500', 'bg-red-50');
+                }, 1000);
+                pwdInput.value = '';
+                pwdInput.focus();
+            }
+        }
+
+        /* 창 분리 함수 (팝업) */
+        function openExamWindow() {
+            const url = window.location.href;
+            window.open(url, "EntryCBTWindow", "width=1200,height=850,location=no,menubar=no,toolbar=no,status=no,scrollbars=yes,resizable=yes");
+            
+            const launcherContent = document.getElementById('launcher-content');
+            launcherContent.innerHTML = `
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="h-8 w-8 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">시험 창이 열렸습니다.</h2>
+                <p class="text-gray-600">새 창에서 시험을 진행해 주세요.<br>이 원래 창은 닫으셔도 됩니다.</p>
+            `;
+        }
+
+        function openEntry() {
+            window.open("https://playentry.org", "EntryWorkspace", "width=1200,height=800,location=no,menubar=no,toolbar=no,status=no");
+        }
+
+        function selectLevel(level) {
+            currentLevel = level;
+            const card3 = document.getElementById('card-level-3');
+            const card2 = document.getElementById('card-level-2');
+            
+            if (level === '3급') {
+                card3.className = "cursor-pointer border-2 border-blue-500 bg-blue-50 rounded-xl p-6 transition-all transform hover:scale-105";
+                card3.querySelector('h2').classList.replace('text-gray-700', 'text-blue-700');
+                card2.className = "cursor-pointer border-2 border-gray-200 bg-white rounded-xl p-6 transition-all transform hover:scale-100";
+                card2.querySelector('h2').classList.replace('text-blue-700', 'text-gray-700');
+            } else {
+                card2.className = "cursor-pointer border-2 border-blue-500 bg-blue-50 rounded-xl p-6 transition-all transform hover:scale-105";
+                card2.querySelector('h2').classList.replace('text-gray-700', 'text-blue-700');
+                card3.className = "cursor-pointer border-2 border-gray-200 bg-white rounded-xl p-6 transition-all transform hover:scale-100";
+                card3.querySelector('h2').classList.replace('text-blue-700', 'text-gray-700');
+            }
+        }
+
+        function startExam() {
+            timeRemaining = currentLevel === '3급' ? 50 * 60 : 60 * 60; // 2급 시간 60분으로 변경
+            currentQuestionIndex = 0;
+            savedStatus = new Array(questionsData[currentLevel].length).fill(false);
+            pythonAnswers = {}; // 파이썬 저장 초기화
+
+            document.getElementById('exam-title').textContent = `2026 엔트리·파이썬 코딩 평가 [${currentLevel}]`;
+            
+            const pauseBtn = document.getElementById('pause-btn');
+            if (currentLevel === '2급') {
+                pauseBtn.classList.remove('hidden');
+            } else {
+                pauseBtn.classList.add('hidden');
+            }
+
+            document.getElementById('intro-screen').classList.remove('flex');
+            document.getElementById('intro-screen').classList.add('hidden');
+            document.getElementById('exam-screen').classList.remove('hidden');
+            document.getElementById('exam-screen').classList.add('flex');
+
+            renderQuestion();
+            startTimer();
+        }
+
+        function renderQuestionNav() {
+            const navContainer = document.getElementById('question-nav');
+            navContainer.innerHTML = ''; 
+            const currentQuestions = questionsData[currentLevel];
+            
+            for (let i = 0; i < currentQuestions.length; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i + 1;
+                btn.className = `w-10 h-10 rounded-full font-bold flex items-center justify-center transition-all shrink-0 focus:outline-none `;
+                
+                if (savedStatus[i]) {
+                    btn.classList.add('bg-green-500', 'text-white', 'shadow-md');
+                } else {
+                    btn.classList.add('bg-gray-200', 'text-gray-600', 'hover:bg-gray-300');
+                }
+                
+                if (i === currentQuestionIndex) {
+                    btn.classList.add('ring-4', 'ring-blue-300');
+                    if (!savedStatus[i]) {
+                        btn.classList.replace('text-gray-600', 'text-blue-800');
+                    }
+                }
+                
+                btn.onclick = () => {
+                    currentQuestionIndex = i;
+                    renderQuestion();
+                };
+                navContainer.appendChild(btn);
+            }
+        }
+
+        function renderQuestion() {
+            renderQuestionNav();
+            const currentQuestions = questionsData[currentLevel];
+            const qData = currentQuestions[currentQuestionIndex];
+
+            document.getElementById('exam-progress').textContent = `문제 ${currentQuestionIndex + 1} / ${currentQuestions.length}`;
+            document.getElementById('q-title').textContent = qData.title;
+            
+            // 파이썬 문제 레이아웃 토글
+            const examScreen = document.getElementById('exam-screen');
+            const qContentArea = document.getElementById('question-content-area');
+            const pyEditorPane = document.getElementById('python-editor-pane');
+            const pyEditor = document.getElementById('python-editor');
+            const bottomNotice = document.getElementById('bottom-notice');
+
+            if (qData.isPython) {
+                // 파이썬 모드: 창을 넓히고 에디터 표시
+                examScreen.classList.replace('max-w-5xl', 'max-w-[85rem]');
+                examScreen.classList.add('w-full');
+                qContentArea.classList.replace('w-full', 'w-1/2');
+                qContentArea.classList.add('border-r', 'border-gray-300');
+                pyEditorPane.classList.remove('hidden');
+                pyEditorPane.classList.add('flex');
+                
+                // 기존 저장된 답안이 있으면 불러오고, 없으면 스켈레톤 코드 출력
+                pyEditor.value = pythonAnswers[currentQuestionIndex] !== undefined ? pythonAnswers[currentQuestionIndex] : (qData.skeletonCode || '');
+                
+                bottomNotice.textContent = '※ 문제를 꼼꼼히 읽고 우측 에디터 빈칸(____)에 코딩을 완성하세요.';
+            } else {
+                // 엔트리 모드: 기본 레이아웃 복귀
+                examScreen.classList.replace('max-w-[85rem]', 'max-w-5xl');
+                qContentArea.classList.replace('w-1/2', 'w-full');
+                qContentArea.classList.remove('border-r', 'border-gray-300');
+                pyEditorPane.classList.add('hidden');
+                pyEditorPane.classList.remove('flex');
+                
+                bottomNotice.textContent = '※ 문제를 꼼꼼히 읽고 엔트리 화면에서 코딩을 완성하세요.';
+            }
+            
+            const qContentEl = document.getElementById('q-content');
+            const qContentContainer = document.getElementById('q-content-container');
+            if(!qData.content || qData.content.trim() === "") {
+                qContentContainer.style.display = 'none';
+            } else {
+                qContentContainer.style.display = 'block';
+                qContentEl.textContent = qData.content;
+            }
+
+            // 다운로드 버튼 로직
+            const downloadBtn = document.getElementById('download-btn');
+            const downloadFilename = document.getElementById('download-filename');
+            if (qData.file && qData.fileUrl) {
+                downloadBtn.classList.remove('hidden');
+                downloadFilename.textContent = qData.file;
+                
+                const newBtn = downloadBtn.cloneNode(true);
+                downloadBtn.parentNode.replaceChild(newBtn, downloadBtn);
+                newBtn.addEventListener('click', () => {
+                    window.location.href = qData.fileUrl; 
+                });
+            } else {
+                downloadBtn.classList.add('hidden');
+            }
+            
+            const instructionsList = document.getElementById('q-instructions');
+            instructionsList.innerHTML = '';
+            qData.instructions.forEach(inst => {
+                const li = document.createElement('li');
+                li.innerHTML = inst; 
+                instructionsList.appendChild(li);
+            });
+
+            const nextBtnText = document.getElementById('next-btn-text');
+            const nextBtnIcon = document.getElementById('next-btn-icon');
+            const nextBtn = document.getElementById('next-btn');
+
+            if (currentQuestionIndex === currentQuestions.length - 1) {
+                nextBtnText.textContent = '제출하고 종료하기';
+                nextBtnIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />`;
+                nextBtn.classList.replace('bg-blue-600', 'bg-red-600');
+                nextBtn.classList.replace('hover:bg-blue-700', 'hover:bg-red-700');
+            } else {
+                nextBtnText.textContent = '다음문제풀기';
+                nextBtnIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />`;
+                nextBtn.classList.replace('bg-red-600', 'bg-blue-600');
+                nextBtn.classList.replace('hover:bg-red-700', 'hover:bg-blue-700');
+            }
+        }
+
+        function togglePause() {
+            isPaused = !isPaused;
+            const overlay = document.getElementById('pause-overlay');
+            const pauseBtn = document.getElementById('pause-btn');
+            const timerBox = document.getElementById('timer-box');
+
+            if (isPaused) {
+                overlay.classList.remove('hidden');
+                pauseBtn.textContent = '다시시작';
+                pauseBtn.classList.replace('bg-yellow-500', 'bg-green-500');
+                pauseBtn.classList.replace('hover:bg-yellow-600', 'hover:bg-green-600');
+                timerBox.classList.add('animate-pulse', 'bg-red-900');
+            } else {
+                overlay.classList.add('hidden');
+                pauseBtn.textContent = '일시정지';
+                pauseBtn.classList.replace('bg-green-500', 'bg-yellow-500');
+                pauseBtn.classList.replace('hover:bg-green-600', 'hover:bg-yellow-600');
+                timerBox.classList.remove('animate-pulse', 'bg-red-900');
+            }
+        }
+
+        function nextQuestion() {
+            const currentQuestions = questionsData[currentLevel];
+            
+            if (currentQuestionIndex < currentQuestions.length - 1) {
+                currentQuestionIndex++;
+                renderQuestion();
+                document.getElementById('question-content-area').scrollTop = 0;
+            } else {
+                checkSubmit();
+            }
+        }
+
+        function checkSubmit() {
+            const unsaved = [];
+            savedStatus.forEach((status, index) => {
+                if (!status) unsaved.push(index + 1);
+            });
+
+            if (unsaved.length > 0) {
+                const listDiv = document.getElementById('unsaved-list');
+                listDiv.innerHTML = unsaved.map(num => `<span class="bg-red-100 text-red-800 font-bold px-3 py-1 rounded-full text-sm">${num}번</span>`).join('');
+                document.getElementById('modal-overlay').classList.remove('hidden');
+            } else {
+                submitExam();
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.add('hidden');
+        }
+
+        function forceSubmit() {
+            closeModal();
+            submitExam();
+        }
+
+        function submitExam() {
+            clearInterval(timerInterval);
+            document.getElementById('exam-screen').classList.remove('flex');
+            document.getElementById('exam-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            document.getElementById('result-screen').classList.add('flex');
+        }
+
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+            const s = (seconds % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        }
+
+        function updateTimer() {
+            if (isPaused) return;
+
+            if (timeRemaining <= 0) {
+                clearInterval(timerInterval);
+                document.getElementById('timer').textContent = "00:00";
+                
+                const blindScreen = document.getElementById('blind-screen');
+                blindScreen.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    blindScreen.classList.remove('opacity-0');
+                    blindScreen.classList.add('opacity-100');
+                    blindScreen.style.pointerEvents = "auto";
+                }, 50);
+                
+                setTimeout(() => {
+                    blindScreen.classList.add('hidden');
+                    submitExam();
+                }, 3000);
+                return;
+            }
+            
+            timeRemaining--;
+            const timerDisplay = document.getElementById('timer');
+            timerDisplay.textContent = formatTime(timeRemaining);
+            
+            if (timeRemaining <= 300) {
+                timerDisplay.classList.remove('text-red-400');
+                timerDisplay.classList.add('text-red-600', 'animate-pulse');
+            }
+        }
+
+        function startTimer() {
+            const timerDisplay = document.getElementById('timer');
+            timerDisplay.classList.remove('animate-pulse', 'text-red-600');
+            timerDisplay.classList.add('text-red-400');
+            timerDisplay.textContent = formatTime(timeRemaining);
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        let saveTimeout;
+        function saveQuestion() {
+            savedStatus[currentQuestionIndex] = true;
+            renderQuestionNav();
+
+            // 파이썬 문제일 경우 저장 확인용으로 코드 강제 동기화 보장
+            if (questionsData[currentLevel][currentQuestionIndex].isPython) {
+                pythonAnswers[currentQuestionIndex] = document.getElementById('python-editor').value;
+            }
+
+            const msgEl = document.getElementById('save-msg');
+            msgEl.textContent = `${currentQuestionIndex + 1}번 문항이 저장되었습니다.`;
+            msgEl.classList.remove('opacity-0');
+            
+            if (saveTimeout) clearTimeout(saveTimeout);
+            
+            saveTimeout = setTimeout(() => {
+                msgEl.classList.add('opacity-0');
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
