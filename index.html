@@ -62,7 +62,6 @@
 </head>
 <body class="text-slate-800 antialiased min-h-screen flex flex-col selection:bg-indigo-100 selection:text-indigo-900">
 
-    <!-- Password Screen (초기 화면 - 전체 잠금) -->
     <div id="password-screen" class="fixed inset-0 z-[60] flex items-center justify-center bg-gradient-to-br from-slate-100 via-indigo-50 to-slate-200 transition-opacity duration-500">
         <div class="glass rounded-[2rem] shadow-2xl shadow-indigo-900/10 p-10 max-w-md w-full mx-4 transform transition-all">
             <div class="text-center mb-8">
@@ -92,39 +91,6 @@
         </div>
     </div>
 
-    <!-- Level 3 Password Modal -->
-    <div id="level3-password-screen" class="fixed inset-0 z-[70] hidden items-center justify-center bg-slate-900/40 backdrop-blur-sm transition-opacity duration-300">
-        <div class="bg-white rounded-[2rem] shadow-2xl p-8 max-w-sm w-full mx-4 transform transition-all relative">
-            <!-- 닫기 버튼 -->
-            <button id="close-level3-btn" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 transition-colors">
-                <i class="fa-solid fa-xmark text-xl"></i>
-            </button>
-            
-            <div class="text-center mb-6 mt-2">
-                <div class="w-16 h-16 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fa-solid fa-lock text-2xl text-indigo-500"></i>
-                </div>
-                <h3 class="text-xl font-bold text-slate-800">3급 실기 접근</h3>
-                <p class="text-slate-500 mt-2 text-sm">3급 전용 비밀번호를 입력하세요.</p>
-            </div>
-            
-            <form id="level3-password-form" class="space-y-4">
-                <div class="relative">
-                    <input type="password" id="level3-password-input" 
-                        class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all placeholder-slate-400 text-center" 
-                        placeholder="비밀번호" required>
-                    <p id="level3-error-message" class="text-red-500 text-sm mt-2 hidden text-center font-medium"><i class="fa-solid fa-circle-exclamation mr-1"></i>비밀번호가 다릅니다.</p>
-                </div>
-                <button type="submit" 
-                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-4 rounded-xl transition-all duration-300 shadow-md flex items-center justify-center gap-2">
-                    <span>확인 및 이동</span>
-                    <i class="fa-solid fa-arrow-right"></i>
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Dashboard Content (인증 성공 시 표시) -->
     <div id="dashboard-content" class="hidden flex-col w-full flex-grow opacity-0">
         
         <!-- Header -->
@@ -155,7 +121,7 @@
             <!-- Cards Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 
-                <!-- Card 1: 3급 (비밀번호 버튼형) -->
+                <!-- Card 1: 3급 (링크형으로 원상복구) -->
                 <div class="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 card-transition group flex flex-col h-full relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
                     <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center text-xl mb-6">
@@ -165,14 +131,14 @@
                     <p class="text-slate-500 text-sm flex-grow mb-8 line-clamp-2">
                         3급 자격시험 실기를 대비하기 위한 종합 웹앱 페이지입니다.
                     </p>
-                    <button id="btn-open-level3" type="button" 
+                    <a href="https://mirae3-cf241.web.app/" target="_blank" rel="noopener noreferrer" 
                         class="mt-auto w-full inline-flex items-center justify-center gap-2 bg-slate-50 hover:bg-indigo-600 text-slate-700 hover:text-white font-medium py-3 px-4 rounded-xl transition-all duration-300 border border-slate-200 hover:border-indigo-600">
                         <span>웹앱 바로가기</span>
-                        <i class="fa-solid fa-lock text-sm"></i>
-                    </button>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-sm"></i>
+                    </a>
                 </div>
 
-                <!-- Card 2: 2급 엔트리 (링크형) -->
+                <!-- Card 2: 2급 엔트리 -->
                 <div class="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 card-transition group flex flex-col h-full relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
                     <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-xl mb-6">
@@ -189,7 +155,7 @@
                     </a>
                 </div>
 
-                <!-- Card 3: 2급 파이썬 (링크형) -->
+                <!-- Card 3: 2급 파이썬 -->
                 <div class="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 card-transition group flex flex-col h-full relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-teal-50 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
                     <div class="w-12 h-12 bg-teal-100 text-teal-700 rounded-2xl flex items-center justify-center text-xl mb-6">
@@ -274,15 +240,7 @@
             const passwordInput = document.getElementById('password-input');
             const errorMessage = document.getElementById('error-message');
 
-            // 3급 전용 팝업 요소
-            const btnOpenLevel3 = document.getElementById('btn-open-level3');
-            const level3Screen = document.getElementById('level3-password-screen');
-            const level3Form = document.getElementById('level3-password-form');
-            const level3Input = document.getElementById('level3-password-input');
-            const level3Error = document.getElementById('level3-error-message');
-            const closeLevel3Btn = document.getElementById('close-level3-btn');
-
-            // --- 1. 메인 대시보드 로그인 로직 (비밀번호: alfocodna) ---
+            // 메인 대시보드 로그인 로직 (비밀번호: alfocodna)
             const CORRECT_MAIN_PASSWORD = "alfocodna";
 
             if (sessionStorage.getItem('auth_dashboard_2026') === 'true') {
@@ -321,53 +279,6 @@
                     dashboardContent.style.opacity = '1';
                 }
             }
-
-            // --- 2. 3급 전용 팝업 로직 (비밀번호: rhkdwnalco) ---
-            const CORRECT_LEVEL3_PASSWORD = "rhkdwnalco";
-            const LEVEL3_URL = "https://mirae3-cf241.web.app/";
-
-            // 3급 버튼 클릭 시 팝업 열기
-            btnOpenLevel3.addEventListener('click', () => {
-                level3Screen.classList.remove('hidden');
-                level3Screen.classList.add('flex');
-                setTimeout(() => level3Input.focus(), 100);
-            });
-
-            // 닫기 버튼 클릭 시 팝업 닫기
-            closeLevel3Btn.addEventListener('click', () => {
-                closeLevel3Popup();
-            });
-
-            // 팝업 외부(배경) 클릭 시 팝업 닫기
-            level3Screen.addEventListener('click', (e) => {
-                if(e.target === level3Screen) {
-                    closeLevel3Popup();
-                }
-            });
-
-            function closeLevel3Popup() {
-                level3Screen.classList.add('hidden');
-                level3Screen.classList.remove('flex');
-                level3Input.value = '';
-                level3Error.classList.add('hidden');
-            }
-
-            // 3급 비밀번호 제출
-            level3Form.addEventListener('submit', (e) => {
-                e.preventDefault();
-                if (level3Input.value === CORRECT_LEVEL3_PASSWORD) {
-                    // 비밀번호 성공: 팝업 닫고 새 창으로 링크 열기
-                    window.open(LEVEL3_URL, '_blank');
-                    closeLevel3Popup();
-                } else {
-                    // 비밀번호 실패: 에러 애니메이션
-                    showError(level3Error, level3Input);
-                }
-            });
-
-            level3Input.addEventListener('input', () => {
-                if (!level3Error.classList.contains('hidden')) level3Error.classList.add('hidden');
-            });
 
             // 공통 에러 애니메이션 함수
             function showError(errorEl, inputEl) {
