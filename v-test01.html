@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>엔트리 CBT 모의고사</title>
+    <title>엔트리 CBT 모의고사 (1회차)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
@@ -27,8 +27,14 @@
     <div id="launcher-screen" class="hidden flex-col items-center justify-center h-full w-full bg-gray-100 p-6">
         <div id="launcher-content" class="bg-white p-10 rounded-2xl shadow-xl w-full max-w-md text-center border-t-4 border-blue-600">
             <h1 class="text-3xl font-bold text-gray-800 mb-4">엔트리 코딩 활용능력 평가</h1>
-            <p class="text-gray-600 mb-8">준비가 완료되면 아래 버튼을 눌러주세요.</p>
-            <button onclick="openExamWindow()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl text-lg shadow-lg transition-colors">
+            <p class="text-gray-600 mb-6">준비가 완료되면 비밀번호를 입력하고 아래 버튼을 눌러주세요.</p>
+            
+            <div class="mb-6">
+                <input type="password" id="exam-password" placeholder="비밀번호 입력" class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500 text-center text-xl tracking-[0.2em] transition-colors" onkeypress="if(event.key === 'Enter') verifyPassword()">
+                <p id="password-error" class="hidden text-red-500 text-sm mt-2 font-bold animate-pulse">비밀번호가 올바르지 않습니다.</p>
+            </div>
+
+            <button onclick="verifyPassword()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl text-lg shadow-lg transition-colors">
                 시험장 입장하기
             </button>
         </div>
@@ -62,7 +68,6 @@
                 <div id="card-level-2" onclick="selectLevel('2급')" class="cursor-pointer border-2 border-gray-200 bg-white rounded-xl p-6 transition-all transform hover:scale-105">
                     <h2 class="text-2xl font-bold text-gray-700 mb-2">2급</h2>
                     <ul class="text-sm text-gray-600 space-y-1 text-left inline-block list-none">
-                        <!-- 40분으로 수정 반영됨 -->
                         <li>• 제한 시간: <strong>40분</strong></li>
                         <li>• 출제 문항: <strong>3문제</strong></li>
                     </ul>
@@ -309,7 +314,6 @@
                 {
                     title: "문제 1. 우주선 운석 피하기 게임",
                     content: "",
-                    // 1번 문제는 첨부 파일 없음
                     instructions: [
                         "[1-1]<br>키보드의 왼쪽, 오른쪽 방향키를 이용하여 우주선을 좌우로 움직일 수 있게 한다. 우주선은 화면의 좌우 경계를 벗어나지 않도록 한다. 우주선의 이동 기능은 함수를 만들어 사용한다.",
                         "[1-2]<br>게임이 시작되면 운석 오브젝트가 화면 위쪽 밖에서 계속 생성되어 아래쪽으로 이동하도록 한다. 적이 생성되는 위치와 적의 모양, 내려오는 속도(3~5), 생성되는 시간 간격(0.1초~1초)은 각각 무작위로 정해지도록 한다.",
@@ -365,6 +369,25 @@
             }
         };
 
+        /* 비밀번호 확인 로직 추가 */
+        function verifyPassword() {
+            const pwdInput = document.getElementById('exam-password');
+            const errorMsg = document.getElementById('password-error');
+            
+            if (pwdInput.value === 'alfocodna') {
+                errorMsg.classList.add('hidden');
+                openExamWindow();
+            } else {
+                errorMsg.classList.remove('hidden');
+                pwdInput.classList.add('border-red-500', 'bg-red-50');
+                setTimeout(() => {
+                    pwdInput.classList.remove('border-red-500', 'bg-red-50');
+                }, 1000);
+                pwdInput.value = '';
+                pwdInput.focus();
+            }
+        }
+
         /* 창 분리 함수 (팝업) */
         function openExamWindow() {
             const url = window.location.href;
@@ -406,7 +429,6 @@
 
         /* 시험 시작 */
         function startExam() {
-            // 2급 시간 40분으로 적용됨
             timeRemaining = currentLevel === '3급' ? 50 * 60 : 40 * 60;
             currentQuestionIndex = 0;
             savedStatus = new Array(questionsData[currentLevel].length).fill(false);
