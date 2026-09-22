@@ -19,6 +19,12 @@
         #blind-screen {
             transition: opacity 1.5s ease-in-out;
         }
+
+        /* 파이썬 에디터 영역 스타일 */
+        #python-editor:focus {
+            outline: none;
+            box-shadow: inset 0 0 0 2px #3b82f6;
+        }
     </style>
 </head>
 <body class="h-screen w-screen overflow-hidden text-gray-800">
@@ -68,8 +74,8 @@
                 <div id="card-level-2" onclick="selectLevel('2급')" class="cursor-pointer border-2 border-gray-200 bg-white rounded-xl p-6 transition-all transform hover:scale-105">
                     <h2 class="text-2xl font-bold text-gray-700 mb-2">2급</h2>
                     <ul class="text-sm text-gray-600 space-y-1 text-left inline-block list-none">
-                        <li>• 제한 시간: <strong>40분</strong></li>
-                        <li>• 출제 문항: <strong>3문제</strong></li>
+                        <li>• 제한 시간: <strong>60분</strong></li>
+                        <li>• 출제 문항: <strong>7문제</strong></li>
                     </ul>
                 </div>
             </div>
@@ -80,7 +86,7 @@
     </div>
 
     <!-- 2. 시험 화면 -->
-    <div id="exam-screen" class="hidden flex-col h-full w-full bg-white shadow-xl max-w-5xl mx-auto border-x border-gray-200 relative">
+    <div id="exam-screen" class="hidden flex-col h-full w-full bg-white shadow-xl max-w-5xl mx-auto border-x border-gray-200 relative transition-all duration-300">
         
         <!-- 상단 헤더 -->
         <div class="bg-gray-800 text-white p-4 flex justify-between items-center shadow-md shrink-0">
@@ -105,39 +111,54 @@
         <!-- 문항 번호 네비게이션 -->
         <div id="question-nav" class="bg-gray-100 px-6 py-4 border-b border-gray-200 flex space-x-3 overflow-x-auto items-center shrink-0 shadow-inner"></div>
 
-        <!-- 문제 내용 영역 -->
-        <div id="question-content-area" class="flex-1 overflow-y-auto p-8 bg-white relative">
-            <!-- 일시정지 오버레이 -->
-            <div id="pause-overlay" class="hidden absolute inset-0 bg-white/90 backdrop-blur-sm z-10 flex flex-col items-center justify-center">
-                <h2 class="text-3xl font-bold text-gray-800 mb-4">시험 일시정지</h2>
-                <p class="text-gray-600 mb-6">파일을 교체하거나 준비가 완료되면 다시 시작하세요.</p>
-                <button onclick="togglePause()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-colors text-lg">
-                    이어서 풀기
-                </button>
+        <!-- 문제 내용 영역 & 파이썬 에디터 (Flex Container) -->
+        <div class="flex flex-1 overflow-hidden">
+            <!-- 기존 왼쪽: 문제 설명 영역 -->
+            <div id="question-content-area" class="w-full h-full overflow-y-auto p-8 bg-white relative transition-all duration-300">
+                <!-- 일시정지 오버레이 -->
+                <div id="pause-overlay" class="hidden absolute inset-0 bg-white/90 backdrop-blur-sm z-10 flex flex-col items-center justify-center">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">시험 일시정지</h2>
+                    <p class="text-gray-600 mb-6">파일을 교체하거나 준비가 완료되면 다시 시작하세요.</p>
+                    <button onclick="togglePause()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-colors text-lg">
+                        이어서 풀기
+                    </button>
+                </div>
+
+                <div class="border-b-2 border-gray-800 pb-4 mb-6 flex justify-between items-center">
+                    <h2 id="q-title" class="text-2xl font-bold text-gray-800">로딩 중...</h2>
+                    <!-- 파일 다운로드 영역 -->
+                    <div id="q-file-area" class="hidden"></div>
+                </div>
+                <div class="space-y-6">
+                    <div id="q-content-container">
+                        <h3 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
+                            <span class="w-1.5 h-4 bg-blue-600 mr-2 block"></span>문제 설명
+                        </h3>
+                        <p id="q-content" class="text-gray-700 leading-relaxed text-justify whitespace-pre-line"></p>
+                    </div>
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-5">
+                        <h3 class="font-bold text-blue-800 mb-3 text-lg">[ 세부 지시 사항 ]</h3>
+                        <ul id="q-instructions" class="list-none ml-2 text-gray-800 space-y-2 leading-relaxed"></ul>
+                    </div>
+                </div>
             </div>
 
-            <div class="border-b-2 border-gray-800 pb-4 mb-6 flex justify-between items-center">
-                <h2 id="q-title" class="text-2xl font-bold text-gray-800">로딩 중...</h2>
-                <!-- 파일 다운로드 영역 추가 -->
-                <div id="q-file-area" class="hidden"></div>
-            </div>
-            <div class="space-y-6">
-                <div>
-                    <h3 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
-                        <span class="w-1.5 h-4 bg-blue-600 mr-2 block"></span>문제 설명
-                    </h3>
-                    <p id="q-content" class="text-gray-700 leading-relaxed text-justify whitespace-pre-line"></p>
+            <!-- 신규 오른쪽: 파이썬 에디터 영역 (초기 숨김) -->
+            <div id="python-editor-pane" class="hidden w-1/2 h-full bg-[#1e1e1e] flex-col transition-all duration-300 border-l border-gray-300 shadow-inner">
+                <div class="bg-[#2d2d2d] text-gray-300 text-sm px-4 py-2 flex justify-between items-center shrink-0 border-b border-black">
+                    <div class="flex items-center space-x-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+                        <span class="font-bold font-mono">solution.py</span>
+                    </div>
+                    <span class="text-xs text-yellow-500 font-bold animate-pulse">※ 빈칸(____)을 지우고 올바른 코드를 작성하세요!</span>
                 </div>
-                <div class="bg-blue-50 border border-blue-200 rounded-lg p-5">
-                    <h3 class="font-bold text-blue-800 mb-3 text-lg">[ 세부 지시 사항 ]</h3>
-                    <ul id="q-instructions" class="list-none ml-2 text-gray-800 space-y-2 leading-relaxed"></ul>
-                </div>
+                <textarea id="python-editor" class="flex-1 w-full bg-[#1e1e1e] text-[#d4d4d4] font-mono p-4 resize-none leading-relaxed text-lg" spellcheck="false" placeholder="코드를 작성하세요..."></textarea>
             </div>
         </div>
 
         <!-- 하단 네비게이션 -->
-        <div class="bg-gray-50 border-t border-gray-200 p-4 flex justify-between items-center shrink-0">
-            <div class="text-sm text-gray-500 font-medium px-2">※ 문제를 꼼꼼히 읽고 코딩을 완성하세요.</div>
+        <div class="bg-gray-50 border-t border-gray-200 p-4 flex justify-between items-center shrink-0 z-20 shadow-[0_-5px_15px_-10px_rgba(0,0,0,0.1)]">
+            <div id="bottom-notice" class="text-sm text-gray-500 font-medium px-2">※ 문제를 꼼꼼히 읽고 코딩을 완성하세요.</div>
             <div class="flex items-center space-x-4">
                 <span id="save-msg" class="text-green-600 font-bold text-sm transition-opacity duration-300 opacity-0">저장되었습니다.</span>
                 <button id="save-btn" onclick="saveQuestion()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-colors flex items-center space-x-2">
@@ -208,6 +229,7 @@
                 {
                     title: "문제 1. 사각형을 그려요",
                     content: "엔트리봇이 사각형을 그리도록 프로그램을 완성하시오.",
+                    isPython: false,
                     instructions: [
                         "ㄱ. 시작하면 그리기를 시작한다.",
                         "ㄴ. 이동 방향으로 80만큼 움직인다.",
@@ -218,6 +240,7 @@
                 {
                     title: "문제 2. 놀이기구를 탈 수 있을까요?",
                     content: "사용자가 입력한 키에 따라 놀이기구 탑승 여부를 안내하도록 프로그램을 완성하시오.",
+                    isPython: false,
                     instructions: [
                         "ㄱ. 시작하면 놀이공원 직원이 '키를 입력하세요.'라고 묻고 기다린다.",
                         "ㄴ. 입력한 키가 120 이상이면 “탑승할 수 있습니다.”라고 2초 동안 말한다.",
@@ -227,6 +250,7 @@
                 {
                     title: "문제 3. 벽을 피해 움직이는 로봇",
                     content: "엔트리봇이 계속 움직이다가 벽에 닿으면 방향을 바꾸도록 프로그램을 완성하시오.",
+                    isPython: false,
                     instructions: [
                         "ㄱ. 시작하면 엔트리봇이 이동 방향으로 20씩 계속 움직인다.",
                         "ㄴ. 엔트리봇이 움직일 때 다음 모양으로 바꾼다.",
@@ -237,6 +261,7 @@
                 {
                     title: "문제 4. 별을 모아 점수를 올려요",
                     content: "엔트리봇이 별을 모을 때마다 점수가 증가하도록 프로그램을 완성하시오.",
+                    isPython: false,
                     instructions: [
                         "ㄱ. 프로그램을 시작하면 점수를 0으로 정한다.",
                         "ㄴ. 엔트리봇은 마우스 포인터를 따라다닌다.",
@@ -248,6 +273,7 @@
                 {
                     title: "문제 5. 에너지가 필요한 로봇",
                     content: "로봇이 움직일 때마다 에너지가 줄어들고, 에너지가 모두 없어지면 멈추도록 프로그램을 완성하시오.",
+                    isPython: false,
                     instructions: [
                         "ㄱ. 프로그램을 시작하면 에너지를 3으로 정한다.",
                         "ㄴ. 스페이스 키를 눌렀을 때 에너지가 0보다 크면 오른쪽으로 30만큼 이동한다.",
@@ -258,6 +284,7 @@
                 {
                     title: "문제 6. 용돈 저금통",
                     content: "세 번 입력한 저금 금액의 합계를 알려주는 프로그램을 완성하시오.",
+                    isPython: false,
                     instructions: [
                         "ㄱ. 시작하면 저금액 변수를 0으로 정한다.",
                         "ㄴ. “저금할 금액을 입력하세요.”라고 묻는다.",
@@ -269,6 +296,7 @@
                 {
                     title: "문제 7. 참가자 명단 만들기",
                     content: "사용자가 입력한 세 명의 이름을 참가자 리스트에 저장하고 참가자 수를 알려주는 프로그램을 완성하시오.",
+                    isPython: false,
                     instructions: [
                         "ㄱ. 프로그램을 시작하면 참가자 리스트의 모든 항목을 삭제한다.",
                         "ㄴ. “참가자 이름을 입력하세요.”라고 묻고 기다린다.",
@@ -280,6 +308,7 @@
                 {
                     title: "문제 8. 오늘의 미션 뽑기",
                     content: "[준비된 리스트]\n미션\n번호\t항목\n1\t책 읽기\n2\t스트레칭\n3\t물 마시기\n4\t산책하기\n5\t정리하기\n\n미션 리스트에서 하나를 무작위로 뽑아 안내하고, 뽑은 미션을 리스트에서 삭제하도록 프로그램을 완성하시오.",
+                    isPython: false,
                     instructions: [
                         "ㄱ. 시작하면 번호 변수에 1부터 미션 리스트의 항목 수 사이의 무작위 수를 저장한다.",
                         "ㄴ. 번호 번째 미션을 “오늘의 미션은 ○○입니다.”라고 말한다.",
@@ -290,6 +319,7 @@
                 {
                     title: "문제 9. AI 얼굴 인원 안내",
                     content: "카메라에 인식된 얼굴 수에 따라 다른 안내가 나오도록 프로그램을 완성하시오.",
+                    isPython: false,
                     instructions: [
                         "ㄱ. 시작하면 비디오 화면을 보인다.",
                         "ㄴ. 얼굴 인식을 시작한다.",
@@ -302,6 +332,7 @@
                 {
                     title: "문제 10. AI 여행 통역기",
                     content: "사용자가 입력한 한국어 문장을 영어로 번역하여 음성으로 들려주는 프로그램을 완성하시오.",
+                    isPython: false,
                     instructions: [
                         "ㄱ. 시작하면 “영어로 번역할 문장을 입력하세요.”라고 묻고 기다린다.",
                         "ㄴ. 사용자가 입력한 대답을 영어로 번역한다.",
@@ -314,6 +345,7 @@
                 {
                     title: "문제 1. 우주선 운석 피하기 게임",
                     content: "",
+                    isPython: false,
                     instructions: [
                         "[1-1]<br>키보드의 왼쪽, 오른쪽 방향키를 이용하여 우주선을 좌우로 움직일 수 있게 한다. 우주선은 화면의 좌우 경계를 벗어나지 않도록 한다. 우주선의 이동 기능은 함수를 만들어 사용한다.",
                         "[1-2]<br>게임이 시작되면 운석 오브젝트가 화면 위쪽 밖에서 계속 생성되어 아래쪽으로 이동하도록 한다. 적이 생성되는 위치와 적의 모양, 내려오는 속도(3~5), 생성되는 시간 간격(0.1초~1초)은 각각 무작위로 정해지도록 한다.",
@@ -326,6 +358,7 @@
                     content: "",
                     file: "02_이동수단추천_결정트리_데이터.xlsx",
                     fileUrl: "https://github.com/oleesudalo/study-entry/raw/refs/heads/main/02_%EC%9D%B4%EB%8F%99%EC%88%98%EB%8B%A8%EC%B6%94%EC%B2%9C_%EA%B2%B0%EC%A0%95%ED%8A%B8%EB%A6%AC_%EB%8D%B0%EC%9D%B4%ED%84%B0.xlsx",
+                    isPython: false,
                     instructions: [
                         "[2-1]<br>이동거리, 강수량, 짐의 무게를 이용하여 이동수단을 도보, 자전거, 버스 중 하나로 분류하는 결정트리 인공지능 모델을 만든다.",
                         "[2-2]<br>프로그램을 시작하면 사용자의 이동거리, 강수량, 짐의 무게를 차례로 입력받아 각각 변수에 저장한다.",
@@ -339,12 +372,61 @@
                     content: "",
                     file: "03_SVM_장비상태판별_데이터.xlsx",
                     fileUrl: "https://github.com/oleesudalo/study-entry/raw/refs/heads/main/03_SVM_%EC%9E%A5%EB%B9%84%EC%83%81%ED%83%9C%ED%8C%90%EB%B3%84_%EB%8D%B0%EC%9D%B4%ED%84%B0.xlsx",
+                    isPython: false,
                     instructions: [
                         "[3-1]<br>제공된 장비 측정 데이터를 이용하여 온도지수, 진동지수, 소음지수를 기준으로 장비 상태를 정상과 점검필요로 분류하는 SVM 모델을 만든다.",
                         "[3-2]<br>프로그램을 시작하면 사용자가 온도지수, 진동지수, 소음지수를 차례로 입력할 수 있도록 한다.",
                         "[3-3]<br>입력한 값을 학습된 인공지능 모델에 적용하여 장비의 상태를 판별하고 결과를 4초동안 말한다.",
                         "[3-4]<br>장비 상태가 정상이면 2, 점검필요이면 3으로 로봇의 모양을 바꾼다.",
                         "<div class='mt-5 border-2 border-blue-100 bg-blue-50/50 rounded-lg p-4'><p class='font-bold text-blue-800 mb-2'>[학습 결과 확인]</p><p class='text-sm text-gray-700 mb-2'>다음 값을 입력하여 모델의 학습 결과를 확인한다.</p><ul class='text-sm text-gray-800 space-y-1 font-medium'><li>• 온도지수 2 / 진동지수 2 / 소음지수 2 → 정상</li><li>• 온도지수 8 / 진동지수 8 / 소음지수 8 → <span class='text-red-600 font-bold'>점검필요</span></li></ul></div>"
+                    ]
+                },
+                {
+                    title: "문제 4. [파이썬] 입장료 계산기",
+                    content: "나이를 입력받아 놀이공원 입장료를 계산하는 파이썬 코드를 작성하시오.",
+                    isPython: true,
+                    skeletonCode: "age = int(input(\"나이를 입력하세요: \"))\n\n______________________________\n    print(\"무료입니다.\")\n______________________________\n    print(\"입장료는 5000원입니다.\")\n______________________________\n    print(\"입장료는 10000원입니다.\")",
+                    instructions: [
+                        "[4-1]<br>사용자에게 <code>나이를 입력하세요: </code>라고 묻고 정수로 입력받아 <code>age</code> 변수에 저장한다.",
+                        "[4-2]<br>나이가 8 미만이거나 65 이상이면 <code>무료입니다.</code>를 출력한다.",
+                        "[4-3]<br>나이가 8 이상 19 이하이면 <code>입장료는 5000원입니다.</code>를 출력한다.",
+                        "[4-4]<br>그 외의 나이(성인)는 <code>입장료는 10000원입니다.</code>를 출력한다."
+                    ]
+                },
+                {
+                    title: "문제 5. [파이썬] 짝수의 합 구하기",
+                    content: "1부터 입력받은 숫자 N까지의 정수 중 짝수만 더하는 파이썬 코드를 작성하시오.",
+                    isPython: true,
+                    skeletonCode: "n = int(input(\"숫자를 입력하세요: \"))\ntotal = 0\n\n______________________________\n    if i % 2 == 0:\n        ______________________________\n\nprint(\"짝수의 합:\", total)",
+                    instructions: [
+                        "[5-1]<br>사용자에게 <code>숫자를 입력하세요: </code>라고 묻고 정수로 변환하여 <code>n</code> 변수에 저장한다.",
+                        "[5-2]<br>반복문(<code>for</code>)을 사용하여 1부터 <code>n</code>까지의 숫자 중 짝수를 판별한다.",
+                        "[5-3]<br>짝수인 숫자들만 합계 변수 <code>total</code>에 누적하여 더한다.",
+                        "[5-4]<br>반복이 끝나면 <code>짝수의 합: [합계결과]</code> 형태로 출력한다."
+                    ]
+                },
+                {
+                    title: "문제 6. [파이썬] 리스트에서 최댓값 찾기",
+                    content: "5명의 학생 점수 리스트에서 가장 높은 점수를 찾아 출력하는 파이썬 코드를 작성하시오.",
+                    isPython: true,
+                    skeletonCode: "scores = [78, 92, 85, 99, 88]\n\n# max_score 변수를 리스트의 첫 번째 값으로 초기화\n______________________________\n\nfor score in scores:\n    ______________________________\n        max_score = score\n\nprint(\"최고 점수는\", max_score, \"점입니다.\")",
+                    instructions: [
+                        "[6-1]<br>점수 리스트 <code>scores = [78, 92, 85, 99, 88]</code>가 주어졌다.",
+                        "[6-2]<br>파이썬의 내장 함수 <code>max()</code>를 사용하지 않고 <code>for</code> 반복문을 활용하여 최댓값을 찾는다.",
+                        "[6-3]<br>최댓값을 저장할 변수 <code>max_score</code>를 리스트의 첫 번째 값으로 초기화한다.",
+                        "[6-4]<br>리스트를 순회하며 더 큰 값을 발견하면 <code>max_score</code>를 업데이트하고 출력한다."
+                    ]
+                },
+                {
+                    title: "문제 7. [파이썬] 구구단 함수 만들기",
+                    content: "원하는 단을 입력받아 구구단을 출력하는 파이썬 함수를 작성하시오.",
+                    isPython: true,
+                    skeletonCode: "# print_gugudan 함수 정의 (매개변수 dan)\n______________________________\n    for i in range(1, 10):\n        print(f\"{dan} x {i} = {dan * i}\")\n\nnum = int(input(\"출력할 단을 입력하세요: \"))\n\n______________________________",
+                    instructions: [
+                        "[7-1]<br><code>print_gugudan(dan)</code> 이라는 이름의 함수를 정의한다.",
+                        "[7-2]<br>함수 내부에서 반복문을 사용하여 입력받은 <code>dan</code>의 1부터 9까지 곱한 결과를 출력한다.",
+                        "[7-3]<br>사용자에게 <code>출력할 단을 입력하세요: </code>라고 묻고 정수를 입력받는다.",
+                        "[7-4]<br>입력받은 정수를 인자로 전달하여 <code>print_gugudan</code> 함수를 호출한다."
                     ]
                 }
             ]
@@ -356,6 +438,7 @@
         let timeRemaining = 0;
         let timerInterval = null;
         let savedStatus = [];
+        let pythonAnswers = {}; // 파이썬 코드 입력 저장용 딕셔너리
         let isPaused = false;
 
         /* 초기 진입 로직 (대기실 vs 시험창 구분) */
@@ -367,6 +450,26 @@
                 document.getElementById('launcher-screen').classList.remove('hidden');
                 document.getElementById('launcher-screen').classList.add('flex');
             }
+            
+            // 파이썬 에디터 이벤트 리스너 바인딩
+            const pyEditor = document.getElementById('python-editor');
+            
+            // 값 변경 시 임시 저장
+            pyEditor.addEventListener('input', function(e) {
+                pythonAnswers[currentQuestionIndex] = e.target.value;
+            });
+            
+            // Tab 키 동작 처리 (들여쓰기 4칸 적용)
+            pyEditor.addEventListener('keydown', function(e) {
+                if (e.key === 'Tab') {
+                    e.preventDefault();
+                    const start = this.selectionStart;
+                    const end = this.selectionEnd;
+                    this.value = this.value.substring(0, start) + "    " + this.value.substring(end);
+                    this.selectionStart = this.selectionEnd = start + 4;
+                    this.dispatchEvent(new Event('input')); // 저장 이벤트 트리거
+                }
+            });
         };
 
         /* 비밀번호 확인 로직 추가 */
@@ -429,9 +532,11 @@
 
         /* 시험 시작 */
         function startExam() {
-            timeRemaining = currentLevel === '3급' ? 50 * 60 : 40 * 60;
+            // 2급 시간을 60분으로 변경 적용 (7문제 기준)
+            timeRemaining = currentLevel === '3급' ? 50 * 60 : 60 * 60;
             currentQuestionIndex = 0;
             savedStatus = new Array(questionsData[currentLevel].length).fill(false);
+            pythonAnswers = {}; // 파이썬 저장 초기화
 
             document.getElementById('exam-title').textContent = `2026 엔트리 코딩 활용능력 평가 [${currentLevel}]`;
             
@@ -492,6 +597,46 @@
             document.getElementById('exam-progress').textContent = `문제 ${currentQuestionIndex + 1} / ${currentQuestions.length}`;
             document.getElementById('q-title').textContent = qData.title;
             
+            // 파이썬 문제 레이아웃 토글
+            const examScreen = document.getElementById('exam-screen');
+            const qContentArea = document.getElementById('question-content-area');
+            const pyEditorPane = document.getElementById('python-editor-pane');
+            const pyEditor = document.getElementById('python-editor');
+            const bottomNotice = document.getElementById('bottom-notice');
+
+            if (qData.isPython) {
+                // 파이썬 모드: 창을 넓히고 에디터 표시
+                examScreen.classList.replace('max-w-5xl', 'max-w-[85rem]');
+                examScreen.classList.add('w-full');
+                qContentArea.classList.replace('w-full', 'w-1/2');
+                qContentArea.classList.add('border-r', 'border-gray-300');
+                pyEditorPane.classList.remove('hidden');
+                pyEditorPane.classList.add('flex');
+                
+                // 기존 저장된 답안이 있으면 불러오고, 없으면 스켈레톤 코드 출력
+                pyEditor.value = pythonAnswers[currentQuestionIndex] !== undefined ? pythonAnswers[currentQuestionIndex] : (qData.skeletonCode || '');
+                
+                bottomNotice.textContent = '※ 문제를 꼼꼼히 읽고 우측 에디터 빈칸(____)에 코딩을 완성하세요.';
+            } else {
+                // 엔트리 모드: 기본 레이아웃 복귀
+                examScreen.classList.replace('max-w-[85rem]', 'max-w-5xl');
+                qContentArea.classList.replace('w-1/2', 'w-full');
+                qContentArea.classList.remove('border-r', 'border-gray-300');
+                pyEditorPane.classList.add('hidden');
+                pyEditorPane.classList.remove('flex');
+                
+                bottomNotice.textContent = '※ 문제를 꼼꼼히 읽고 엔트리 화면에서 코딩을 완성하세요.';
+            }
+            
+            const qContentEl = document.getElementById('q-content');
+            const qContentContainer = document.getElementById('q-content-container');
+            if(!qData.content || qData.content.trim() === "") {
+                qContentContainer.style.display = 'none';
+            } else {
+                qContentContainer.style.display = 'block';
+                qContentEl.textContent = qData.content;
+            }
+
             /* 다운로드 버튼 렌더링 로직 */
             const fileArea = document.getElementById('q-file-area');
             if (qData.file && qData.fileUrl) {
@@ -660,6 +805,11 @@
         function saveQuestion() {
             savedStatus[currentQuestionIndex] = true;
             renderQuestionNav();
+
+            // 파이썬 문제일 경우 저장 확인용으로 코드 강제 동기화 보장
+            if (questionsData[currentLevel][currentQuestionIndex].isPython) {
+                pythonAnswers[currentQuestionIndex] = document.getElementById('python-editor').value;
+            }
 
             const msgEl = document.getElementById('save-msg');
             msgEl.textContent = `${currentQuestionIndex + 1}번 문항이 저장되었습니다.`;
