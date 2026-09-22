@@ -5403,8 +5403,8 @@ print(student["pass"])</div>
 <span class="mock-level">중</span>
 </div>
 <div class="practice-card mock-practice">
-<h4>양의 정수만 골라 평균 계산</h4>
-<div class="real-exam-stem">다음은 nums 리스트에 저장된 양수들의 평균을 반환하는 함수이다. 평균 계산을 완성하도록 빈 줄 전체에 들어갈 코드를 작성하시오.</div>
+<h4>리스트 평균 계산</h4>
+<div class="real-exam-stem">다음은 nums 리스트에 저장된 값들의 평균을 반환하는 함수이다. 평균 계산을 완성하도록 빈 줄 전체에 들어갈 코드를 작성하시오.</div>
 <div class="real-code-label">【Python 코드】</div>
 <div class="practice-code mock-code">def get_avg(nums):
     <input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input full-line-blank" data-answer="return sum(nums) / len(nums)|return sum(nums)/len(nums)" placeholder="한 줄 전체 코드 입력" spellcheck="false" type="text"/>
@@ -5423,7 +5423,7 @@ print(get_avg(nums))</div>
 <button class="real-next-inline" type="button">다음 →</button>
 </div>
 </div>
-<div class="answer-note"><b>정답과 설명</b><br/><br/><code>return sum(nums) / len(nums)</code><div class="answer-explain">평균은 리스트의 합계 sum(nums)를 요소 개수 len(nums)로 나눈 값이며, 함수 결과로 사용하려면 return해야 합니다.</div></div>
+<div class="answer-note"><b>정답과 설명</b><br/><br/><code>return sum(nums) / len(nums)</code><div class="answer-explain">리스트의 평균은 전체 합계 sum(nums)를 요소 개수 len(nums)로 나눈 값이며, 함수의 계산 결과를 돌려주기 위해 return을 사용합니다.</div></div>
 </div>
 </div>
 <div class="mock-question" data-q="9">
@@ -5572,7 +5572,7 @@ else:
 </div>
 <div class="practice-card mock-practice">
 <h4>짝수의 제곱·세제곱 출력</h4>
-<div class="real-exam-stem">다음은 1부터 6까지의 수 중 짝수만 제곱과 세제곱하여 출력하는 Python 프로그램이다. 안쪽 반복문의 빈 줄 전체에 들어갈 코드를 작성하시오.</div>
+<div class="real-exam-stem">다음은 1부터 6까지의 수 중 짝수만 골라 제곱과 세제곱을 출력하는 python 프로그램이다. 안쪽 반복문의 빈 줄 전체에 들어갈 코드를 작성하시오.</div>
 <div class="real-code-label">【Python 코드】</div>
 <div class="practice-code mock-code">for i in range(1, 7):
     <input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input full-line-blank" data-answer="for j in range(2, 4):|for j in range(2,4):" placeholder="한 줄 전체 코드 입력" spellcheck="false" type="text"/>
@@ -5667,9 +5667,9 @@ print(total)</div>
 </div>
 <div class="practice-card mock-practice">
 <h4>불면증 여부 라벨링</h4>
-<div class="real-exam-stem">다음은 수면장애 문자열을 숫자로 변환하기 위한 딕셔너리를 만든 뒤 Insomnia의 값을 출력하는 프로그램이다. 빈 줄 전체에 들어갈 코드를 작성하시오.</div>
+<div class="real-exam-stem">다음은 수면장애 문자열을 숫자로 변환하기 위한 label_map 딕셔너리를 만든 뒤 Insomnia의 값을 출력하는 Python 프로그램이다. Insomnia는 1, Sleep Apnea와 None은 0으로 저장한다. 빈 줄 전체에 들어갈 코드를 작성하시오.</div>
 <div class="real-code-label">【Python 코드】</div>
-<div class="practice-code mock-code"><input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input full-line-blank" data-answer="label_map = {&quot;Insomnia&quot;: 1, &quot;Sleep Apnea&quot;: 0, &quot;None&quot;: 0}|label_map={'Insomnia':1,'Sleep Apnea':0,'None':0}" placeholder="한 줄 전체 코드 입력" spellcheck="false" type="text"/>
+<div class="practice-code mock-code"><input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input full-line-blank" data-answer='label_map = {"Insomnia": 1, "Sleep Apnea": 0, "None": 0}|label_map = {"Insomnia": 1, "None": 0, "Sleep Apnea": 0}|label_map = {"Sleep Apnea": 0, "Insomnia": 1, "None": 0}|label_map = {"Sleep Apnea": 0, "None": 0, "Insomnia": 1}|label_map = {"None": 0, "Insomnia": 1, "Sleep Apnea": 0}|label_map = {"None": 0, "Sleep Apnea": 0, "Insomnia": 1}' placeholder="한 줄 전체 코드 입력" spellcheck="false" type="text"/>
 
 target = "Insomnia"
 print(label_map[target])</div>
@@ -5685,7 +5685,7 @@ print(label_map[target])</div>
 <button class="real-next-inline" type="button">다음 →</button>
 </div>
 </div>
-<div class="answer-note"><b>정답과 설명</b><br/><br/><code>label_map = {"Insomnia": 1, "Sleep Apnea": 0, "None": 0}</code><div class="answer-explain">각 범주 문자열을 key로, 변환할 숫자를 value로 저장하면 target 문자열을 이용해 대응되는 라벨을 바로 조회할 수 있습니다.</div></div>
+<div class="answer-note"><b>정답과 설명</b><br/><br/><code>label_map = {"Insomnia": 1, "Sleep Apnea": 0, "None": 0}</code><div class="answer-explain">문제에서 정한 라벨에 맞게 Insomnia는 1, Sleep Apnea와 None은 0으로 저장합니다. 딕셔너리의 항목 순서는 달라도 같은 key와 value를 모두 포함하면 같은 내용입니다.</div></div>
 </div>
 </div>
 <div class="mock-question" data-q="7">
