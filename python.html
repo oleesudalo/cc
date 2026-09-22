@@ -7105,12 +7105,43 @@ function normalizeCompoundAssignment(value){
   return s;
 }
 
+// i * 2 와 2 * i처럼 숫자 상수와 값의 곱 순서만 다른 경우도 같은 답으로 인정
+// 문자열 내부의 내용은 보호한 뒤 처리하므로 문제 문구/문자열 값에는 영향을 주지 않음
+function normalizeCommutativeMultiplication(value){
+  const protectedStrings = normalizePythonStrings(value);
+  let s = protectedStrings.text;
+
+  // 변수, 리스트 인덱싱 값 등과 숫자 상수의 곱은 숫자를 앞에 두는 형태로 통일
+  // 예: i*2 -> 2*i, numbers[i]*2 -> 2*numbers[i]
+  const atom = String.raw`([A-Za-z_]\w*(?:\[[^\[\]]+\])*)`;
+  const number = String.raw`(\d+(?:\.\d+)?)`;
+  const re = new RegExp(`${atom}\\*${number}`, 'g');
+
+  let prev = '';
+  while(prev !== s){
+    prev = s;
+    s = s.replace(re, (_, left, num)=>`${num}*${left}`);
+  }
+
+  return restorePythonStrings(s, protectedStrings.strings);
+}
+
+// range(0, n)과 range(n)은 같은 반복 범위이므로 동일하게 인정
+function normalizeRangeZeroStart(value){
+  let s = value;
+  // 단순한 한 개의 종료값을 갖는 경우만 안전하게 변환
+  s = s.replace(/\brange\(0,([A-Za-z_]\w*|\d+|len\([^()]+\))\)/g, 'range($1)');
+  return s;
+}
+
 function canonicalPythonExpression(value){
   let s = basicPythonNormalize(value);
   s = stripOuterParens(s);
   s = normalizeBooleanComparisons(s);
   s = stripOuterParens(s);
   s = normalizeCompoundAssignment(s);
+  s = normalizeCommutativeMultiplication(s);
+  s = normalizeRangeZeroStart(s);
 
   // 한 줄 전체를 입력하는 실전 문제: if/elif/while 내부 조건식도 의미 기준으로 비교
   const statementMatch = s.match(/^(if|elif|while)\s+(.+):$/);
