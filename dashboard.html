@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 SW AI 교육강사 자격시험 실기 대비</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Inter & Noto Sans KR) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+            background-color: #f8fafc; /* Tailwind slate-50 */
+        }
+        
+        /* 그라데이션 텍스트 */
+        .text-gradient {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* 부드러운 전환 효과 */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 비밀번호 오류 시 흔들림 애니메이션 */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+        .animate-shake {
+            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+            border-color: #ef4444 !important; /* red-500 */
+        }
+
+        /* 글래스모피즘 (유리 질감) */
+        .glass {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        /* 카드 호버 트랜지션 */
+        .card-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col selection:bg-indigo-100 selection:text-indigo-900">
+
+    <!-- Password Screen (초기 화면) -->
+    <div id="password-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-slate-100 via-indigo-50 to-slate-200 transition-opacity duration-500">
+        <div class="glass rounded-[2rem] shadow-2xl shadow-indigo-900/10 p-10 max-w-md w-full mx-4 transform transition-all">
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-slate-100">
+                    <i class="fa-solid fa-shield-halved text-4xl text-indigo-500"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-800 tracking-tight">대시보드 접근 제한</h2>
+                <p class="text-slate-500 mt-2 text-sm">허가된 사용자만 접근할 수 있습니다.<br>비밀번호를 입력해 주세요.</p>
+            </div>
+            
+            <form id="password-form" class="space-y-5">
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <i class="fa-solid fa-lock text-slate-400"></i>
+                    </div>
+                    <input type="password" id="password-input" 
+                        class="w-full pl-11 pr-4 py-3.5 bg-white/50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all placeholder-slate-400" 
+                        placeholder="비밀번호를 입력하세요" required autofocus>
+                    <p id="error-message" class="text-red-500 text-sm mt-2 hidden ml-1 font-medium"><i class="fa-solid fa-circle-exclamation mr-1"></i>비밀번호가 올바르지 않습니다.</p>
+                </div>
+                <button type="submit" 
+                    class="w-full bg-slate-900 hover:bg-indigo-600 text-white font-medium py-3.5 px-4 rounded-xl transition-all duration-300 shadow-lg shadow-slate-900/20 hover:shadow-indigo-600/30 flex items-center justify-center gap-2">
+                    <span>입장하기</span>
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard Content (인증 성공 시 표시) -->
+    <div id="dashboard-content" class="hidden flex-col w-full flex-grow opacity-0">
+        
+        <!-- Header -->
+        <header class="glass sticky top-0 z-40 border-b border-slate-200/60">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h1 class="text-2xl font-bold tracking-tight text-slate-900">
+                            2026 SW AI <span class="text-gradient">교육강사 자격시험</span> 실기 대비
+                        </h1>
+                    </div>
+                    <div class="flex items-center gap-2 bg-slate-100/80 px-4 py-2 rounded-full border border-slate-200/60">
+                        <i class="fa-solid fa-user-pen text-indigo-500 text-sm"></i>
+                        <span class="text-sm font-medium text-slate-700">광주SW미래채움 고급강사 자격증팀</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
+            
+            <div class="mb-10 text-center sm:text-left">
+                <h2 class="text-lg font-medium text-slate-600">학습용 웹앱 목록</h2>
+                <p class="text-slate-400 text-sm mt-1">원하시는 실기 대비 항목을 선택하세요.</p>
+            </div>
+
+            <!-- Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- Card 1: 3급 -->
+                <div class="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 card-transition group flex flex-col h-full relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
+                    <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center text-xl mb-6">
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">3급 실기 대비</h3>
+                    <p class="text-slate-500 text-sm flex-grow mb-8 line-clamp-2">
+                        3급 자격시험 실기를 대비하기 위한 종합 웹앱 페이지입니다.
+                    </p>
+                    <a href="https://mirae3-cf241.web.app/" target="_blank" rel="noopener noreferrer" 
+                        class="mt-auto w-full inline-flex items-center justify-center gap-2 bg-slate-50 hover:bg-indigo-600 text-slate-700 hover:text-white font-medium py-3 px-4 rounded-xl transition-all duration-300 border border-slate-200 hover:border-indigo-600">
+                        <span>웹앱 바로가기</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-sm"></i>
+                    </a>
+                </div>
+
+                <!-- Card 2: 2급 엔트리 -->
+                <div class="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 card-transition group flex flex-col h-full relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
+                    <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-xl mb-6">
+                        <i class="fa-solid fa-cube"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">2급 엔트리 실기</h3>
+                    <p class="text-slate-500 text-sm flex-grow mb-8 line-clamp-2">
+                        2급 엔트리 부문 자격시험 요약 및 대비 자료를 확인하세요.
+                    </p>
+                    <a href="https://oleesudalo.github.io/study-entry/summary.html" target="_blank" rel="noopener noreferrer" 
+                        class="mt-auto w-full inline-flex items-center justify-center gap-2 bg-slate-50 hover:bg-emerald-600 text-slate-700 hover:text-white font-medium py-3 px-4 rounded-xl transition-all duration-300 border border-slate-200 hover:border-emerald-600">
+                        <span>웹앱 바로가기</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-sm"></i>
+                    </a>
+                </div>
+
+                <!-- Card 3: 2급 파이썬 -->
+                <div class="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 card-transition group flex flex-col h-full relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
+                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-xl mb-6">
+                        <i class="fa-brands fa-python"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">2급 파이썬 실기</h3>
+                    <p class="text-slate-500 text-sm flex-grow mb-8 line-clamp-2">
+                        2급 파이썬 부문 자격시험 요약 및 일정 대비 자료입니다.
+                    </p>
+                    <a href="https://oleesudalo.github.io/class/summary-python.html#exam-schedule" target="_blank" rel="noopener noreferrer" 
+                        class="mt-auto w-full inline-flex items-center justify-center gap-2 bg-slate-50 hover:bg-blue-600 text-slate-700 hover:text-white font-medium py-3 px-4 rounded-xl transition-all duration-300 border border-slate-200 hover:border-blue-600">
+                        <span>웹앱 바로가기</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-sm"></i>
+                    </a>
+                </div>
+
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-white border-t border-slate-200/60 mt-auto">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p class="text-slate-400 text-sm">
+                    &copy; 2026 광주SW미래채움. All rights reserved.
+                </p>
+                <div class="text-slate-300 text-sm flex gap-4">
+                    <span>본 대시보드는 실기 대비를 목적으로 제작되었습니다.</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const passwordScreen = document.getElementById('password-screen');
+            const dashboardContent = document.getElementById('dashboard-content');
+            const passwordForm = document.getElementById('password-form');
+            const passwordInput = document.getElementById('password-input');
+            const errorMessage = document.getElementById('error-message');
+
+            // 설정된 비밀번호 (요청하신 비밀번호 적용)
+            const CORRECT_PASSWORD = "alfocodna";
+
+            // 세션 스토리지 체크 (이미 인증되었는지)
+            if (sessionStorage.getItem('auth_dashboard_2026') === 'true') {
+                showDashboard(false); // 애니메이션 없이 바로 표시
+            } else {
+                // 모달이 보일 때 입력창에 포커스 (약간의 지연 시간 후)
+                setTimeout(() => passwordInput.focus(), 300);
+            }
+
+            passwordForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const enteredPassword = passwordInput.value;
+
+                if (enteredPassword === CORRECT_PASSWORD) {
+                    // 인증 성공
+                    sessionStorage.setItem('auth_dashboard_2026', 'true');
+                    showDashboard(true); // 애니메이션과 함께 표시
+                } else {
+                    // 인증 실패
+                    errorMessage.classList.remove('hidden');
+                    passwordInput.value = '';
+                    passwordInput.focus();
+                    
+                    // 오류 시 입력창 흔들림 애니메이션 효과
+                    passwordInput.classList.add('animate-shake');
+                    setTimeout(() => passwordInput.classList.remove('animate-shake'), 400);
+                }
+            });
+
+            // 사용자가 다시 타이핑을 시작하면 에러 메시지 숨기기
+            passwordInput.addEventListener('input', () => {
+                if (!errorMessage.classList.contains('hidden')) {
+                    errorMessage.classList.add('hidden');
+                }
+            });
+
+            function showDashboard(withAnimation) {
+                if (withAnimation) {
+                    passwordScreen.style.opacity = '0';
+                    setTimeout(() => {
+                        passwordScreen.classList.add('hidden');
+                        dashboardContent.classList.remove('hidden');
+                        dashboardContent.classList.add('flex', 'fade-in'); 
+                        dashboardContent.style.opacity = '1';
+                    }, 500); // fade out 시간 대기
+                } else {
+                    passwordScreen.classList.add('hidden');
+                    dashboardContent.classList.remove('hidden');
+                    dashboardContent.classList.add('flex'); 
+                    dashboardContent.style.opacity = '1';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
