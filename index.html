@@ -16,7 +16,7 @@
         body {
             font-family: 'Inter', 'Noto Sans KR', sans-serif;
             background-color: #f4f7f9; /* 더 모던하고 부드러운 배경색 */
-            overflow-x: hidden;
+            overflow: hidden; /* 스크롤 완전히 방지 */
         }
         
         /* 그라데이션 텍스트 */
@@ -73,7 +73,7 @@
         }
     </style>
 </head>
-<body class="text-slate-800 antialiased min-h-screen flex flex-col selection:bg-slate-200 selection:text-slate-900 relative">
+<body class="text-slate-800 antialiased h-screen flex flex-col selection:bg-slate-200 selection:text-slate-900 relative">
 
     <!-- 배경 부드러운 빛 효과 (무채색 톤다운) -->
     <div class="bg-blur-blob bg-slate-200 w-96 h-96 top-0 left-0 -translate-x-1/2 -translate-y-1/2"></div>
@@ -127,10 +127,10 @@
         </div>
     </div>
 
-    <div id="dashboard-content" class="hidden flex-col w-full min-h-screen opacity-0 relative z-10">
+    <div id="dashboard-content" class="hidden flex-col w-full h-screen opacity-0 relative z-10">
         
         <!-- Header -->
-        <header class="glass sticky top-0 z-40 border-b border-white/50 shadow-sm">
+        <header class="glass sticky top-0 z-40 border-b border-white/50 shadow-sm shrink-0">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
                 <div>
                     <h1 class="text-xl font-black tracking-tight text-slate-900">
@@ -145,7 +145,7 @@
         </header>
 
         <!-- Main Content -->
-        <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex flex-col justify-center">
+        <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-6 w-full flex flex-col justify-center h-full">
             
             <!-- Bento 2-Column Grid Layout -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-start">
