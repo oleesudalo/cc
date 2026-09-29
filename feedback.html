@@ -70,6 +70,12 @@
                     </select>
                 </div>
 
+                <!-- Textarea for detailed description -->
+                <div id="description-container" class="hidden fade-in">
+                    <label for="description-input" class="block text-sm font-medium text-gray-700 mb-1">어려운 부분 내용 (선택사항)</label>
+                    <textarea id="description-input" rows="3" class="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm transition resize-none" placeholder="어떤 부분이 잘 안되는지, 오류가 나는지 구체적으로 적어주세요."></textarea>
+                </div>
+
                 <!-- Submit Button -->
                 <div class="pt-2">
                     <button id="submit-btn" disabled class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-md transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm">
@@ -284,6 +290,8 @@
         const subItemSelect = document.getElementById('sub-item-select');
         const detailItemSelectContainer = document.getElementById('detail-item-select-container');
         const detailItemSelect = document.getElementById('detail-item-select');
+        const descriptionContainer = document.getElementById('description-container');
+        const descriptionInput = document.getElementById('description-input');
         const submitBtn = document.getElementById('submit-btn');
         const statusMessage = document.getElementById('status-message');
         const tablesContainer = document.getElementById('tables-container');
@@ -370,10 +378,12 @@
         categorySelect.addEventListener('change', (e) => {
             const selectedCategoryId = e.target.value;
 
-            // Reset Sub Dropdowns
+            // Reset Sub Dropdowns & Description
             itemSelectContainer.classList.add('hidden');
             subItemSelectContainer.classList.add('hidden');
             detailItemSelectContainer.classList.add('hidden');
+            descriptionContainer.classList.add('hidden');
+            descriptionInput.value = '';
             itemSelect.innerHTML = '';
             subItemSelect.innerHTML = '';
             detailItemSelect.innerHTML = '';
@@ -399,6 +409,7 @@
             
             subItemSelectContainer.classList.add('hidden');
             detailItemSelectContainer.classList.add('hidden');
+            descriptionContainer.classList.add('hidden');
             subItemSelect.innerHTML = '';
             detailItemSelect.innerHTML = '';
             submitBtn.disabled = true;
@@ -418,6 +429,7 @@
                 } else {
                     // Level 2 is the end
                     submitBtn.disabled = false;
+                    descriptionContainer.classList.remove('hidden');
                 }
             }
         });
@@ -429,6 +441,7 @@
             const selectedSubItem = e.target.value;
             
             detailItemSelectContainer.classList.add('hidden');
+            descriptionContainer.classList.add('hidden');
             detailItemSelect.innerHTML = '';
             submitBtn.disabled = true;
 
@@ -444,13 +457,20 @@
                 } else {
                     // Level 3 is the end
                     submitBtn.disabled = false;
+                    descriptionContainer.classList.remove('hidden');
                 }
             }
         });
         
         // 4. 상세 번호 선택
         detailItemSelect.addEventListener('change', (e) => {
-            submitBtn.disabled = !e.target.value;
+            if (e.target.value) {
+                submitBtn.disabled = false;
+                descriptionContainer.classList.remove('hidden');
+            } else {
+                submitBtn.disabled = true;
+                descriptionContainer.classList.add('hidden');
+            }
         });
 
         // Handle Submit
@@ -473,6 +493,8 @@
             }
 
             if (!categoryId || !itemId) return;
+            
+            const desc = descriptionInput.value.trim();
 
             isSaving = true;
             submitBtn.disabled = true;
@@ -495,8 +517,12 @@
 
                 if (existingDoc) {
                     // Update increment
+                    let newComments = existingDoc.data().comments || [];
+                    if (desc) newComments.push(desc);
+                    
                     await updateDoc(doc(db, 'feedbacks', existingDoc.id), {
                         count: existingDoc.data().count + 1,
+                        comments: newComments,
                         updatedAt: serverTimestamp()
                     });
                     showStatus('성공적으로 누적되었습니다!', 'success');
@@ -507,6 +533,7 @@
                         categoryName: categoryName,
                         itemId: itemId,
                         count: 1,
+                        comments: desc ? [desc] : [],
                         createdAt: serverTimestamp(),
                         updatedAt: serverTimestamp()
                     });
@@ -517,6 +544,8 @@
                 itemSelect.value = '';
                 subItemSelectContainer.classList.add('hidden');
                 detailItemSelectContainer.classList.add('hidden');
+                descriptionContainer.classList.add('hidden');
+                descriptionInput.value = '';
             } catch (error) {
                 console.error("Error saving document: ", error);
                 showStatus('오류가 발생했습니다.', 'error');
@@ -610,15 +639,23 @@
                             ? 'bg-red-100 text-red-800 border-red-200' 
                             : (item.count >= 3 ? 'bg-yellow-100 text-yellow-800 border-yellow-200' : 'bg-gray-100 text-gray-800 border-gray-200');
 
+                        let commentsHtml = '<span class="text-gray-400 italic text-xs">없음</span>';
+                        if (item.comments && item.comments.length > 0) {
+                            commentsHtml = `<ul class="list-disc list-inside space-y-1 text-left text-sm text-gray-700 mt-1">
+                                ${item.comments.map(c => `<li>${c.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</li>`).join('')}
+                            </ul>`;
+                        }
+
                         rowsHtml += `
                             <tr class="hover:bg-gray-50 transition-colors">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${item.itemId}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-center w-32">
+                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900 w-1/4">${item.itemId}</td>
+                                <td class="px-4 py-4 whitespace-normal text-sm text-gray-700 w-2/4">${commentsHtml}</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-center w-16">
                                     <span class="px-3 py-1 inline-flex text-sm leading-5 font-bold rounded-full border ${countBadgeClass}">
                                         ${item.count}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right w-32">${dateStr}</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 text-right w-24">${dateStr}</td>
                             </tr>
                         `;
                     });
@@ -627,9 +664,10 @@
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">세부 항목</th>
-                                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">질문 누적 수</th>
-                                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">최근 등록일</th>
+                                    <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">세부 항목</th>
+                                    <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">어려운 부분 내용</th>
+                                    <th scope="col" class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">누적 수</th>
+                                    <th scope="col" class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">최근 등록일</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
