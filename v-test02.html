@@ -75,7 +75,7 @@
                     <h2 class="text-2xl font-bold text-gray-700 mb-2">2급</h2>
                     <ul class="text-sm text-gray-600 space-y-1 text-left inline-block list-none">
                         <li>• 제한 시간: <strong>60분</strong></li>
-                        <li>• 출제 문항: <strong>3문제</strong></li>
+                        <li>• 출제 문항: <strong>7문제</strong></li>
                     </ul>
                 </div>
             </div>
@@ -107,10 +107,9 @@
             </div>
         </div>
 
-        <!-- 문항 번호 네비게이션 (잘림 방지용 Padding 적용) -->
-        <div class="bg-gray-100 px-4 py-3 border-b border-gray-200 flex justify-between items-center shrink-0 shadow-inner overflow-hidden">
-            <div id="question-nav" class="flex space-x-3 overflow-x-auto items-center py-2 px-2"></div>
-            <!-- 로고 이미지 -->
+        <!-- 문항 번호 네비게이션 및 로고 (패딩 조정하여 원 짤림 방지) -->
+        <div class="bg-gray-100 px-6 py-2 border-b border-gray-200 flex justify-between items-center shrink-0 shadow-inner">
+            <div id="question-nav" class="flex space-x-3 overflow-x-auto items-center py-2 px-1"></div>
             <img src="https://github.com/oleesudalo/cc/blob/main/mc_logo_blk.png?raw=true" alt="MC Logo" class="h-9 ml-4 opacity-90 shrink-0 object-contain">
         </div>
 
@@ -129,12 +128,7 @@
 
                 <div class="border-b-2 border-gray-800 pb-4 mb-6 flex justify-between items-center">
                     <h2 id="q-title" class="text-2xl font-bold text-gray-800">로딩 중...</h2>
-                    <button id="download-btn" class="hidden bg-green-100 hover:bg-green-200 text-green-800 font-bold py-2 px-4 rounded-lg shadow transition-colors flex items-center space-x-2 border border-green-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                        </svg>
-                        <span id="download-filename">다운로드</span>
-                    </button>
+                    <div id="q-file-area" class="hidden"></div>
                 </div>
                 <div class="space-y-6">
                     <div id="q-content-container">
@@ -367,6 +361,54 @@
                         "[3-4]<br>장비 상태가 정상이면 2, 점검필요이면 3으로 로봇의 모양을 바꾼다.",
                         "<div class='mt-5 border-2 border-blue-100 bg-blue-50/50 rounded-lg p-4'><p class='font-bold text-blue-800 mb-2'>[학습 결과 확인]</p><p class='text-sm text-gray-700 mb-2'>다음 값을 입력하여 모델의 학습 결과를 확인한다.</p><ul class='text-sm text-gray-800 space-y-1 font-medium'><li>• 온도지수 2 / 진동지수 2 / 소음지수 2 → 정상</li><li>• 온도지수 8 / 진동지수 8 / 소음지수 8 → <span class='text-red-600 font-bold'>점검필요</span></li></ul></div>"
                     ]
+                },
+                {
+                    title: "문제 4. [파이썬] 입장료 계산기",
+                    content: "나이를 입력받아 놀이공원 입장료를 계산하는 파이썬 코드를 작성하시오.",
+                    isPython: true,
+                    skeletonCode: "age = int(input(\"나이를 입력하세요: \"))\n\n______________________________\n    print(\"무료입니다.\")\n______________________________\n    print(\"입장료는 5000원입니다.\")\n______________________________\n    print(\"입장료는 10000원입니다.\")",
+                    instructions: [
+                        "[4-1]<br>사용자에게 <code>나이를 입력하세요: </code>라고 묻고 정수로 입력받아 <code>age</code> 변수에 저장한다.",
+                        "[4-2]<br>나이가 8 미만이거나 65 이상이면 <code>무료입니다.</code>를 출력한다.",
+                        "[4-3]<br>나이가 8 이상 19 이하이면 <code>입장료는 5000원입니다.</code>를 출력한다.",
+                        "[4-4]<br>그 외의 나이(성인)는 <code>입장료는 10000원입니다.</code>를 출력한다."
+                    ]
+                },
+                {
+                    title: "문제 5. [파이썬] 짝수의 합 구하기",
+                    content: "1부터 입력받은 숫자 N까지의 정수 중 짝수만 더하는 파이썬 코드를 작성하시오.",
+                    isPython: true,
+                    skeletonCode: "n = int(input(\"숫자를 입력하세요: \"))\ntotal = 0\n\n______________________________\n    if i % 2 == 0:\n        ______________________________\n\nprint(\"짝수의 합:\", total)",
+                    instructions: [
+                        "[5-1]<br>사용자에게 <code>숫자를 입력하세요: </code>라고 묻고 정수로 변환하여 <code>n</code> 변수에 저장한다.",
+                        "[5-2]<br>반복문(<code>for</code>)을 사용하여 1부터 <code>n</code>까지의 숫자 중 짝수를 판별한다.",
+                        "[5-3]<br>짝수인 숫자들만 합계 변수 <code>total</code>에 누적하여 더한다.",
+                        "[5-4]<br>반복이 끝나면 <code>짝수의 합: [합계결과]</code> 형태로 출력한다."
+                    ]
+                },
+                {
+                    title: "문제 6. [파이썬] 리스트에서 최댓값 찾기",
+                    content: "5명의 학생 점수 리스트에서 가장 높은 점수를 찾아 출력하는 파이썬 코드를 작성하시오.",
+                    isPython: true,
+                    skeletonCode: "scores = [78, 92, 85, 99, 88]\n\n# max_score 변수를 리스트의 첫 번째 값으로 초기화\n______________________________\n\nfor score in scores:\n    ______________________________\n        max_score = score\n\nprint(\"최고 점수는\", max_score, \"점입니다.\")",
+                    instructions: [
+                        "[6-1]<br>점수 리스트 <code>scores = [78, 92, 85, 99, 88]</code>가 주어졌다.",
+                        "[6-2]<br>파이썬의 내장 함수 <code>max()</code>를 사용하지 않고 <code>for</code> 반복문을 활용하여 최댓값을 찾는다.",
+                        "[6-3]<br>최댓값을 저장할 변수 <code>max_score</code>를 리스트의 첫 번째 값으로 초기화한다.",
+                        "[6-4]<br>리스트를 순회하며 더 큰 값을 발견하면 <code>max_score</code>를 업데이트하고 출력한다."
+                    ]
+                },
+                {
+                    title: "문제 7. [파이썬] 구구단 함수 만들기",
+                    content: "원하는 단을 입력받아 구구단을 출력하는 파이썬 함수를 작성하시오.",
+                    isPython: true,
+                    skeletonCode: "# print_gugudan 함수 정의 (매개변수 dan)\n______________________________\n    for i in range(1, 10):\n        print(f\"{dan} x {i} = {dan * i}\")\n\nnum = int(input(\"출력할 단을 입력하세요: \"))\n\n______________________________",
+                    instructions: [
+                        "[7-1]<br><code>print_gugudan(dan)</code> 이라는 이름의 함수를 정의한다.",
+                        "[7-2]<br>함수 내부에서 반복문을 사용하여 입력받은 <code>dan</code>의 1부터 9까지 곱한 결과를 출력한다.",
+                        "[7-3]<br>사용자에게 <code>출력할 단을 입력하세요: </code>라고 묻고 정수를 입력받는다.",
+                        "[7-4]<br>입력받은 정수를 인자로 전달하여 <code>print_gugudan</code> 함수를 호출한다."
+                    ]
                 }
             ]
         };
@@ -377,6 +419,7 @@
         let timeRemaining = 0;
         let timerInterval = null;
         let savedStatus = [];
+        let pythonAnswers = {}; // 파이썬 코드 입력 저장용 딕셔너리
         let isPaused = false;
 
         /* 초기 진입 로직 */
@@ -387,6 +430,25 @@
             } else {
                 document.getElementById('launcher-screen').classList.remove('hidden');
                 document.getElementById('launcher-screen').classList.add('flex');
+            }
+            
+            // 파이썬 에디터 이벤트 리스너 바인딩
+            const pyEditor = document.getElementById('python-editor');
+            if (pyEditor) {
+                pyEditor.addEventListener('input', function(e) {
+                    pythonAnswers[currentQuestionIndex] = e.target.value;
+                });
+                
+                pyEditor.addEventListener('keydown', function(e) {
+                    if (e.key === 'Tab') {
+                        e.preventDefault();
+                        const start = this.selectionStart;
+                        const end = this.selectionEnd;
+                        this.value = this.value.substring(0, start) + "    " + this.value.substring(end);
+                        this.selectionStart = this.selectionEnd = start + 4;
+                        this.dispatchEvent(new Event('input'));
+                    }
+                });
             }
         };
 
@@ -450,9 +512,10 @@
 
         /* 시험 시작 */
         function startExam() {
-            timeRemaining = currentLevel === '3급' ? 50 * 60 : 40 * 60;
+            timeRemaining = currentLevel === '3급' ? 50 * 60 : 60 * 60;
             currentQuestionIndex = 0;
             savedStatus = new Array(questionsData[currentLevel].length).fill(false);
+            pythonAnswers = {};
 
             document.getElementById('exam-title').textContent = `통합 CBT 모의고사 2회 [${currentLevel}]`;
             
@@ -512,22 +575,47 @@
             document.getElementById('exam-progress').textContent = `문제 ${currentQuestionIndex + 1} / ${currentQuestions.length}`;
             document.getElementById('q-title').textContent = qData.title;
             
+            // 파이썬 문제 레이아웃 토글
+            const examScreen = document.getElementById('exam-screen');
+            const qContentArea = document.getElementById('question-content-area');
+            const pyEditorPane = document.getElementById('python-editor-pane');
+            const pyEditor = document.getElementById('python-editor');
+            const bottomNotice = document.getElementById('bottom-notice');
+
+            if (qData.isPython) {
+                examScreen.classList.replace('max-w-5xl', 'max-w-[85rem]');
+                examScreen.classList.add('w-full');
+                qContentArea.classList.replace('max-w-none', 'w-1/2');
+                qContentArea.classList.add('border-r', 'border-gray-300');
+                pyEditorPane.classList.remove('hidden');
+                pyEditorPane.classList.add('flex');
+                
+                pyEditor.value = pythonAnswers[currentQuestionIndex] !== undefined ? pythonAnswers[currentQuestionIndex] : (qData.skeletonCode || '');
+                bottomNotice.textContent = '※ 문제를 꼼꼼히 읽고 우측 에디터 빈칸(____)에 코딩을 완성하세요.';
+            } else {
+                examScreen.classList.replace('max-w-[85rem]', 'max-w-5xl');
+                qContentArea.classList.replace('w-1/2', 'w-full');
+                qContentArea.classList.remove('border-r', 'border-gray-300');
+                pyEditorPane.classList.add('hidden');
+                pyEditorPane.classList.remove('flex');
+                bottomNotice.textContent = '※ 문제를 꼼꼼히 읽고 엔트리 화면에서 코딩을 완성하세요.';
+            }
+            
             /* 다운로드 버튼 렌더링 로직 */
             const fileArea = document.getElementById('q-file-area');
-            const downloadBtn = document.getElementById('download-btn');
-            const downloadFilename = document.getElementById('download-filename');
-            
             if (qData.file && qData.fileUrl) {
-                downloadBtn.classList.remove('hidden');
-                downloadFilename.textContent = qData.file;
-                
-                const newBtn = downloadBtn.cloneNode(true);
-                downloadBtn.parentNode.replaceChild(newBtn, downloadBtn);
-                newBtn.addEventListener('click', () => {
-                    window.location.href = qData.fileUrl; 
-                });
+                fileArea.innerHTML = `
+                    <button onclick="window.location.href='${qData.fileUrl}'" class="flex items-center space-x-2 bg-blue-50 hover:bg-blue-100 text-blue-700 py-2 px-4 rounded-lg border border-blue-200 transition-colors text-sm font-bold shadow-sm focus:outline-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        <span>${qData.file} 다운로드</span>
+                    </button>
+                `;
+                fileArea.classList.remove('hidden');
             } else {
-                downloadBtn.classList.add('hidden');
+                fileArea.innerHTML = '';
+                fileArea.classList.add('hidden');
             }
             
             const qContentEl = document.getElementById('q-content');
@@ -688,6 +776,10 @@
         function saveQuestion() {
             savedStatus[currentQuestionIndex] = true;
             renderQuestionNav();
+
+            if (questionsData[currentLevel][currentQuestionIndex].isPython) {
+                pythonAnswers[currentQuestionIndex] = document.getElementById('python-editor').value;
+            }
 
             const msgEl = document.getElementById('save-msg');
             msgEl.textContent = `${currentQuestionIndex + 1}번 문항이 저장되었습니다.`;
