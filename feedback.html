@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>학생 질문 피드백 시스템</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for animations and layout */
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Style for disabled category items */
+        option:disabled { color: #9ca3af; font-style: italic; }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-6 md:p-8">
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center">어려운 문제 등록하기</h1>
+        <p class="text-gray-600 mb-8 text-center text-sm md:text-base">
+            문제를 풀다가 어려운 점이 있다면 아래에 등록해주세요.<br>
+            나중에 최종 정리 시간에 함께 풀이해드립니다.
+        </p>
+
+        <!-- Form for submitting feedback -->
+        <div class="bg-blue-50 rounded-lg p-6 mb-8 border border-blue-100 shadow-sm">
+            <h2 class="text-lg font-semibold text-blue-800 mb-4">질문 등록</h2>
+            
+            <div class="space-y-4">
+                <!-- Dropdown 1: Select Website/Category -->
+                <div>
+                    <label for="category-select" class="block text-sm font-medium text-gray-700 mb-1">학습 사이트 선택</label>
+                    <select id="category-select" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm transition">
+                        <option value="">-- 사이트를 선택하세요 --</option>
+                        <option value="mirae3">3급 학습용 웹앱</option>
+                        <option value="entry2" disabled>2급 엔트리 학습용 웹앱 (준비중)</option>
+                        <option value="python2">2급 파이썬 학습용 웹앱</option>
+                        <option value="bank3">3급 문제은행</option>
+                        <option value="cbt1">CBT 1회</option>
+                        <option value="cbt2">CBT 2회</option>
+                    </select>
+                </div>
+
+                <!-- Dropdown 2: Select Specific Item (Dynamic) -->
+                <div id="item-select-container" class="hidden fade-in">
+                    <label for="item-select" class="block text-sm font-medium text-gray-700 mb-1">세부 항목 선택</label>
+                    <select id="item-select" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm transition">
+                        <!-- Options will be populated dynamically via JS -->
+                    </select>
+                </div>
+
+                <!-- Dropdown 3: Select Sub-item (Dynamic, 3rd level) -->
+                <div id="sub-item-select-container" class="hidden fade-in">
+                    <label for="sub-item-select" class="block text-sm font-medium text-gray-700 mb-1">하위 항목 선택</label>
+                    <select id="sub-item-select" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm transition">
+                        <!-- Options will be populated dynamically -->
+                    </select>
+                </div>
+
+                <!-- Dropdown 4: Select Detail-item (Dynamic, 4th level) -->
+                <div id="detail-item-select-container" class="hidden fade-in">
+                    <label for="detail-item-select" class="block text-sm font-medium text-gray-700 mb-1">상세 번호 선택</label>
+                    <select id="detail-item-select" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm transition">
+                        <!-- Options will be populated dynamically -->
+                    </select>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-2">
+                    <button id="submit-btn" disabled class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-md transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm">
+                        질문 등록하기
+                    </button>
+                </div>
+                
+                <!-- Status Message -->
+                <p id="status-message" class="text-sm text-center font-medium hidden"></p>
+            </div>
+        </div>
+
+        <!-- Table for displaying feedback -->
+        <div>
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center gap-3">
+                    <h2 class="text-xl font-bold text-gray-800">누적 질문 목록</h2>
+                    <button id="reset-btn" class="text-xs bg-gray-200 hover:bg-red-500 hover:text-white text-gray-600 font-medium py-1 px-2 rounded transition-colors">초기화</button>
+                </div>
+            </div>
+
+            <div id="tables-container" class="space-y-6">
+                <!-- Tables will be dynamically populated here -->
+                <div class="bg-white rounded-lg border border-gray-200 p-8 text-center text-gray-500">데이터를 불러오는 중입니다...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for showing alerts without using alert() -->
+    <div id="custom-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full mx-4 fade-in">
+            <h3 id="modal-title" class="text-lg font-bold mb-2 text-gray-800">알림</h3>
+            <p id="modal-message" class="text-gray-600 mb-6 text-sm leading-relaxed"></p>
+            <div class="flex justify-end">
+                <button id="modal-close" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition">확인</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Password Modal for Reset -->
+    <div id="password-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full mx-4 fade-in">
+            <h3 class="text-lg font-bold mb-2 text-gray-800">데이터 초기화</h3>
+            <p class="text-gray-600 mb-4 text-sm leading-relaxed">모든 질문 데이터를 삭제하려면 관리자 비밀번호를 입력하세요.</p>
+            <input type="password" id="reset-password-input" class="w-full p-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500 mb-4" placeholder="비밀번호">
+            <p id="password-error" class="text-red-500 text-xs mb-4 hidden">비밀번호가 올바르지 않습니다.</p>
+            <div class="flex justify-end gap-2">
+                <button id="password-cancel" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium py-2 px-4 rounded transition">취소</button>
+                <button id="password-submit" class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded transition">삭제</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK Setup -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { 
+            getFirestore, collection, addDoc, getDocs, query, where, 
+            updateDoc, doc, serverTimestamp, onSnapshot, writeBatch
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA7m5zwkenG7pWTHZOncAtFW1LNXr4AR2I",
+            authDomain: "ccfeedback-632c1.firebaseapp.com",
+            projectId: "ccfeedback-632c1",
+            storageBucket: "ccfeedback-632c1.firebasestorage.app",
+            messagingSenderId: "897237022983",
+            appId: "1:897237022983:web:9de6496ecfb9f59b71ada2"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Utility to generate 1 to N arrays
+        const genArray = (start, end, suffix) => Array.from({ length: end - start + 1 }, (_, i) => `${i + start}${suffix}`);
+
+        // Data structure for dropdowns (Dynamic 2-level to 4-level mapping)
+        const categoryData = {
+            'mirae3': {
+                name: '3급 학습용 웹앱',
+                items: [
+                    '1. 기본 제어구조', 
+                    '섹션 1-1. 삼각형 그리기', 
+                    '섹션 1-2. 걷기 애니메이션', 
+                    '섹션 1-3. 정답/오답 반응', 
+                    '섹션 1-4. 귤 오브젝트 만나면 숨기기', 
+                    '섹션 1-5. 벽에 닿으면 방향 바꾸기',
+                    '관련 모의고사', 
+                    '1회 1번 · 연결되는 배경', 
+                    '1회 2번 · 걷기와 점프', 
+                    '1회 3번 · 뱀 재등장', 
+                    '1회 4번 · 복제본 랜덤 생성', 
+                    '1회 6번 · 두 오브젝트 순차 실행', 
+                    '1회 7번 · 스토리 순차 실행', 
+                    '2회 2번 · 미로 탈출', 
+                    '2회 3번 · 꽃 도장', 
+                    '2회 4번 · 노란새 이동', 
+                    '2회 6번 · 호랑이 이동', 
+                    '2회 7번 · 자동차 장면 전환', 
+                    '2회 8번 · 말하기·숨기기', 
+                    '2회 10번 · 반복 도장', 
+                    '1회 5번 · 수도 퀴즈', 
+                    '2회 1번 · 월→계절 판별', 
+                    '2회 5번 · 운동 10회',
+                    '2. 변수와 리스트', 
+                    '섹션 2-1. 점수 변수 증가', 
+                    '섹션 2-2. 물품 리스트 입력', 
+                    '섹션 2-3. 두 수 저장 후 더하기', 
+                    '섹션 2-4. 카운트다운', 
+                    '섹션 2-5. 음식 리스트 무작위 선택', 
+                    '추가 리스트 문제 · 리스트 추가·삭제 종합', 
+                    '추가 리스트 문제 2 · 진료 접수·취소 대기 목록',
+                    '3. 인공지능', 
+                    '3-1. 나이 읽어주기',
+                    '관련 모의고사', 
+                    '1회 8번 · 손 인식 추적', 
+                    '1회 9번 · 음성 방향 이동', 
+                    '1회 10번 · 번역 + TTS', 
+                    '2회 9번 · 감정 인식 TTS'
+                ]
+            },
+            'python2': {
+                name: '2급 파이썬 학습용 웹앱',
+                items: {
+                    '01 변수': genArray(1, 3, '예제'),
+                    '02 입·출력': genArray(1, 3, '예제'),
+                    '03 자료형': genArray(1, 3, '예제'),
+                    '04 연산자': genArray(1, 3, '예제'),
+                    '05 문자열': genArray(1, 3, '예제'),
+                    '06 조건문': genArray(1, 3, '예제'),
+                    '07 반복문': genArray(1, 3, '예제'),
+                    '08 리스트': genArray(1, 3, '예제'),
+                    '09 딕셔너리': genArray(1, 3, '예제'),
+                    '10 함수': genArray(1, 3, '예제'),
+                    '기초연습문제': {
+                        '1회': genArray(1, 10, '번'), '2회': genArray(1, 10, '번'), '3회': genArray(1, 10, '번'), '4회': genArray(1, 10, '번'), '5회': genArray(1, 10, '번'),
+                        '6회': genArray(1, 10, '번'), '7회': genArray(1, 10, '번'), '8회': genArray(1, 10, '번'), '9회': genArray(1, 10, '번'), '10회': genArray(1, 10, '번')
+                    },
+                    '모의고사': {
+                        '1회': genArray(1, 10, '번'), '2회': genArray(1, 10, '번'), '3회': genArray(1, 10, '번'), '4회': genArray(1, 10, '번'), '5회': genArray(1, 10, '번'),
+                        '6회': genArray(1, 10, '번'), '7회': genArray(1, 10, '번'), '8회': genArray(1, 10, '번'), '9회': genArray(1, 10, '번'), '10회': genArray(1, 10, '번')
+                    },
+                    '기출문제': {
+                        '1회': genArray(1, 4, '번'), '2회': genArray(1, 4, '번'), '3회': genArray(1, 4, '번'), '4회': genArray(1, 4, '번')
+                    }
+                }
+            },
+            'bank3': {
+                name: '3급 문제은행',
+                items: {
+                    'A형': {
+                        '1회': ['4번', '5번', '6번', '7번'],
+                        '2회': ['4번', '5번', '6번', '7번'],
+                        '3회': ['4번', '5번', '6번', '7번'],
+                        '4회': ['4번', '5번', '6번', '7번', '9번', '10번'],
+                        '5회': ['4번', '5번', '6번', '7번'],
+                        '6회': ['4번', '5번', '6번', '7번', '8번', '9번'],
+                        '7회': ['4번', '5번', '6번', '7번', '8번'],
+                        '8회': ['4번', '5번', '6번', '7번', '8번', '9번', '10번'],
+                        '9회': ['4번', '5번', '6번', '7번', '8번', '9번', '10번'],
+                        '10회': ['4번', '5번', '6번', '7번', '8번', '9번', '10번'],
+                        '11회': ['4번', '5번', '6번', '7번', '10번'],
+                        '12회': ['4번', '5번', '6번', '7번', '10번'],
+                        '13회': ['4번', '5번', '6번', '7번', '10번'],
+                        '14회': ['4번', '5번', '6번', '7번', '8번', '9번', '10번'],
+                        '15회': ['4번', '5번', '6번', '7번', '8번']
+                    },
+                    'B형': {
+                        '1회': ['4번', '5번', '6번', '7번'],
+                        '2회': ['4번', '5번', '6번', '7번'],
+                        '3회': ['4번', '5번', '6번', '7번'],
+                        '4회': ['4번', '5번', '6번', '7번', '9번', '10번'],
+                        '5회': ['4번', '5번', '6번', '7번'],
+                        '6회': ['4번', '5번', '6번', '7번', '8번', '9번'],
+                        '7회': ['4번', '5번', '6번', '7번', '8번'],
+                        '8회': ['4번', '5번', '6번', '7번', '8번', '9번'],
+                        '9회': ['4번', '5번', '6번', '7번', '8번', '9번'],
+                        '10회': ['4번', '5번', '6번', '7번', '8번', '9번'],
+                        '11회': ['4번', '5번', '6번', '7번', '10번'],
+                        '12회': ['4번', '5번', '6번', '7번', '10번'],
+                        '13회': ['4번', '5번', '6번', '7번', '10번'],
+                        '14회': ['4번', '5번', '6번', '7번', '8번', '9번', '10번'],
+                        '15회': ['4번', '5번', '6번', '7번', '8번']
+                    }
+                }
+            },
+            'cbt1': {
+                name: 'CBT 1회',
+                items: {
+                    '3급': genArray(1, 10, '번'),
+                    '2급': genArray(1, 7, '번')
+                }
+            },
+            'cbt2': {
+                name: 'CBT 2회',
+                items: {
+                    '3급': genArray(1, 10, '번'),
+                    '2급': genArray(1, 7, '번')
+                }
+            }
+        };
+
+        // DOM Elements
+        const categorySelect = document.getElementById('category-select');
+        const itemSelectContainer = document.getElementById('item-select-container');
+        const itemSelect = document.getElementById('item-select');
+        const subItemSelectContainer = document.getElementById('sub-item-select-container');
+        const subItemSelect = document.getElementById('sub-item-select');
+        const detailItemSelectContainer = document.getElementById('detail-item-select-container');
+        const detailItemSelect = document.getElementById('detail-item-select');
+        const submitBtn = document.getElementById('submit-btn');
+        const statusMessage = document.getElementById('status-message');
+        const tablesContainer = document.getElementById('tables-container');
+        
+        const modal = document.getElementById('custom-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalMessage = document.getElementById('modal-message');
+        const modalClose = document.getElementById('modal-close');
+
+        const resetBtn = document.getElementById('reset-btn');
+        const passwordModal = document.getElementById('password-modal');
+        const resetPasswordInput = document.getElementById('reset-password-input');
+        const passwordSubmit = document.getElementById('password-submit');
+        const passwordCancel = document.getElementById('password-cancel');
+        const passwordError = document.getElementById('password-error');
+
+        let unsubscribe = null;
+        let isSaving = false;
+
+        function showModal(title, message) {
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+            modal.classList.remove('hidden');
+        }
+
+        modalClose.addEventListener('click', () => modal.classList.add('hidden'));
+
+        // Reset Logic
+        resetBtn.addEventListener('click', () => {
+            resetPasswordInput.value = '';
+            passwordError.classList.add('hidden');
+            passwordModal.classList.remove('hidden');
+            setTimeout(() => resetPasswordInput.focus(), 100);
+        });
+
+        passwordCancel.addEventListener('click', () => {
+            passwordModal.classList.add('hidden');
+        });
+
+        resetPasswordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') passwordSubmit.click();
+        });
+
+        passwordSubmit.addEventListener('click', async () => {
+            if (resetPasswordInput.value === 'dltnals') {
+                passwordSubmit.disabled = true;
+                passwordSubmit.textContent = '삭제 중...';
+                try {
+                    const feedbacksRef = collection(db, 'feedbacks');
+                    const querySnapshot = await getDocs(feedbacksRef);
+                    const batch = writeBatch(db);
+                    
+                    querySnapshot.forEach((document) => {
+                        batch.delete(doc(db, 'feedbacks', document.id));
+                    });
+                    
+                    await batch.commit();
+                    passwordModal.classList.add('hidden');
+                    showModal('초기화 완료', '모든 질문 목록이 성공적으로 삭제되었습니다.');
+                } catch (error) {
+                    console.error("Error clearing documents: ", error);
+                    showModal('오류', '데이터를 삭제하는 중 오류가 발생했습니다. 권한을 확인해주세요.');
+                } finally {
+                    passwordSubmit.disabled = false;
+                    passwordSubmit.textContent = '삭제';
+                }
+            } else {
+                passwordError.classList.remove('hidden');
+                resetPasswordInput.select();
+            }
+        });
+
+        function populateSelect(selectElem, dataArray) {
+            selectElem.innerHTML = `<option value="">-- 선택하세요 --</option>`;
+            dataArray.forEach(val => {
+                const option = document.createElement('option');
+                option.value = val;
+                option.textContent = val;
+                selectElem.appendChild(option);
+            });
+        }
+
+        // 1. 학습 사이트 선택
+        categorySelect.addEventListener('change', (e) => {
+            const selectedCategoryId = e.target.value;
+
+            // Reset Sub Dropdowns
+            itemSelectContainer.classList.add('hidden');
+            subItemSelectContainer.classList.add('hidden');
+            detailItemSelectContainer.classList.add('hidden');
+            itemSelect.innerHTML = '';
+            subItemSelect.innerHTML = '';
+            detailItemSelect.innerHTML = '';
+            submitBtn.disabled = true;
+
+            // Populate Item Select (Level 2)
+            if (selectedCategoryId && categoryData[selectedCategoryId]) {
+                const items = categoryData[selectedCategoryId].items;
+                itemSelectContainer.classList.remove('hidden');
+                
+                if (Array.isArray(items)) {
+                    populateSelect(itemSelect, items); // Direct array (mirae3, cbt)
+                } else {
+                    populateSelect(itemSelect, Object.keys(items)); // Object keys (python2, bank3)
+                }
+            }
+        });
+
+        // 2. 세부 항목 선택
+        itemSelect.addEventListener('change', (e) => {
+            const categoryId = categorySelect.value;
+            const selectedItem = e.target.value;
+            
+            subItemSelectContainer.classList.add('hidden');
+            detailItemSelectContainer.classList.add('hidden');
+            subItemSelect.innerHTML = '';
+            detailItemSelect.innerHTML = '';
+            submitBtn.disabled = true;
+
+            if (selectedItem) {
+                const items = categoryData[categoryId].items;
+                if (!Array.isArray(items) && items[selectedItem]) {
+                    // Level 3 exists
+                    const subItems = items[selectedItem];
+                    subItemSelectContainer.classList.remove('hidden');
+                    
+                    if (Array.isArray(subItems)) {
+                        populateSelect(subItemSelect, subItems); // End at level 3
+                    } else {
+                        populateSelect(subItemSelect, Object.keys(subItems)); // Object keys (need level 4)
+                    }
+                } else {
+                    // Level 2 is the end
+                    submitBtn.disabled = false;
+                }
+            }
+        });
+
+        // 3. 하위 항목 선택
+        subItemSelect.addEventListener('change', (e) => {
+            const categoryId = categorySelect.value;
+            const selectedItem = itemSelect.value;
+            const selectedSubItem = e.target.value;
+            
+            detailItemSelectContainer.classList.add('hidden');
+            detailItemSelect.innerHTML = '';
+            submitBtn.disabled = true;
+
+            if (selectedSubItem) {
+                const items = categoryData[categoryId].items;
+                const subItems = items[selectedItem];
+                
+                if (!Array.isArray(subItems) && subItems[selectedSubItem]) {
+                    // Level 4 exists
+                    const detailItems = subItems[selectedSubItem];
+                    detailItemSelectContainer.classList.remove('hidden');
+                    populateSelect(detailItemSelect, detailItems);
+                } else {
+                    // Level 3 is the end
+                    submitBtn.disabled = false;
+                }
+            }
+        });
+        
+        // 4. 상세 번호 선택
+        detailItemSelect.addEventListener('change', (e) => {
+            submitBtn.disabled = !e.target.value;
+        });
+
+        // Handle Submit
+        submitBtn.addEventListener('click', async () => {
+            if (isSaving) return;
+            
+            const categoryId = categorySelect.value;
+            let itemId = itemSelect.value;
+            
+            // Build item ID string based on visible dropdowns
+            if (!subItemSelectContainer.classList.contains('hidden')) {
+                const subItem = subItemSelect.value;
+                if (!subItem) return;
+                itemId += ` - ${subItem}`; 
+            }
+            if (!detailItemSelectContainer.classList.contains('hidden')) {
+                const detailItem = detailItemSelect.value;
+                if (!detailItem) return;
+                itemId += ` - ${detailItem}`; 
+            }
+
+            if (!categoryId || !itemId) return;
+
+            isSaving = true;
+            submitBtn.disabled = true;
+            submitBtn.textContent = '등록 중...';
+            submitBtn.classList.replace('bg-blue-600', 'bg-gray-400');
+            submitBtn.classList.remove('hover:bg-blue-700');
+
+            try {
+                const categoryName = categoryData[categoryId].name;
+                const feedbacksRef = collection(db, 'feedbacks');
+                const querySnapshot = await getDocs(feedbacksRef);
+                
+                let existingDoc = null;
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    if (data.categoryId === categoryId && data.itemId === itemId) {
+                        existingDoc = doc;
+                    }
+                });
+
+                if (existingDoc) {
+                    // Update increment
+                    await updateDoc(doc(db, 'feedbacks', existingDoc.id), {
+                        count: existingDoc.data().count + 1,
+                        updatedAt: serverTimestamp()
+                    });
+                    showStatus('성공적으로 누적되었습니다!', 'success');
+                } else {
+                    // Create new
+                    await addDoc(feedbacksRef, {
+                        categoryId: categoryId,
+                        categoryName: categoryName,
+                        itemId: itemId,
+                        count: 1,
+                        createdAt: serverTimestamp(),
+                        updatedAt: serverTimestamp()
+                    });
+                    showStatus('새로운 질문이 등록되었습니다!', 'success');
+                }
+
+                // Reset specific dropdowns, keep category
+                itemSelect.value = '';
+                subItemSelectContainer.classList.add('hidden');
+                detailItemSelectContainer.classList.add('hidden');
+            } catch (error) {
+                console.error("Error saving document: ", error);
+                showStatus('오류가 발생했습니다.', 'error');
+                showModal('저장 오류', '데이터 저장 권한이 없습니다. Firebase Console에서 규칙을 확인하거나 새로고침 해주세요.');
+            } finally {
+                isSaving = false;
+                submitBtn.textContent = '질문 등록하기';
+                submitBtn.classList.replace('bg-gray-400', 'bg-blue-600');
+                submitBtn.classList.add('hover:bg-blue-700');
+            }
+        });
+
+        function showStatus(text, type) {
+            statusMessage.textContent = text;
+            statusMessage.className = `text-sm text-center font-medium block mt-2 ${type === 'success' ? 'text-green-600' : 'text-red-600'} fade-in`;
+            setTimeout(() => {
+                statusMessage.classList.add('hidden');
+                statusMessage.classList.remove('block');
+            }, 3000);
+        }
+
+        // Real-time listener
+        function setupRealtimeListener() {
+            if (unsubscribe) unsubscribe();
+
+            const feedbacksRef = collection(db, 'feedbacks');
+            
+            unsubscribe = onSnapshot(feedbacksRef, (snapshot) => {
+                const feedbacks = [];
+                snapshot.forEach((doc) => {
+                    feedbacks.push({ id: doc.id, ...doc.data() });
+                });
+                renderTable(feedbacks);
+            }, (error) => {
+                console.error("Snapshot error: ", error);
+                tablesContainer.innerHTML = `<div class="bg-white rounded-lg border border-gray-200 p-8 text-center text-red-500">데이터를 불러오는데 실패했습니다.</div>`;
+            });
+        }
+
+        function renderTable(data) {
+            tablesContainer.innerHTML = '';
+
+            if (data.length === 0) {
+                tablesContainer.innerHTML = `<div class="bg-white rounded-lg border border-gray-200 p-8 text-center text-gray-500">아직 등록된 질문이 없습니다.</div>`;
+                return;
+            }
+
+            // Group data by categoryId
+            const grouped = {};
+            data.forEach(item => {
+                if (!grouped[item.categoryId]) {
+                    grouped[item.categoryId] = [];
+                }
+                grouped[item.categoryId].push(item);
+            });
+
+            // Order of categories based on categoryData keys to maintain consistent order
+            const categoryOrder = Object.keys(categoryData);
+
+            categoryOrder.forEach(catId => {
+                if (grouped[catId] && grouped[catId].length > 0) {
+                    // Sort items within this category by count (desc), then date (desc)
+                    grouped[catId].sort((a, b) => {
+                        if (b.count !== a.count) return b.count - a.count;
+                        const timeA = a.updatedAt?.toMillis ? a.updatedAt.toMillis() : 0;
+                        const timeB = b.updatedAt?.toMillis ? b.updatedAt.toMillis() : 0;
+                        return timeB - timeA; 
+                    });
+
+                    // Create category section
+                    const section = document.createElement('div');
+                    section.className = 'fade-in';
+                    
+                    const catTitle = document.createElement('h3');
+                    catTitle.className = 'text-lg font-bold text-gray-800 mb-3 border-l-4 border-blue-500 pl-3';
+                    catTitle.textContent = categoryData[catId].name;
+                    section.appendChild(catTitle);
+
+                    const tableWrapper = document.createElement('div');
+                    tableWrapper.className = 'overflow-x-auto bg-white rounded-lg border border-gray-200 shadow-sm mb-6';
+                    
+                    let rowsHtml = '';
+                    grouped[catId].forEach(item => {
+                        let dateStr = '-';
+                        if (item.updatedAt?.toDate) {
+                            const date = item.updatedAt.toDate();
+                            dateStr = `${date.getMonth()+1}/${date.getDate()} ${date.getHours().toString().padStart(2,'0')}:${date.getMinutes().toString().padStart(2,'0')}`;
+                        }
+
+                        const countBadgeClass = item.count >= 5 
+                            ? 'bg-red-100 text-red-800 border-red-200' 
+                            : (item.count >= 3 ? 'bg-yellow-100 text-yellow-800 border-yellow-200' : 'bg-gray-100 text-gray-800 border-gray-200');
+
+                        rowsHtml += `
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${item.itemId}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center w-32">
+                                    <span class="px-3 py-1 inline-flex text-sm leading-5 font-bold rounded-full border ${countBadgeClass}">
+                                        ${item.count}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right w-32">${dateStr}</td>
+                            </tr>
+                        `;
+                    });
+
+                    tableWrapper.innerHTML = `
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">세부 항목</th>
+                                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">질문 누적 수</th>
+                                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">최근 등록일</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                ${rowsHtml}
+                            </tbody>
+                        </table>
+                    `;
+                    section.appendChild(tableWrapper);
+                    tablesContainer.appendChild(section);
+                }
+            });
+        }
+
+        // Initialize App
+        async function init() {
+            try {
+                try {
+                    await signInAnonymously(auth);
+                } catch (authError) {
+                    console.warn("Auth failed:", authError.message);
+                    if(authError.code === 'auth/configuration-not-found') {
+                        showModal('안내', '현재 Firebase 익명 로그인이 설정되어 있지 않아 테스트 모드로 실행됩니다. 데이터를 저장하려면 설정을 완료해주세요.');
+                    }
+                }
+                setupRealtimeListener();
+            } catch (error) {
+                console.error("Initialization error: ", error);
+                tablesContainer.innerHTML = `<div class="bg-white rounded-lg border border-gray-200 p-8 text-center text-red-500">초기화 중 오류가 발생했습니다.</div>`;
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
