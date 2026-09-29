@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>통합CBT 모의고사 2회</title>
+    <title>통합 CBT 모의고사 2회</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
@@ -32,7 +32,7 @@
     <!-- 0. 대기실 (런처) 화면 -->
     <div id="launcher-screen" class="hidden flex-col items-center justify-center h-full w-full bg-gray-100 p-6">
         <div id="launcher-content" class="bg-white p-10 rounded-2xl shadow-xl w-full max-w-md text-center border-t-4 border-blue-600">
-            <h1 class="text-3xl font-bold text-gray-800 mb-4">통합CBT 모의고사 2회</h1>
+            <h1 class="text-3xl font-bold text-gray-800 mb-4">통합 CBT 모의고사 2회</h1>
             <p class="text-gray-600 mb-6">준비가 완료되면 비밀번호를 입력하고 아래 버튼을 눌러주세요.</p>
             
             <div class="mb-6">
@@ -50,7 +50,7 @@
     <div id="intro-screen" class="hidden flex-col items-center justify-center h-full w-full bg-gray-100 p-6">
         <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-2xl text-center">
             <div class="flex justify-between items-center mb-6">
-                <h1 class="text-3xl font-bold text-gray-800">통합CBT 모의고사 2회</h1>
+                <h1 class="text-3xl font-bold text-gray-800">통합 CBT 모의고사 2회</h1>
                 <!-- 엔트리 새창 열기 버튼 -->
                 <button onclick="openEntry()" class="bg-yellow-400 hover:bg-yellow-500 text-gray-800 font-bold py-2 px-4 rounded-lg shadow transition-colors flex items-center space-x-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -108,7 +108,11 @@
         </div>
 
         <!-- 문항 번호 네비게이션 -->
-        <div id="question-nav" class="bg-gray-100 px-6 py-4 border-b border-gray-200 flex space-x-3 overflow-x-auto items-center shrink-0 shadow-inner"></div>
+        <div class="bg-gray-100 px-6 py-4 border-b border-gray-200 flex justify-between items-center shrink-0 shadow-inner">
+            <div id="question-nav" class="flex space-x-3 overflow-x-auto items-center"></div>
+            <!-- 시계 밑 부분(우측 정렬)에 로고 추가 -->
+            <img src="https://github.com/oleesudalo/cc/blob/main/mc_logo_blk.png?raw=true" alt="MC Logo" class="h-5 ml-4 opacity-75 shrink-0 object-contain">
+        </div>
 
         <!-- 문제 내용 영역 & 파이썬 에디터 (Flex Container) -->
         <div class="flex flex-1 overflow-hidden">
@@ -454,15 +458,15 @@
             
             // Tab 키 동작 처리 (들여쓰기 4칸 적용)
             pyEditor.addEventListener('keydown', function(e) {
-                if (e.key === 'Tab') {
-                    e.preventDefault();
-                    const start = this.selectionStart;
-                    const end = this.selectionEnd;
-                    this.value = this.value.substring(0, start) + "    " + this.value.substring(end);
-                    this.selectionStart = this.selectionEnd = start + 4;
-                    this.dispatchEvent(new Event('input')); // 저장 이벤트 트리거
-                }
-            });
+        /* 초기 진입 로직 (대기실 vs 시험창 구분) */
+        window.onload = function() {
+            if (window.name === "EntryCBTWindow") {
+                document.getElementById('intro-screen').classList.remove('hidden');
+                document.getElementById('intro-screen').classList.add('flex');
+            } else {
+                document.getElementById('launcher-screen').classList.remove('hidden');
+                document.getElementById('launcher-screen').classList.add('flex');
+            }
         };
 
         /* 비밀번호 확인 로직 */
