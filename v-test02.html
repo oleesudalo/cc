@@ -439,6 +439,7 @@
         let pythonAnswers = {}; // 파이썬 코드 입력 저장용 딕셔너리
         let isPaused = false;
 
+        /* 초기 진입 로직 및 파이썬 에디터 단축키 (오류 수정됨) */
         window.onload = function() {
             if (window.name === "EntryCBTWindow") {
                 document.getElementById('intro-screen').classList.remove('hidden');
@@ -450,22 +451,23 @@
             
             // 파이썬 에디터 이벤트 리스너 바인딩
             const pyEditor = document.getElementById('python-editor');
-            
-            // 값 변경 시 임시 저장
-            pyEditor.addEventListener('input', function(e) {
-                pythonAnswers[currentQuestionIndex] = e.target.value;
-            });
-            
-            // Tab 키 동작 처리 (들여쓰기 4칸 적용)
-            pyEditor.addEventListener('keydown', function(e) {
-        /* 초기 진입 로직 (대기실 vs 시험창 구분) */
-        window.onload = function() {
-            if (window.name === "EntryCBTWindow") {
-                document.getElementById('intro-screen').classList.remove('hidden');
-                document.getElementById('intro-screen').classList.add('flex');
-            } else {
-                document.getElementById('launcher-screen').classList.remove('hidden');
-                document.getElementById('launcher-screen').classList.add('flex');
+            if (pyEditor) {
+                // 값 변경 시 임시 저장
+                pyEditor.addEventListener('input', function(e) {
+                    pythonAnswers[currentQuestionIndex] = e.target.value;
+                });
+                
+                // Tab 키 동작 처리 (들여쓰기 4칸 적용)
+                pyEditor.addEventListener('keydown', function(e) {
+                    if (e.key === 'Tab') {
+                        e.preventDefault();
+                        const start = this.selectionStart;
+                        const end = this.selectionEnd;
+                        this.value = this.value.substring(0, start) + "    " + this.value.substring(end);
+                        this.selectionStart = this.selectionEnd = start + 4;
+                        this.dispatchEvent(new Event('input')); // 저장 이벤트 트리거
+                    }
+                });
             }
         };
 
