@@ -20,10 +20,32 @@
             transition: opacity 1.5s ease-in-out;
         }
         
-        /* 파이썬 에디터 영역 스타일 */
-        #python-editor:focus {
+        .python-code-container {
+            font-family: 'Consolas', 'Courier New', monospace;
+            white-space: pre-wrap;
+            color: #d4d4d4;
+            line-height: 2.2;
+        }
+        .python-blank-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            border-bottom: 2px solid #eab308; /* 노란색 밑줄 */
+            color: #eab308;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 1.125rem;
+            text-align: center;
+            width: 100px; /* 초기 너비 */
+            padding: 0 4px;
+            margin: 0 4px;
             outline: none;
-            box-shadow: inset 0 0 0 2px #3b82f6;
+            border-radius: 4px 4px 0 0;
+            transition: border-color 0.2s, background-color 0.2s;
+            vertical-align: baseline;
+        }
+        .python-blank-input:focus {
+            border-bottom-color: #3b82f6; /* 포커스 시 파란색 밑줄 */
+            color: #3b82f6;
+            background-color: rgba(59, 130, 246, 0.1);
         }
     </style>
 </head>
@@ -95,7 +117,6 @@
                 <p id="exam-progress" class="text-xs text-gray-400 mt-1">문제 1 / 10</p>
             </div>
             <div class="flex items-center space-x-3">
-                <!-- 2급 전용 일시정지 버튼 -->
                 <button id="pause-btn" onclick="togglePause()" class="hidden bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold px-3 py-2 rounded-lg text-sm transition-colors shadow">
                     일시정지
                 </button>
@@ -108,18 +129,16 @@
             </div>
         </div>
 
-        <!-- 문항 번호 네비게이션 -->
-        <div class="bg-gray-100 px-6 py-2 border-b border-gray-200 flex justify-between items-center shrink-0 shadow-inner">
+        <!-- 문항 번호 네비게이션 및 로고 (원 안잘리게 padding 조정됨) -->
+        <div class="bg-gray-100 px-6 py-3 border-b border-gray-200 flex justify-between items-center shrink-0 shadow-inner">
             <div id="question-nav" class="flex space-x-3 overflow-x-auto items-center py-2 px-2"></div>
-            <!-- 시계 밑 부분(우측 정렬)에 로고 추가 -->
             <img src="https://github.com/oleesudalo/cc/blob/main/mc_logo_blk.png?raw=true" alt="MC Logo" class="h-9 ml-4 opacity-90 shrink-0 object-contain">
         </div>
 
         <!-- 문제 내용 영역 & 파이썬 에디터 (Flex Container) -->
         <div class="flex flex-1 overflow-hidden">
-            <!-- 기존 왼쪽: 문제 설명 영역 -->
+            <!-- 왼쪽: 문제 설명 영역 -->
             <div id="question-content-area" class="w-full h-full overflow-y-auto p-8 bg-white relative transition-all duration-300">
-                <!-- 일시정지 오버레이 -->
                 <div id="pause-overlay" class="hidden absolute inset-0 bg-white/90 backdrop-blur-sm z-10 flex flex-col items-center justify-center">
                     <h2 class="text-3xl font-bold text-gray-800 mb-4">시험 일시정지</h2>
                     <p class="text-gray-600 mb-6">파일을 교체하거나 준비가 완료되면 다시 시작하세요.</p>
@@ -130,7 +149,6 @@
 
                 <div class="border-b-2 border-gray-800 pb-4 mb-6 flex justify-between items-center">
                     <h2 id="q-title" class="text-2xl font-bold text-gray-800">로딩 중...</h2>
-                    <!-- 파일 다운로드 영역 -->
                     <div id="q-file-area" class="hidden"></div>
                 </div>
                 <div class="space-y-6">
@@ -147,16 +165,19 @@
                 </div>
             </div>
 
-            <!-- 신규 오른쪽: 파이썬 에디터 영역 (초기 숨김) -->
+            <!-- 신규 오른쪽: 파이썬 에디터 영역 (초기 숨김, textarea 삭제 및 pre/div 구조로 변경) -->
             <div id="python-editor-pane" class="hidden w-1/2 h-full bg-[#1e1e1e] flex-col transition-all duration-300 border-l border-gray-300 shadow-inner">
                 <div class="bg-[#2d2d2d] text-gray-300 text-sm px-4 py-2 flex justify-between items-center shrink-0 border-b border-black">
                     <div class="flex items-center space-x-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
                         <span class="font-bold font-mono">solution.py</span>
                     </div>
-                    <span class="text-xs text-yellow-500 font-bold animate-pulse">※ 빈칸(____)을 지우고 올바른 코드를 작성하세요!</span>
+                    <span class="text-xs text-yellow-500 font-bold animate-pulse">※ 노란색 빈칸에 알맞은 코드를 입력하세요!</span>
                 </div>
-                <textarea id="python-editor" class="flex-1 w-full bg-[#1e1e1e] text-[#d4d4d4] font-mono p-4 resize-none leading-relaxed text-lg" spellcheck="false" placeholder="코드를 작성하세요..."></textarea>
+                <div class="flex-1 w-full p-6 overflow-y-auto">
+                    <!-- 여기에 스크립트로 파이썬 코드와 빈칸 input 태그가 삽입됩니다 -->
+                    <pre id="python-code-display" class="python-code-container text-lg"></pre>
+                </div>
             </div>
         </div>
 
@@ -427,16 +448,15 @@
             ]
         };
 
-        /* 상태 변수 */
         let currentLevel = '3급';
         let currentQuestionIndex = 0;
         let timeRemaining = 0;
         let timerInterval = null;
         let savedStatus = [];
-        let pythonAnswers = {}; // 파이썬 코드 입력 저장용 딕셔너리
+        // 파이썬 문제별 빈칸 배열을 저장할 객체. 예: pythonAnswers[4] = ["답1", "답2"]
+        let pythonAnswers = {}; 
         let isPaused = false;
 
-        /* 초기 진입 로직 및 에디터 이벤트 바인딩 */
         window.onload = function() {
             if (window.name === "EntryCBTWindow") {
                 document.getElementById('intro-screen').classList.remove('hidden');
@@ -445,30 +465,9 @@
                 document.getElementById('launcher-screen').classList.remove('hidden');
                 document.getElementById('launcher-screen').classList.add('flex');
             }
-            
-            // 파이썬 에디터 이벤트 리스너 바인딩
-            const pyEditor = document.getElementById('python-editor');
-            if (pyEditor) {
-                // 값 변경 시 임시 저장
-                pyEditor.addEventListener('input', function(e) {
-                    pythonAnswers[currentQuestionIndex] = e.target.value;
-                });
-                
-                // Tab 키 동작 처리 (들여쓰기 4칸 적용)
-                pyEditor.addEventListener('keydown', function(e) {
-                    if (e.key === 'Tab') {
-                        e.preventDefault();
-                        const start = this.selectionStart;
-                        const end = this.selectionEnd;
-                        this.value = this.value.substring(0, start) + "    " + this.value.substring(end);
-                        this.selectionStart = this.selectionEnd = start + 4;
-                        this.dispatchEvent(new Event('input')); // 저장 이벤트 트리거
-                    }
-                });
-            }
         };
 
-        /* 비밀번호 확인 로직 추가 */
+        /* 비밀번호 확인 로직 */
         function verifyPassword() {
             const pwdInput = document.getElementById('exam-password');
             const errorMsg = document.getElementById('password-error');
@@ -502,12 +501,10 @@
             `;
         }
 
-        /* 엔트리 새 창 열기 (playentry.org) */
         function openEntry() {
             window.open("https://playentry.org", "EntryWorkspace", "width=1200,height=800,location=no,menubar=no,toolbar=no,status=no");
         }
 
-        /* 급수 선택 UI */
         function selectLevel(level) {
             currentLevel = level;
             const card3 = document.getElementById('card-level-3');
@@ -526,17 +523,15 @@
             }
         }
 
-        /* 시험 시작 */
         function startExam() {
-            // 2급 시간을 60분으로 설정 (7문제 기준)
+            // 2급 시간 60분 적용
             timeRemaining = currentLevel === '3급' ? 50 * 60 : 60 * 60;
             currentQuestionIndex = 0;
             savedStatus = new Array(questionsData[currentLevel].length).fill(false);
-            pythonAnswers = {}; // 파이썬 저장 초기화
+            pythonAnswers = {};
 
             document.getElementById('exam-title').textContent = `통합CBT 모의고사 1회 [${currentLevel}]`;
             
-            // 2급일 경우 일시정지 버튼 표시
             const pauseBtn = document.getElementById('pause-btn');
             if (currentLevel === '2급') {
                 pauseBtn.classList.remove('hidden');
@@ -553,7 +548,6 @@
             startTimer();
         }
 
-        /* 문항 번호 렌더링 */
         function renderQuestionNav() {
             const navContainer = document.getElementById('question-nav');
             navContainer.innerHTML = ''; 
@@ -593,15 +587,13 @@
             document.getElementById('exam-progress').textContent = `문제 ${currentQuestionIndex + 1} / ${currentQuestions.length}`;
             document.getElementById('q-title').textContent = qData.title;
             
-            // 파이썬 문제 레이아웃 토글
             const examScreen = document.getElementById('exam-screen');
             const qContentArea = document.getElementById('question-content-area');
             const pyEditorPane = document.getElementById('python-editor-pane');
-            const pyEditor = document.getElementById('python-editor');
             const bottomNotice = document.getElementById('bottom-notice');
 
             if (qData.isPython) {
-                // 파이썬 모드: 창을 넓히고 에디터 표시
+                // 파이썬 모드 레이아웃 조절
                 examScreen.classList.replace('max-w-5xl', 'max-w-[85rem]');
                 examScreen.classList.add('w-full');
                 qContentArea.classList.replace('w-full', 'w-1/2');
@@ -609,12 +601,45 @@
                 pyEditorPane.classList.remove('hidden');
                 pyEditorPane.classList.add('flex');
                 
-                // 기존 저장된 답안이 있으면 불러오고, 없으면 스켈레톤 코드 출력
-                pyEditor.value = pythonAnswers[currentQuestionIndex] !== undefined ? pythonAnswers[currentQuestionIndex] : (qData.skeletonCode || '');
+                const codeDisplay = document.getElementById('python-code-display');
+                const skeleton = qData.skeletonCode || '';
                 
-                bottomNotice.textContent = '※ 문제를 꼼꼼히 읽고 우측 에디터 빈칸(____)에 코딩을 완성하세요.';
+                // 해당 문항의 배열 초기화
+                if (!pythonAnswers[currentQuestionIndex]) {
+                    pythonAnswers[currentQuestionIndex] = [];
+                }
+                
+                // ____ (언더스코어 5개 이상)를 input 창으로 치환
+                let blankCounter = 0;
+                const formattedCode = skeleton.replace(/_{5,}/g, function() {
+                    const val = pythonAnswers[currentQuestionIndex][blankCounter] || '';
+                    const inputHtml = `<input type="text" class="python-blank-input" data-blank-idx="${blankCounter}" value="${val}" autocomplete="off" spellcheck="false" placeholder="...">`;
+                    blankCounter++;
+                    return inputHtml;
+                });
+                
+                codeDisplay.innerHTML = formattedCode;
+                
+                // 생성된 input 창들에 이벤트와 동적 너비 부여
+                const blankInputs = codeDisplay.querySelectorAll('.python-blank-input');
+                blankInputs.forEach(input => {
+                    input.addEventListener('input', function() {
+                        const idx = this.getAttribute('data-blank-idx');
+                        pythonAnswers[currentQuestionIndex][idx] = this.value;
+                        
+                        // 글자 수에 비례하여 동적 너비 조절 (최소 100px)
+                        const newWidth = Math.max(100, this.value.length * 13 + 20);
+                        this.style.width = newWidth + 'px';
+                    });
+                    
+                    // 초기 렌더링 시 너비 세팅
+                    const initWidth = Math.max(100, input.value.length * 13 + 20);
+                    input.style.width = initWidth + 'px';
+                });
+                
+                bottomNotice.textContent = '※ 우측 코드 영역의 노란색 빈칸을 눌러 정답 코드를 완성하세요.';
             } else {
-                // 엔트리 모드: 기본 레이아웃 복귀
+                // 엔트리 모드 복귀
                 examScreen.classList.replace('max-w-[85rem]', 'max-w-5xl');
                 qContentArea.classList.replace('w-1/2', 'w-full');
                 qContentArea.classList.remove('border-r', 'border-gray-300');
@@ -633,7 +658,6 @@
                 qContentEl.textContent = qData.content;
             }
 
-            /* 다운로드 버튼 렌더링 로직 */
             const fileArea = document.getElementById('q-file-area');
             if (qData.file && qData.fileUrl) {
                 fileArea.innerHTML = `
@@ -675,7 +699,6 @@
             }
         }
 
-        /* 일시정지 (2급) */
         function togglePause() {
             isPaused = !isPaused;
             const overlay = document.getElementById('pause-overlay');
@@ -697,7 +720,6 @@
             }
         }
 
-        /* 다음/제출 버튼 */
         function nextQuestion() {
             const currentQuestions = questionsData[currentLevel];
             
@@ -710,7 +732,6 @@
             }
         }
 
-        /* 저장 안 된 문항 확인 팝업 */
         function checkSubmit() {
             const unsaved = [];
             savedStatus.forEach((status, index) => {
@@ -735,7 +756,6 @@
             submitExam();
         }
 
-        /* 제출 완료 */
         function submitExam() {
             clearInterval(timerInterval);
             document.getElementById('exam-screen').classList.remove('flex');
@@ -744,14 +764,12 @@
             document.getElementById('result-screen').classList.add('flex');
         }
 
-        /* 시간 포맷 */
         function formatTime(seconds) {
             const m = Math.floor(seconds / 60).toString().padStart(2, '0');
             const s = (seconds % 60).toString().padStart(2, '0');
             return `${m}:${s}`;
         }
 
-        /* 타이머 업데이트 */
         function updateTimer() {
             if (isPaused) return;
 
@@ -762,14 +780,12 @@
                 const blindScreen = document.getElementById('blind-screen');
                 blindScreen.classList.remove('hidden');
                 
-                // 블라인드 서서히 나타남
                 setTimeout(() => {
                     blindScreen.classList.remove('opacity-0');
                     blindScreen.classList.add('opacity-100');
                     blindScreen.style.pointerEvents = "auto";
                 }, 50);
                 
-                // 3초 뒤 결과창
                 setTimeout(() => {
                     blindScreen.classList.add('hidden');
                     submitExam();
@@ -787,7 +803,6 @@
             }
         }
 
-        /* 타이머 시작 */
         function startTimer() {
             const timerDisplay = document.getElementById('timer');
             timerDisplay.classList.remove('animate-pulse', 'text-red-600');
@@ -796,16 +811,10 @@
             timerInterval = setInterval(updateTimer, 1000);
         }
 
-        /* 문항 저장 */
         let saveTimeout;
         function saveQuestion() {
             savedStatus[currentQuestionIndex] = true;
             renderQuestionNav();
-
-            // 파이썬 문제일 경우 저장 확인용으로 코드 강제 동기화 보장
-            if (questionsData[currentLevel][currentQuestionIndex].isPython) {
-                pythonAnswers[currentQuestionIndex] = document.getElementById('python-editor').value;
-            }
 
             const msgEl = document.getElementById('save-msg');
             msgEl.textContent = `${currentQuestionIndex + 1}번 문항이 저장되었습니다.`;
