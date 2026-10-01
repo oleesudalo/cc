@@ -20,30 +20,23 @@
             transition: opacity 1.5s ease-in-out;
         }
         
-        .python-code-container {
-            font-family: 'Consolas', 'Courier New', monospace;
-            white-space: pre-wrap;
-            color: #d4d4d4;
-            line-height: 2.2;
-        }
-        .python-blank-input {
-            background: rgba(255, 255, 255, 0.05);
+        /* 파이썬 동적 입력칸 스타일 (1회차와 동일) */
+        .py-input {
+            background-color: transparent;
             border: none;
-            border-bottom: 2px solid #eab308; /* 노란색 밑줄 */
+            border-bottom: 2px solid #eab308;
             color: #eab308;
-            font-family: 'Consolas', 'Courier New', monospace;
-            font-size: 1.125rem;
+            font-family: monospace;
+            font-size: 1.125rem; /* text-lg */
             text-align: center;
-            width: 100px; /* 초기 너비 */
+            outline: none;
             padding: 0 4px;
             margin: 0 4px;
-            outline: none;
-            border-radius: 4px 4px 0 0;
-            transition: border-color 0.2s, background-color 0.2s;
-            vertical-align: baseline;
+            min-width: 100px;
+            transition: all 0.2s;
         }
-        .python-blank-input:focus {
-            border-bottom-color: #3b82f6; /* 포커스 시 파란색 밑줄 */
+        .py-input:focus {
+            border-bottom: 2px solid #3b82f6;
             color: #3b82f6;
             background-color: rgba(59, 130, 246, 0.1);
         }
@@ -55,7 +48,7 @@
     <div id="launcher-screen" class="hidden flex-col items-center justify-center h-full w-full bg-gray-100 p-6">
         <div id="launcher-content" class="bg-white p-10 rounded-2xl shadow-xl w-full max-w-md text-center border-t-4 border-blue-600">
             <h1 class="text-3xl font-bold text-gray-800 mb-4">통합 CBT 모의고사 2회</h1>
-            <p class="text-gray-600 mb-6">준비가 완료되면 비밀번호를 입력하고<br>아래 버튼을 눌러주세요.</p>
+            <p class="text-gray-600 mb-6">준비가 완료되면 비밀번호를 입력하고 아래 버튼을 눌러주세요.</p>
             
             <div class="mb-6">
                 <input type="password" id="exam-password" placeholder="비밀번호 입력" class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500 text-center text-xl tracking-[0.2em] transition-colors" onkeypress="if(event.key === 'Enter') verifyPassword()">
@@ -94,7 +87,7 @@
                 </div>
             </div>
 
-            <!-- 배포파일 다운로드 버튼 영역 (실제 링크 연결) -->
+            <!-- 배포파일 다운로드 버튼 영역 (연한 노란색 적용 & 팝업 링크) -->
             <div class="grid grid-cols-2 gap-6 mb-10">
                 <!-- 3급 배포파일 -->
                 <div>
@@ -145,10 +138,10 @@
             </div>
         </div>
 
-        <!-- 문항 번호 네비게이션 및 로고 -->
+        <!-- 문항 번호 네비게이션 & 로고 영역 -->
         <div class="bg-gray-100 px-6 py-2 border-b border-gray-200 flex justify-between items-center shrink-0 shadow-inner">
             <div id="question-nav" class="flex space-x-3 overflow-x-auto items-center py-2 px-2"></div>
-            <img src="https://github.com/oleesudalo/cc/blob/main/mc_logo_blk.png?raw=true" alt="MC Logo" class="h-9 ml-4 opacity-90 shrink-0 object-contain">
+            <img src="https://github.com/oleesudalo/cc/blob/main/mc_logo_blk.png?raw=true" alt="MC Logo" class="h-9 ml-4 opacity-75 shrink-0 object-contain">
         </div>
 
         <!-- 문제 내용 영역 & 파이썬 에디터 (Flex Container) -->
@@ -181,7 +174,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- 신규 오른쪽: 파이썬 에디터 영역 (초기 숨김) -->
             <div id="python-editor-pane" class="hidden w-1/2 h-full bg-[#1e1e1e] flex-col transition-all duration-300 border-l border-gray-300 shadow-inner">
                 <div class="bg-[#2d2d2d] text-gray-300 text-sm px-4 py-2 flex justify-between items-center shrink-0 border-b border-black">
@@ -189,12 +182,10 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
                         <span class="font-bold font-mono">solution.py</span>
                     </div>
-                    <span class="text-xs text-yellow-500 font-bold animate-pulse">※ 노란색 빈칸에 알맞은 코드를 입력하세요!</span>
+                    <span class="text-xs text-yellow-500 font-bold animate-pulse">※ 빈칸을 채워 코드를 완성하세요!</span>
                 </div>
-                <div class="flex-1 w-full p-6 overflow-y-auto">
-                    <!-- 여기에 스크립트로 파이썬 코드와 빈칸 input 태그가 삽입됩니다 -->
-                    <pre id="python-code-display" class="python-code-container text-lg"></pre>
-                </div>
+                <!-- 텍스트 입력 영역 (동적 생성) -->
+                <div id="python-code-content" class="flex-1 w-full bg-[#1e1e1e] text-[#d4d4d4] font-mono p-6 overflow-y-auto leading-[2.5] text-lg whitespace-pre-wrap"></div>
             </div>
         </div>
 
@@ -454,7 +445,6 @@
             ]
         };
 
-        /* 상태 변수 */
         let currentLevel = '3급';
         let currentQuestionIndex = 0;
         let timeRemaining = 0;
@@ -507,13 +497,12 @@
                 <p class="text-gray-600">새 창에서 시험을 진행해 주세요.<br>이 원래 창은 닫으셔도 됩니다.</p>
             `;
         }
-
-        /* 배포파일 팝업 열기 */
+        
+        /* 배포파일 새 창 열기 함수 */
         function openDistFile(url) {
             window.open(url, "_blank", "width=1200,height=800,location=no,menubar=no,toolbar=no,status=no,scrollbars=yes,resizable=yes");
         }
 
-        /* 급수 선택 UI */
         function selectLevel(level) {
             currentLevel = level;
             const card3 = document.getElementById('card-level-3');
@@ -532,12 +521,11 @@
             }
         }
 
-        /* 시험 시작 */
         function startExam() {
             timeRemaining = currentLevel === '3급' ? 50 * 60 : 60 * 60;
             currentQuestionIndex = 0;
             savedStatus = new Array(questionsData[currentLevel].length).fill(false);
-            pythonAnswers = {};
+            pythonAnswers = {}; 
 
             document.getElementById('exam-title').textContent = `통합 CBT 모의고사 2회 [${currentLevel}]`;
             
@@ -557,7 +545,6 @@
             startTimer();
         }
 
-        /* 문항 번호 렌더링 */
         function renderQuestionNav() {
             const navContainer = document.getElementById('question-nav');
             navContainer.innerHTML = ''; 
@@ -597,14 +584,13 @@
             document.getElementById('exam-progress').textContent = `문제 ${currentQuestionIndex + 1} / ${currentQuestions.length}`;
             document.getElementById('q-title').textContent = qData.title;
             
-            // 파이썬 문제 레이아웃 토글
+            /* 파이썬 문제 레이아웃 토글 및 동적 입력 UI */
             const examScreen = document.getElementById('exam-screen');
             const qContentArea = document.getElementById('question-content-area');
             const pyEditorPane = document.getElementById('python-editor-pane');
             const bottomNotice = document.getElementById('bottom-notice');
 
             if (qData.isPython) {
-                // 파이썬 모드: 창을 넓히고 에디터 표시
                 examScreen.classList.replace('max-w-5xl', 'max-w-[85rem]');
                 examScreen.classList.add('w-full');
                 qContentArea.classList.replace('w-full', 'w-1/2');
@@ -612,45 +598,45 @@
                 pyEditorPane.classList.remove('hidden');
                 pyEditorPane.classList.add('flex');
                 
-                const codeDisplay = document.getElementById('python-code-display');
-                const skeleton = qData.skeletonCode || '';
+                const pyContainer = document.getElementById('python-code-content');
+                pyContainer.innerHTML = '';
                 
-                // 해당 문항의 배열 초기화
-                if (!pythonAnswers[currentQuestionIndex]) {
-                    pythonAnswers[currentQuestionIndex] = [];
-                }
+                let savedInputs = pythonAnswers[currentQuestionIndex] || [];
+                let inputCounter = 0;
                 
-                // ____ (언더스코어 5개 이상)를 input 창으로 치환
-                let blankCounter = 0;
-                const formattedCode = skeleton.replace(/_{5,}/g, function() {
-                    const val = pythonAnswers[currentQuestionIndex][blankCounter] || '';
-                    const inputHtml = `<input type="text" class="python-blank-input" data-blank-idx="${blankCounter}" value="${val}" autocomplete="off" spellcheck="false" placeholder="...">`;
-                    blankCounter++;
-                    return inputHtml;
-                });
+                const parts = qData.skeletonCode.split('______________________________');
                 
-                codeDisplay.innerHTML = formattedCode;
-                
-                // 생성된 input 창들에 이벤트와 동적 너비 부여
-                const blankInputs = codeDisplay.querySelectorAll('.python-blank-input');
-                blankInputs.forEach(input => {
-                    input.addEventListener('input', function() {
-                        const idx = this.getAttribute('data-blank-idx');
-                        pythonAnswers[currentQuestionIndex][idx] = this.value;
-                        
-                        // 글자 수에 비례하여 동적 너비 조절 (최소 100px)
-                        const newWidth = Math.max(100, this.value.length * 13 + 20);
-                        this.style.width = newWidth + 'px';
-                    });
+                parts.forEach((part, idx) => {
+                    const span = document.createElement('span');
+                    span.textContent = part;
+                    pyContainer.appendChild(span);
                     
-                    // 초기 렌더링 시 너비 세팅
-                    const initWidth = Math.max(100, input.value.length * 13 + 20);
-                    input.style.width = initWidth + 'px';
+                    if (idx < parts.length - 1) {
+                        const input = document.createElement('input');
+                        input.type = 'text';
+                        input.className = 'py-input';
+                        input.dataset.idx = inputCounter;
+                        
+                        if (savedInputs[inputCounter]) {
+                            input.value = savedInputs[inputCounter];
+                            input.style.width = Math.max(100, input.value.length * 12) + 'px';
+                        }
+                        
+                        input.addEventListener('input', function() {
+                            this.style.width = Math.max(100, this.value.length * 12) + 'px';
+                            
+                            if (!pythonAnswers[currentQuestionIndex]) {
+                                pythonAnswers[currentQuestionIndex] = [];
+                            }
+                            pythonAnswers[currentQuestionIndex][this.dataset.idx] = this.value;
+                        });
+                        
+                        pyContainer.appendChild(input);
+                        inputCounter++;
+                    }
                 });
-                
-                bottomNotice.textContent = '※ 우측 코드 영역의 노란색 빈칸을 눌러 정답 코드를 완성하세요.';
+                bottomNotice.textContent = '※ 문제를 꼼꼼히 읽고 우측 에디터 빈칸에 코드를 완성하세요.';
             } else {
-                // 엔트리 모드: 기본 레이아웃 복귀
                 examScreen.classList.replace('max-w-[85rem]', 'max-w-5xl');
                 qContentArea.classList.replace('w-1/2', 'w-full');
                 qContentArea.classList.remove('border-r', 'border-gray-300');
@@ -660,6 +646,15 @@
                 bottomNotice.textContent = '※ 문제를 꼼꼼히 읽고 엔트리 화면에서 코딩을 완성하세요.';
             }
             
+            const qContentEl = document.getElementById('q-content');
+            const qContentContainer = document.getElementById('q-content-container');
+            if(!qData.content || qData.content.trim() === "") {
+                qContentContainer.style.display = 'none';
+            } else {
+                qContentContainer.style.display = 'block';
+                qContentEl.textContent = qData.content;
+            }
+
             /* 다운로드 버튼 렌더링 로직 */
             const fileArea = document.getElementById('q-file-area');
             if (qData.file && qData.fileUrl) {
@@ -675,15 +670,6 @@
             } else {
                 fileArea.innerHTML = '';
                 fileArea.classList.add('hidden');
-            }
-            
-            const qContentEl = document.getElementById('q-content');
-            const qContentContainer = document.getElementById('q-content-container');
-            if(!qData.content || qData.content.trim() === "") {
-                qContentContainer.style.display = 'none';
-            } else {
-                qContentContainer.style.display = 'block';
-                qContentEl.textContent = qData.content;
             }
             
             const instructionsList = document.getElementById('q-instructions');
@@ -798,12 +784,14 @@
                 const blindScreen = document.getElementById('blind-screen');
                 blindScreen.classList.remove('hidden');
                 
+                // 블라인드 서서히 나타남
                 setTimeout(() => {
                     blindScreen.classList.remove('opacity-0');
                     blindScreen.classList.add('opacity-100');
                     blindScreen.style.pointerEvents = "auto";
                 }, 50);
                 
+                // 3초 뒤 결과창
                 setTimeout(() => {
                     blindScreen.classList.add('hidden');
                     submitExam();
