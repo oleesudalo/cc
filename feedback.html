@@ -25,7 +25,7 @@
         <!-- Header Logo & Title -->
         <div class="flex items-center justify-center gap-3 mb-6">
             <img src="https://github.com/oleesudalo/cc/blob/main/mc_logo.png?raw=true" alt="미래채움 로고" class="h-8 md:h-10 object-contain">
-            <span class="text-gray-500 font-medium text-sm md:text-base tracking-wide">|  <b>광주SW미래채움 고급강사 자격증팀</b></span>
+            <span class="text-gray-500 font-medium text-sm md:text-base tracking-wide">| 광주SW미래채움 고급강사 자격증팀</span>
         </div>
 
         <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center">어려운 문제 등록하기</h1>
@@ -45,7 +45,7 @@
                     <select id="category-select" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm transition">
                         <option value="">-- 사이트를 선택하세요 --</option>
                         <option value="mirae3">3급 학습용 웹앱</option>
-                        <option value="entry2" disabled>2급 엔트리 학습용 웹앱 (준비중)</option>
+                        <option value="entry2">2급 엔트리 학습용 웹앱</option>
                         <option value="python2">2급 파이썬 학습용 웹앱</option>
                         <option value="bank3">3급 문제은행</option>
                         <option value="cbt1">CBT 1회</option>
@@ -208,6 +208,50 @@
                     '2회 9번 · 감정 인식 TTS'
                 ]
             },
+            'entry2': {
+                name: '2급 엔트리 학습용 웹앱',
+                items: {
+                    '변수': [
+                        '01 배터리를 모아 점수 얻기',
+                        '02 1부터 20 숫자 맞히기',
+                        '03 비밀번호 확인',
+                        '04 우리 지역 특산물 퀴즈 프로그램 만들기 (교재)'
+                    ],
+                    '리스트': [
+                        '05 메뉴 리스트 입력·삭제',
+                        '06 중복 없는 미션 뽑기',
+                        '07 버킷리스트 프로그램 만들기 (교재)',
+                        '08 1인 1역할 배정 프로그램 만들기 (교재)',
+                        '09 시장에 가면 OO도 있고, 게임 만들기 (교재)'
+                    ],
+                    '함수': [
+                        '10 점프하기 함수',
+                        '11 로봇 컬링 프로그램 만들기 (교재)',
+                        '12 복싱 프로그램 만들기 (교재)'
+                    ],
+                    '종합': [
+                        '13 특산물을 잡아라! 게임 만들기 (교재)',
+                        '14 3문제 퀴즈 프로그램',
+                        '15 카페 주문 순서대로 처리'
+                    ],
+                    '분류': [
+                        '01 티셔츠 사이즈 추천',
+                        '02 진짜뉴스·가짜뉴스 판별',
+                        '03 프로젝트 역할 추천',
+                        '10 스마트폰 사용 유형 분류'
+                    ],
+                    '예측': [
+                        '04 카페 매출 예측',
+                        '05 배추 생산량 예측',
+                        '06 중고 노트북 가격 예측'
+                    ],
+                    '군집': [
+                        '07 위도·경도 모임 장소 추천',
+                        '08 과자 영양군 분석',
+                        '09 학습 패턴 분석'
+                    ]
+                }
+            },
             'python2': {
                 name: '2급 파이썬 학습용 웹앱',
                 items: {
@@ -230,7 +274,7 @@
                         '6회': genArray(1, 10, '번'), '7회': genArray(1, 10, '번'), '8회': genArray(1, 10, '번'), '9회': genArray(1, 10, '번'), '10회': genArray(1, 10, '번')
                     },
                     '기출문제': {
-                        '1회': genArray(1, 4, '번'), '2회': genArray(1, 4, '번')
+                        '1회': genArray(1, 4, '번'), '2회': genArray(1, 4, '번'), '3회': genArray(1, 4, '번'), '4회': genArray(1, 4, '번')
                     }
                 }
             },
