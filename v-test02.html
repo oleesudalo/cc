@@ -48,7 +48,7 @@
     <div id="launcher-screen" class="hidden flex-col items-center justify-center h-full w-full bg-gray-100 p-6">
         <div id="launcher-content" class="bg-white p-10 rounded-2xl shadow-xl w-full max-w-md text-center border-t-4 border-blue-600">
             <h1 class="text-3xl font-bold text-gray-800 mb-4">통합 CBT 모의고사 2회</h1>
-            <p class="text-gray-600 mb-6">준비가 완료되면 비밀번호를 입력하고 아래 버튼을 눌러주세요.</p>
+            <p class="text-gray-600 mb-6">준비가 완료되면 비밀번호를 입력하고<br>아래 버튼을 눌러주세요.</p>
             
             <div class="mb-6">
                 <input type="password" id="exam-password" placeholder="비밀번호 입력" class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500 text-center text-xl tracking-[0.2em] transition-colors" onkeypress="if(event.key === 'Enter') verifyPassword()">
@@ -369,29 +369,29 @@
                     ]
                 },
                 {
-                    title: "문제 2. AI 이동수단 추천",
+                    title: "문제 2. AI 아이스크림 판매량 예측",
                     content: "",
-                    file: "02_이동수단추천_결정트리_데이터.xlsx",
-                    fileUrl: "https://github.com/oleesudalo/study-entry/raw/refs/heads/main/02_%EC%9D%B4%EB%8F%99%EC%88%98%EB%8B%A8%EC%B6%94%EC%B2%9C_%EA%B2%B0%EC%A0%95%ED%8A%B8%EB%A6%AC_%EB%8D%B0%EC%9D%B4%ED%84%B0.xlsx",
+                    file: "02_선형회귀_아이스크림판매량.xlsx",
+                    fileUrl: "https://github.com/oleesudalo/study-entry/raw/refs/heads/main/02_%EC%84%A0%ED%98%95%ED%9A%8C%EA%B7%80_%EC%95%84%EC%9D%B4%EC%8A%A4%ED%81%AC%EB%A6%BC%ED%8C%90%EB%A7%A4%EB%9F%89.xlsx",
                     instructions: [
-                        "[2-1]<br>이동거리, 강수량, 짐의 무게를 이용하여 이동수단을 도보, 자전거, 버스 중 하나로 분류하는 결정트리 인공지능 모델을 만든다.",
-                        "[2-2]<br>프로그램을 시작하면 사용자의 이동거리, 강수량, 짐의 무게를 차례로 입력받아 각각 변수에 저장한다.",
-                        "[2-3]<br>입력한 값을 학습한 모델에 적용하여 추천 이동수단을 알아내고, 추천 결과를 글상자에 안내한다.",
-                        "[2-4]<br>추천 결과가 도보, 자전거, 버스일 때 각각 다른 캐릭터 모양으로 바뀌도록 하고, 해당 이동수단에 맞는 안내 문장이 나타나도록 한다.<br>도보 : 걷기를 추천합니다.<br>자전거 : 자전거를 이용하세요.<br>버스 : 버스로 빠르게 이동하세요.",
-                        "<div class='mt-5 border-2 border-blue-100 bg-blue-50/50 rounded-lg p-4'><p class='font-bold text-blue-800 mb-2'>[학습 결과 확인]</p><p class='text-sm text-gray-700 mb-2'>다음 값을 입력하여 모델의 학습 결과를 확인한다.</p><ul class='text-sm text-gray-800 space-y-1 font-medium'><li>• 1.0 / 0 / 1.0 → 도보</li><li>• 4.5 / 1 / 1.5 → 자전거</li><li>• 3.0 / 18 / 1.0 → 버스</li></ul></div>"
+                        "[2-1]<br>평균 기온을 이용하여 아이스크림 판매량을 예측하는 선형 회귀 인공지능 모델을 만든다.",
+                        "[2-2]<br>프로그램을 시작하면 사용자가 '평균 기온'을 입력할 수 있도록 묻고 기다린다.",
+                        "[2-3]<br>입력한 기온 값을 학습한 모델에 적용하여 예상되는 아이스크림 판매량을 예측한 후 '예측판매량' 변수에 저장하고 이것을 2초동안 말한다.",
+                        "[2-4]<br>만약 예측된 판매량이 250개 이상이라면, 배경을 '여름 해변'으로 바꾸고 '오늘은 불티나게 팔리겠어!'라고 3초 동안 말한다.",
+                        "[2-5]<br>만약 예측된 판매량이 250개 미만이라면, 배경을 '동네 공원'으로 바꾸고 '오늘은 평범한 하루겠군.'이라고 3초 동안 말한다."
                     ]
                 },
                 {
-                    title: "문제 3. AI 장비 상태 판별",
+                    title: "문제 3. AI 붓꽃 종류 분류",
                     content: "",
-                    file: "03_SVM_장비상태판별_데이터.xlsx",
-                    fileUrl: "https://github.com/oleesudalo/study-entry/raw/refs/heads/main/03_SVM_%EC%9E%A5%EB%B9%84%EC%83%81%ED%83%9C%ED%8C%90%EB%B3%84_%EB%8D%B0%EC%9D%B4%ED%84%B0.xlsx",
+                    file: "03_KNN_붓꽃분류데이터.xlsx",
+                    fileUrl: "https://github.com/oleesudalo/study-entry/raw/refs/heads/main/03_KNN_%EB%B6%93%EA%BD%83%EB%B6%84%EB%A5%98%EB%8D%B0%EC%9D%B4%ED%84%B0.xlsx",
                     instructions: [
-                        "[3-1]<br>제공된 장비 측정 데이터를 이용하여 온도지수, 진동지수, 소음지수를 기준으로 장비 상태를 정상과 점검필요로 분류하는 SVM 모델을 만든다.",
-                        "[3-2]<br>프로그램을 시작하면 사용자가 온도지수, 진동지수, 소음지수를 차례로 입력할 수 있도록 한다.",
-                        "[3-3]<br>입력한 값을 학습된 인공지능 모델에 적용하여 장비의 상태를 판별하고 결과를 4초동안 말한다.",
-                        "[3-4]<br>장비 상태가 정상이면 2, 점검필요이면 3으로 로봇의 모양을 바꾼다.",
-                        "<div class='mt-5 border-2 border-blue-100 bg-blue-50/50 rounded-lg p-4'><p class='font-bold text-blue-800 mb-2'>[학습 결과 확인]</p><p class='text-sm text-gray-700 mb-2'>다음 값을 입력하여 모델의 학습 결과를 확인한다.</p><ul class='text-sm text-gray-800 space-y-1 font-medium'><li>• 온도지수 2 / 진동지수 2 / 소음지수 2 → 정상</li><li>• 온도지수 8 / 진동지수 8 / 소음지수 8 → <span class='text-red-600 font-bold'>점검필요</span></li></ul></div>"
+                        "[3-1]<br>꽃받침 길이, 꽃받침 너비, 꽃잎 길이, 꽃잎 너비를 이용하여 붓꽃의 종류(세토사, 버시칼라, 버지니카)를 분류하는 KNN 모델(이웃 개수: 5개)을 만든다.",
+                        "[3-2]<br>프로그램을 시작하면 4가지 항목의 수치를 차례대로 묻고 대답을 '입력데이터' 리스트에 차례대로 추가(저장)한다.",
+                        "[3-3]<br>리스트에 저장된 4개의 항목 값을 학습된 모델에 적용하여 붓꽃의 종류를 판별한다.",
+                        "[3-4]<br>꽃 오브젝트의 모양을 인공지능이 '분류한 붓꽃의 종류' 모양으로 바꾼다.",
+                        "[3-5]<br>'분류된 붓꽃은 [분류결과] 입니다.'라고 3초 동안 말한다."
                     ]
                 },
                 {
