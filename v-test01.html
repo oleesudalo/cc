@@ -20,30 +20,23 @@
             transition: opacity 1.5s ease-in-out;
         }
         
-        .python-code-container {
-            font-family: 'Consolas', 'Courier New', monospace;
-            white-space: pre-wrap;
-            color: #d4d4d4;
-            line-height: 2.2;
-        }
-        .python-blank-input {
-            background: rgba(255, 255, 255, 0.05);
+        /* 파이썬 동적 입력칸 스타일 */
+        .py-input {
+            background-color: transparent;
             border: none;
-            border-bottom: 2px solid #eab308; /* 노란색 밑줄 */
+            border-bottom: 2px solid #eab308;
             color: #eab308;
-            font-family: 'Consolas', 'Courier New', monospace;
-            font-size: 1.125rem;
+            font-family: monospace;
+            font-size: 1.125rem; /* text-lg */
             text-align: center;
-            width: 100px; /* 초기 너비 */
+            outline: none;
             padding: 0 4px;
             margin: 0 4px;
-            outline: none;
-            border-radius: 4px 4px 0 0;
-            transition: border-color 0.2s, background-color 0.2s;
-            vertical-align: baseline;
+            min-width: 100px;
+            transition: all 0.2s;
         }
-        .python-blank-input:focus {
-            border-bottom-color: #3b82f6; /* 포커스 시 파란색 밑줄 */
+        .py-input:focus {
+            border-bottom: 2px solid #3b82f6;
             color: #3b82f6;
             background-color: rgba(59, 130, 246, 0.1);
         }
@@ -55,7 +48,7 @@
     <div id="launcher-screen" class="hidden flex-col items-center justify-center h-full w-full bg-gray-100 p-6">
         <div id="launcher-content" class="bg-white p-10 rounded-2xl shadow-xl w-full max-w-md text-center border-t-4 border-blue-600">
             <h1 class="text-3xl font-bold text-gray-800 mb-4">통합CBT 모의고사 1회</h1>
-            <p class="text-gray-600 mb-6">준비가 완료되면 비밀번호를 입력하고<br>아래 버튼을 눌러주세요.</p>
+            <p class="text-gray-600 mb-6">준비가 완료되면 비밀번호를 입력하고 아래 버튼을 눌러주세요.</p>
             
             <div class="mb-6">
                 <input type="password" id="exam-password" placeholder="비밀번호 입력" class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500 text-center text-xl tracking-[0.2em] transition-colors" onkeypress="if(event.key === 'Enter') verifyPassword()">
@@ -84,7 +77,7 @@
             </div>
             <p class="text-gray-500 mb-8">응시할 시험의 급수를 선택한 후 시작 버튼을 눌러주세요.</p>
             
-            <div class="grid grid-cols-2 gap-6 mb-10">
+            <div class="grid grid-cols-2 gap-6 mb-4">
                 <div id="card-level-3" onclick="selectLevel('3급')" class="cursor-pointer border-2 border-blue-500 bg-blue-50 rounded-xl p-6 transition-all transform hover:scale-105">
                     <h2 class="text-2xl font-bold text-blue-700 mb-2">3급</h2>
                     <ul class="text-sm text-gray-600 space-y-1 text-left inline-block list-none">
@@ -93,7 +86,7 @@
                     </ul>
                 </div>
                 
-                <div id="card-level-2" onclick="selectLevel('2급')" class="cursor-pointer border-2 border-gray-200 bg-white rounded-xl p-6 transition-all transform hover:scale-105">
+                <div id="card-level-2" onclick="selectLevel('2급')" class="cursor-pointer border-2 border-gray-200 bg-white rounded-xl p-6 transition-all transform hover:scale-100">
                     <h2 class="text-2xl font-bold text-gray-700 mb-2">2급</h2>
                     <ul class="text-sm text-gray-600 space-y-1 text-left inline-block list-none">
                         <li>• 제한 시간: <strong>60분</strong></li>
@@ -101,6 +94,30 @@
                     </ul>
                 </div>
             </div>
+
+            <!-- 배포파일 다운로드 버튼 영역 (실제 링크 연결) -->
+            <div class="grid grid-cols-2 gap-6 mb-10">
+                <!-- 3급 배포파일 -->
+                <div>
+                    <a href="https://naver.me/IMZvfetx" target="_blank" class="flex items-center justify-center w-full bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold py-3 px-4 rounded-xl border border-indigo-200 transition-colors shadow-sm text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                        배포파일
+                    </a>
+                </div>
+                
+                <!-- 2급 배포파일 -->
+                <div class="flex space-x-3">
+                    <a href="https://naver.me/GB3o8JtV" target="_blank" class="flex items-center justify-center flex-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold py-3 px-2 rounded-xl border border-indigo-200 transition-colors shadow-sm text-sm whitespace-nowrap">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                        배포파일 1
+                    </a>
+                    <a href="https://naver.me/GWWdgnh3" target="_blank" class="flex items-center justify-center flex-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold py-3 px-2 rounded-xl border border-indigo-200 transition-colors shadow-sm text-sm whitespace-nowrap">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                        배포파일 2
+                    </a>
+                </div>
+            </div>
+
             <button onclick="startExam()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl text-lg shadow-lg transition-colors">
                 시험 시작하기
             </button>
@@ -129,16 +146,19 @@
             </div>
         </div>
 
-        <!-- 문항 번호 네비게이션 및 로고 (원 안잘리게 padding 조정됨) -->
-        <div class="bg-gray-100 px-6 py-3 border-b border-gray-200 flex justify-between items-center shrink-0 shadow-inner">
+        <!-- 문항 번호 네비게이션 & 로고 영역 -->
+        <div class="bg-gray-100 px-6 py-2 border-b border-gray-200 flex justify-between items-center shrink-0 shadow-inner">
+            <!-- py-2, px-2를 통해 원이 잘리지 않도록 여백 확보 -->
             <div id="question-nav" class="flex space-x-3 overflow-x-auto items-center py-2 px-2"></div>
-            <img src="https://github.com/oleesudalo/cc/blob/main/mc_logo_blk.png?raw=true" alt="MC Logo" class="h-9 ml-4 opacity-90 shrink-0 object-contain">
+            <!-- 로고 크기 h-9 적용 -->
+            <img src="https://github.com/oleesudalo/cc/blob/main/mc_logo_blk.png?raw=true" alt="MC Logo" class="h-9 ml-4 opacity-75 shrink-0 object-contain">
         </div>
 
         <!-- 문제 내용 영역 & 파이썬 에디터 (Flex Container) -->
         <div class="flex flex-1 overflow-hidden">
-            <!-- 왼쪽: 문제 설명 영역 -->
+            <!-- 기존 왼쪽: 문제 설명 영역 -->
             <div id="question-content-area" class="w-full h-full overflow-y-auto p-8 bg-white relative transition-all duration-300">
+                <!-- 일시정지 오버레이 -->
                 <div id="pause-overlay" class="hidden absolute inset-0 bg-white/90 backdrop-blur-sm z-10 flex flex-col items-center justify-center">
                     <h2 class="text-3xl font-bold text-gray-800 mb-4">시험 일시정지</h2>
                     <p class="text-gray-600 mb-6">파일을 교체하거나 준비가 완료되면 다시 시작하세요.</p>
@@ -165,19 +185,17 @@
                 </div>
             </div>
 
-            <!-- 신규 오른쪽: 파이썬 에디터 영역 (초기 숨김, textarea 삭제 및 pre/div 구조로 변경) -->
+            <!-- 신규 오른쪽: 파이썬 에디터 영역 (초기 숨김) -->
             <div id="python-editor-pane" class="hidden w-1/2 h-full bg-[#1e1e1e] flex-col transition-all duration-300 border-l border-gray-300 shadow-inner">
                 <div class="bg-[#2d2d2d] text-gray-300 text-sm px-4 py-2 flex justify-between items-center shrink-0 border-b border-black">
                     <div class="flex items-center space-x-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
                         <span class="font-bold font-mono">solution.py</span>
                     </div>
-                    <span class="text-xs text-yellow-500 font-bold animate-pulse">※ 노란색 빈칸에 알맞은 코드를 입력하세요!</span>
+                    <span class="text-xs text-yellow-500 font-bold animate-pulse">※ 빈칸을 채워 코드를 완성하세요!</span>
                 </div>
-                <div class="flex-1 w-full p-6 overflow-y-auto">
-                    <!-- 여기에 스크립트로 파이썬 코드와 빈칸 input 태그가 삽입됩니다 -->
-                    <pre id="python-code-display" class="python-code-container text-lg"></pre>
-                </div>
+                <!-- 텍스트 입력 영역 (동적 생성) -->
+                <div id="python-code-content" class="flex-1 w-full bg-[#1e1e1e] text-[#d4d4d4] font-mono p-6 overflow-y-auto leading-[2.5] text-lg whitespace-pre-wrap"></div>
             </div>
         </div>
 
@@ -453,10 +471,10 @@
         let timeRemaining = 0;
         let timerInterval = null;
         let savedStatus = [];
-        // 파이썬 문제별 빈칸 배열을 저장할 객체. 예: pythonAnswers[4] = ["답1", "답2"]
-        let pythonAnswers = {}; 
+        let pythonAnswers = {}; // 파이썬 코드 입력 저장용 딕셔너리
         let isPaused = false;
 
+        /* 초기 진입 로직 */
         window.onload = function() {
             if (window.name === "EntryCBTWindow") {
                 document.getElementById('intro-screen').classList.remove('hidden');
@@ -524,7 +542,6 @@
         }
 
         function startExam() {
-            // 2급 시간 60분 적용
             timeRemaining = currentLevel === '3급' ? 50 * 60 : 60 * 60;
             currentQuestionIndex = 0;
             savedStatus = new Array(questionsData[currentLevel].length).fill(false);
@@ -593,7 +610,6 @@
             const bottomNotice = document.getElementById('bottom-notice');
 
             if (qData.isPython) {
-                // 파이썬 모드 레이아웃 조절
                 examScreen.classList.replace('max-w-5xl', 'max-w-[85rem]');
                 examScreen.classList.add('w-full');
                 qContentArea.classList.replace('w-full', 'w-1/2');
@@ -601,45 +617,45 @@
                 pyEditorPane.classList.remove('hidden');
                 pyEditorPane.classList.add('flex');
                 
-                const codeDisplay = document.getElementById('python-code-display');
-                const skeleton = qData.skeletonCode || '';
+                const pyContainer = document.getElementById('python-code-content');
+                pyContainer.innerHTML = '';
                 
-                // 해당 문항의 배열 초기화
-                if (!pythonAnswers[currentQuestionIndex]) {
-                    pythonAnswers[currentQuestionIndex] = [];
-                }
+                let savedInputs = pythonAnswers[currentQuestionIndex] || [];
+                let inputCounter = 0;
                 
-                // ____ (언더스코어 5개 이상)를 input 창으로 치환
-                let blankCounter = 0;
-                const formattedCode = skeleton.replace(/_{5,}/g, function() {
-                    const val = pythonAnswers[currentQuestionIndex][blankCounter] || '';
-                    const inputHtml = `<input type="text" class="python-blank-input" data-blank-idx="${blankCounter}" value="${val}" autocomplete="off" spellcheck="false" placeholder="...">`;
-                    blankCounter++;
-                    return inputHtml;
-                });
+                const parts = qData.skeletonCode.split('______________________________');
                 
-                codeDisplay.innerHTML = formattedCode;
-                
-                // 생성된 input 창들에 이벤트와 동적 너비 부여
-                const blankInputs = codeDisplay.querySelectorAll('.python-blank-input');
-                blankInputs.forEach(input => {
-                    input.addEventListener('input', function() {
-                        const idx = this.getAttribute('data-blank-idx');
-                        pythonAnswers[currentQuestionIndex][idx] = this.value;
-                        
-                        // 글자 수에 비례하여 동적 너비 조절 (최소 100px)
-                        const newWidth = Math.max(100, this.value.length * 13 + 20);
-                        this.style.width = newWidth + 'px';
-                    });
+                parts.forEach((part, idx) => {
+                    const span = document.createElement('span');
+                    span.textContent = part;
+                    pyContainer.appendChild(span);
                     
-                    // 초기 렌더링 시 너비 세팅
-                    const initWidth = Math.max(100, input.value.length * 13 + 20);
-                    input.style.width = initWidth + 'px';
+                    if (idx < parts.length - 1) {
+                        const input = document.createElement('input');
+                        input.type = 'text';
+                        input.className = 'py-input';
+                        input.dataset.idx = inputCounter;
+                        
+                        if (savedInputs[inputCounter]) {
+                            input.value = savedInputs[inputCounter];
+                            input.style.width = Math.max(100, input.value.length * 12) + 'px';
+                        }
+                        
+                        input.addEventListener('input', function() {
+                            this.style.width = Math.max(100, this.value.length * 12) + 'px';
+                            
+                            if (!pythonAnswers[currentQuestionIndex]) {
+                                pythonAnswers[currentQuestionIndex] = [];
+                            }
+                            pythonAnswers[currentQuestionIndex][this.dataset.idx] = this.value;
+                        });
+                        
+                        pyContainer.appendChild(input);
+                        inputCounter++;
+                    }
                 });
-                
-                bottomNotice.textContent = '※ 우측 코드 영역의 노란색 빈칸을 눌러 정답 코드를 완성하세요.';
+                bottomNotice.textContent = '※ 문제를 꼼꼼히 읽고 우측 에디터 빈칸에 코드를 완성하세요.';
             } else {
-                // 엔트리 모드 복귀
                 examScreen.classList.replace('max-w-[85rem]', 'max-w-5xl');
                 qContentArea.classList.replace('w-1/2', 'w-full');
                 qContentArea.classList.remove('border-r', 'border-gray-300');
