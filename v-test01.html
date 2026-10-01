@@ -64,16 +64,8 @@
     <!-- 1. 시작 화면 (급수 선택) -->
     <div id="intro-screen" class="hidden flex-col items-center justify-center h-full w-full bg-gray-100 p-6">
         <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-2xl text-center">
-            <div class="flex justify-between items-center mb-6">
+            <div class="mb-6">
                 <h1 class="text-3xl font-bold text-gray-800">통합CBT 모의고사 1회</h1>
-                <!-- 엔트리 새창 열기 버튼 -->
-                <button onclick="openEntry()" class="bg-yellow-400 hover:bg-yellow-500 text-gray-800 font-bold py-2 px-4 rounded-lg shadow transition-colors flex items-center space-x-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
-                        <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
-                    </svg>
-                    <span>엔트리 화면 열기</span>
-                </button>
             </div>
             <p class="text-gray-500 mb-8">응시할 시험의 급수를 선택한 후 시작 버튼을 눌러주세요.</p>
             
@@ -99,22 +91,22 @@
             <div class="grid grid-cols-2 gap-6 mb-10">
                 <!-- 3급 배포파일 -->
                 <div>
-                    <a href="https://naver.me/IMZvfetx" target="_blank" class="flex items-center justify-center w-full bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold py-3 px-4 rounded-xl border border-indigo-200 transition-colors shadow-sm text-sm">
+                    <button onclick="openDistFile('https://naver.me/IMZvfetx')" class="flex items-center justify-center w-full bg-yellow-50 hover:bg-yellow-100 text-yellow-800 font-bold py-3 px-4 rounded-xl border border-yellow-300 transition-colors shadow-sm text-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
                         배포파일
-                    </a>
+                    </button>
                 </div>
                 
                 <!-- 2급 배포파일 -->
                 <div class="flex space-x-3">
-                    <a href="https://naver.me/GB3o8JtV" target="_blank" class="flex items-center justify-center flex-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold py-3 px-2 rounded-xl border border-indigo-200 transition-colors shadow-sm text-sm whitespace-nowrap">
+                    <button onclick="openDistFile('https://naver.me/GB3o8JtV')" class="flex items-center justify-center flex-1 bg-yellow-50 hover:bg-yellow-100 text-yellow-800 font-bold py-3 px-2 rounded-xl border border-yellow-300 transition-colors shadow-sm text-sm whitespace-nowrap">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
                         배포파일 1
-                    </a>
-                    <a href="https://naver.me/GWWdgnh3" target="_blank" class="flex items-center justify-center flex-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold py-3 px-2 rounded-xl border border-indigo-200 transition-colors shadow-sm text-sm whitespace-nowrap">
+                    </button>
+                    <button onclick="openDistFile('https://naver.me/GWWdgnh3')" class="flex items-center justify-center flex-1 bg-yellow-50 hover:bg-yellow-100 text-yellow-800 font-bold py-3 px-2 rounded-xl border border-yellow-300 transition-colors shadow-sm text-sm whitespace-nowrap">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
                         배포파일 2
-                    </a>
+                    </button>
                 </div>
             </div>
 
@@ -519,8 +511,9 @@
             `;
         }
 
-        function openEntry() {
-            window.open("https://playentry.org", "EntryWorkspace", "width=1200,height=800,location=no,menubar=no,toolbar=no,status=no");
+        /* 배포파일 새 창(팝업) 열기 */
+        function openDistFile(url) {
+            window.open(url, "_blank", "width=1200,height=800,location=no,menubar=no,toolbar=no,status=no,scrollbars=yes,resizable=yes");
         }
 
         function selectLevel(level) {
