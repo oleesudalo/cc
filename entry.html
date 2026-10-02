@@ -278,9 +278,141 @@
     .problem-top{display:block}
     .done-label{margin-top:12px}
   }
+
+  body.locked{overflow:hidden}
+  .access-overlay{
+    position:fixed;inset:0;z-index:9999;
+    display:flex;align-items:center;justify-content:center;
+    background:#d9dde3;
+    padding:24px;
+  }
+  .access-card{
+    width:min(455px,92vw);
+    background:rgba(255,255,255,.62);
+    border:1px solid rgba(255,255,255,.92);
+    border-radius:28px;
+    padding:38px 38px 36px;
+    box-shadow:0 24px 55px rgba(35,49,66,.13);
+    backdrop-filter:blur(10px);
+    text-align:center;
+  }
+  .access-icon{
+    width:76px;height:76px;margin:0 auto 20px;
+    display:grid;place-items:center;border-radius:18px;background:#fff;
+    box-shadow:0 5px 14px rgba(40,55,75,.08);
+    color:#6269f5;
+  }
+  .access-icon svg{width:39px;height:39px}
+  .access-card h2{
+    margin:0;font-size:24px;letter-spacing:-.04em;color:#1f2b3d;font-weight:900;
+  }
+  .access-card .access-sub{
+    margin:10px 0 28px;color:#7a899f;font-size:14px;font-weight:650;
+  }
+  .password-wrap{position:relative}
+  .password-wrap svg{
+    position:absolute;left:17px;top:50%;transform:translateY(-50%);
+    width:20px;height:20px;color:#9aacbf;pointer-events:none;
+  }
+  .password-input{
+    width:100%;height:56px;border:1px solid #e4e8ef;border-radius:14px;
+    background:#fff;padding:0 16px 0 48px;font:inherit;font-size:15px;
+    outline:none;box-shadow:0 3px 8px rgba(34,50,70,.05);
+  }
+  .password-input:focus{border-color:#8ea8c6;box-shadow:0 0 0 3px rgba(72,116,158,.10)}
+  .access-error{
+    display:none;text-align:left;margin:8px 2px 0;color:#e24c4b;
+    font-size:12px;font-weight:700;
+  }
+  .access-btn{
+    width:100%;height:54px;margin-top:18px;border:0;border-radius:14px;
+    background:#1e2a3d;color:#fff;font:inherit;font-size:15px;font-weight:900;
+    cursor:pointer;box-shadow:0 5px 10px rgba(24,35,50,.16);
+  }
+  .access-btn:hover{background:#26344b}
+
+  .notice-overlay{
+    position:fixed;inset:0;z-index:10000;
+    display:none;align-items:center;justify-content:center;
+    background:rgba(83,94,108,.62);
+    padding:24px;
+  }
+  .notice-card{
+    width:min(465px,92vw);overflow:hidden;
+    border-radius:27px;background:#fff;
+    border:1px solid rgba(255,255,255,.9);
+    box-shadow:0 25px 60px rgba(35,42,52,.22);
+  }
+  .notice-accent{height:6px;background:#ff514b}
+  .notice-inner{padding:37px 38px 38px;text-align:center}
+  .warning-icon{
+    width:66px;height:66px;margin:0 auto 20px;border-radius:50%;
+    display:grid;place-items:center;background:#fff0ef;color:#f0443e;
+  }
+  .warning-icon svg{width:31px;height:31px}
+  .notice-inner h2{
+    margin:0;color:#1f2b3d;font-size:24px;font-weight:900;letter-spacing:-.04em;
+  }
+  .notice-copy{
+    margin:14px 0 0;color:#75849a;font-size:15px;line-height:1.8;font-weight:600;
+  }
+  .notice-copy b{color:#3d55e8}
+  .notice-copy .danger{color:#f0443e;font-weight:900}
+  .notice-confirm{
+    width:100%;height:54px;margin-top:27px;border:0;border-radius:13px;
+    background:#1e2a3d;color:#fff;font:inherit;font-weight:900;font-size:15px;
+    cursor:pointer;box-shadow:0 5px 10px rgba(24,35,50,.16);
+  }
+  @media(max-width:520px){
+    .access-card,.notice-inner{padding-left:24px;padding-right:24px}
+  }
+
 </style>
 </head>
-<body>
+<body class="locked">
+
+<div class="access-overlay" id="accessOverlay">
+  <div class="access-card">
+    <div class="access-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M12 3.2 18.5 6v5.1c0 4.1-2.5 7.7-6.5 9.7-4-2-6.5-5.6-6.5-9.7V6L12 3.2Z" stroke="currentColor" stroke-width="2.3" stroke-linejoin="round"/>
+        <path d="M12 6.8v10.3" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <h2>대시보드 접근 제한</h2>
+    <div class="access-sub">허가된 사용자만 접근할 수 있습니다.</div>
+    <div class="password-wrap">
+      <svg viewBox="0 0 24 24" fill="none">
+        <rect x="5.5" y="10" width="13" height="9" rx="2" fill="currentColor"/>
+        <path d="M8.5 10V7.7a3.5 3.5 0 0 1 7 0V10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <input id="accessPassword" class="password-input" type="password" placeholder="비밀번호 입력" autocomplete="off">
+    </div>
+    <div id="accessError" class="access-error">비밀번호가 올바르지 않습니다.</div>
+    <button id="accessBtn" class="access-btn" type="button">입장하기</button>
+  </div>
+</div>
+
+<div class="notice-overlay" id="noticeOverlay">
+  <div class="notice-card">
+    <div class="notice-accent"></div>
+    <div class="notice-inner">
+      <div class="warning-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M10.3 3.8a2 2 0 0 1 3.4 0l7.1 12.3A2 2 0 0 1 19.1 19H4.9a2 2 0 0 1-1.7-2.9l7.1-12.3ZM12 8a1 1 0 0 0-1 1v4a1 1 0 1 0 2 0V9a1 1 0 0 0-1-1Zm0 8.7a1.15 1.15 0 1 0 0-2.3 1.15 1.15 0 0 0 0 2.3Z"/>
+        </svg>
+      </div>
+      <h2>무단 배포 금지</h2>
+      <div class="notice-copy">
+        이 사이트는 SW미래채움 강사님들의<br>
+        <b>자격시험 스터디</b>를 위해 개발되었습니다.<br><br>
+        타인에게 무단으로 <span class="danger">재배포하지 마시기 바랍니다.</span>
+      </div>
+      <button id="noticeConfirm" class="notice-confirm" type="button">확인했습니다</button>
+    </div>
+  </div>
+</div>
+
 <div class="app">
   <aside>
     <div class="brand">
@@ -586,6 +718,42 @@
   </main>
 </div>
 <script>
+
+  const ACCESS_PASSWORD = 'alfocodna';
+  const accessOverlay = document.getElementById('accessOverlay');
+  const noticeOverlay = document.getElementById('noticeOverlay');
+  const accessPassword = document.getElementById('accessPassword');
+  const accessError = document.getElementById('accessError');
+  const accessBtn = document.getElementById('accessBtn');
+  const noticeConfirm = document.getElementById('noticeConfirm');
+
+  function tryEnter(){
+    if(accessPassword.value === ACCESS_PASSWORD){
+      accessError.style.display = 'none';
+      accessOverlay.style.display = 'none';
+      noticeOverlay.style.display = 'flex';
+      accessPassword.value = '';
+    }else{
+      accessError.style.display = 'block';
+      accessPassword.focus();
+      accessPassword.select();
+    }
+  }
+
+  accessBtn.addEventListener('click', tryEnter);
+  accessPassword.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter') tryEnter();
+  });
+
+  noticeConfirm.addEventListener('click', () => {
+    noticeOverlay.style.display = 'none';
+    document.body.classList.remove('locked');
+  });
+
+  window.addEventListener('load', () => {
+    accessPassword.focus();
+  });
+
   const checks = [...document.querySelectorAll('input[type="checkbox"][data-q]')];
   const key = 'entry-level2-practice-v1';
   const saved = JSON.parse(localStorage.getItem(key) || '{}');
