@@ -1088,11 +1088,74 @@ html.fallback-fullscreen .main{
   height:auto;
   object-fit:contain;
 }
+
+/* 교재 기반 Python 문제은행 */
+.bank-progress{display:flex;flex-wrap:wrap;gap:8px}
+.bank-progress .mock-dot{flex:0 0 38px}
+@media(max-width:760px){.bank-progress .mock-dot{flex-basis:34px}}
+
+/* 문제은행 하단 버튼 배열 수정 */
+.bank-exam .mock-bottom-bar{
+  grid-template-columns:auto minmax(260px, 1fr) auto;
+  grid-template-rows:auto;
+  align-items:center;
+}
+.bank-exam .mock-bottom-bar .practice-actions{
+  grid-column:1;
+  grid-row:1;
+  justify-content:flex-start;
+}
+.bank-exam .mock-bottom-bar .feedback{
+  grid-column:2;
+  grid-row:1;
+}
+.bank-exam .real-inline-nav{
+  grid-column:3;
+  grid-row:1;
+  display:flex;
+  gap:8px;
+  justify-content:flex-end;
+  margin-left:auto;
+}
+.bank-exam .real-inline-nav .bank-next-inline{
+  background:var(--accent);
+  color:#fff;
+  border-color:var(--accent);
+}
+@media(max-width:900px){
+  .bank-exam .mock-bottom-bar{
+    grid-template-columns:1fr;
+  }
+  .bank-exam .mock-bottom-bar .practice-actions,
+  .bank-exam .mock-bottom-bar .feedback,
+  .bank-exam .real-inline-nav{
+    grid-column:1;
+  }
+  .bank-exam .mock-bottom-bar .practice-actions{grid-row:1}
+  .bank-exam .mock-bottom-bar .feedback{grid-row:2}
+  .bank-exam .real-inline-nav{
+    grid-row:3;
+    width:100%;
+    justify-content:flex-end;
+  }
+}
+
+
+/* 에러 페이지 핵심 체크 목록 */
+.error-check-list{
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+  margin-top:10px;
+}
+.error-check-item{
+  line-height:1.7;
+}
 </style>
 </head>
 <body>
 <div class="layout">
-<aside class="sidebar"><div class="sidebar-logo"><img src="./mc_logo_blk.png" alt="미래채움 로고"></div>
+<aside class="sidebar"><div class="sidebar-logo"><img alt="미래채움 로고" src="./mc_logo_blk.png"/></div>
 <div class="brand">SW·AI 교육강사 자격 실기 대비</div>
 <h1>Python 기초<br/>한눈에 보는 레퍼런스</h1>
 <div class="badge">2급 · 텍스트 프로그래밍</div>
@@ -1109,14 +1172,17 @@ html.fallback-fullscreen .main{
 <a href="#s7"><span class="num">07</span>반복문</a>
 <a href="#s8"><span class="num">08</span>리스트</a>
 <a href="#s9"><span class="num">09</span>딕셔너리</a>
-<a href="#s10"><span class="num">10</span>함수</a>
+<a href="#s10"><span class="num">10</span>함수</a><a href="#s11">
+<span class="num">11</span>
+  에러
+</a>
 </nav>
 <div class="nav-title">MOCK TEST</div>
 <nav class="nav mock-nav-menu">
 <a href="#mock-hub"><span class="num">P</span>기초연습문제</a>
 </nav><nav class="nav real-nav-menu">
 <a href="#real-hub"><span class="num">M</span>모의고사</a>
-</nav><nav class="nav past-nav-menu">
+</nav><nav class="nav bank-nav-menu"><a href="#problem-bank"><span class="num">B</span>문제은행</a></nav><nav class="nav past-nav-menu">
 <a href="#past-hub"><span class="num">Q</span>기출문제</a>
 </nav>
 <div class="sidebar-note">
@@ -2329,7 +2395,131 @@ print(avg)   # 90.0</div>
 <div class="feedback"></div>
 <div class="answer-note">정답: <code>sum(scores) / len(scores)</code> · 합계를 요소 개수로 나누어 평균을 구합니다.</div>
 </div>
-</div></section>
+</div></section><section class="section" id="s11">
+<div class="section-head">
+<div class="step">11</div>
+<div>
+<h3>에러</h3>
+<p class="subtitle">에러 메시지를 읽고 원인을 찾아 수정하기</p>
+</div>
+</div>
+
+<div class="theory-panel">
+<div class="beginner-box">
+<h4>에러 메시지는 무서운 문장이 아니라 힌트입니다.</h4>
+<p>Python은 코드에 문제가 생기면 <b>어디에서 어떤 문제가 발생했는지</b> 에러 이름과 함께 알려줍니다.</p>
+<p>에러가 나오면 가장 먼저 메시지의 <b>마지막 줄</b>을 확인합니다. 보통 마지막 줄에 <code>TypeError</code>, <code>NameError</code>처럼 에러 종류와 원인이 표시됩니다.</p>
+<div class="memory-tip"><b>읽는 순서:</b> ① 에러 이름 확인 → ② 몇 번째 줄인지 확인 → ③ 해당 줄의 변수·자료형·괄호·들여쓰기 확인</div>
+</div>
+<div class="card" style="margin-top:16px">
+<h4>자주 만나는 Python 에러</h4>
+<table class="compare-table">
+<tr>
+<th>에러</th>
+<th>언제 발생하나요?</th>
+<th>대표 예</th>
+<th>확인할 것</th>
+</tr>
+<tr>
+<td><code>SyntaxError</code></td>
+<td>Python 문법이 잘못되었을 때</td>
+<td><code>if score &gt;= 80</code></td>
+<td>콜론(<code>:</code>), 괄호, 따옴표 등</td>
+</tr>
+<tr>
+<td><code>IndentationError</code></td>
+<td>들여쓰기가 잘못되었을 때</td>
+<td><code>if</code> 다음 줄이 들여쓰기되지 않음</td>
+<td>같은 블록의 들여쓰기 깊이</td>
+</tr>
+<tr>
+<td><code>NameError</code></td>
+<td>만들지 않은 변수나 함수 이름을 사용했을 때</td>
+<td><code>print(totle)</code></td>
+<td>변수 이름의 오타, 정의 여부</td>
+</tr>
+<tr>
+<td><code>TypeError</code></td>
+<td>서로 맞지 않는 자료형을 연산했을 때</td>
+<td><code>10 + "20"</code></td>
+<td><code>int()</code>, <code>float()</code>, <code>str()</code> 등 형변환</td>
+</tr>
+<tr>
+<td><code>ValueError</code></td>
+<td>자료형 변환은 가능하지만 값 자체가 알맞지 않을 때</td>
+<td><code>int("apple")</code></td>
+<td>입력값이 실제 숫자 형태인지</td>
+</tr>
+<tr>
+<td><code>IndexError</code></td>
+<td>리스트에 존재하지 않는 위치를 사용했을 때</td>
+<td><code>[10,20,30][3]</code></td>
+<td>인덱스는 0부터 시작한다는 점</td>
+</tr>
+<tr>
+<td><code>KeyError</code></td>
+<td>딕셔너리에 없는 키를 사용했을 때</td>
+<td><code>student["age"]</code></td>
+<td>키 이름과 철자가 정확한지</td>
+</tr>
+<tr>
+<td><code>ZeroDivisionError</code></td>
+<td>0으로 나누었을 때</td>
+<td><code>10 / 0</code></td>
+<td>나누는 값이 0이 되는 경우가 있는지</td>
+</tr>
+<tr>
+<td><code>AttributeError</code></td>
+<td>해당 자료형에 없는 기능을 사용했을 때</td>
+<td><code>10.append(3)</code></td>
+<td>메서드를 사용할 수 있는 자료형인지</td>
+</tr>
+<tr>
+<td><code>ModuleNotFoundError</code></td>
+<td>불러오려는 모듈을 찾을 수 없을 때</td>
+<td><code>import 모듈이름</code></td>
+<td>모듈 이름·설치 여부</td>
+</tr>
+</table>
+</div>
+<div class="grid2" style="margin-top:16px">
+<div class="card">
+<h4>TypeError와 ValueError 구분하기</h4>
+<div class="code-wrap">
+<button class="copy">복사</button>
+<pre><code># TypeError
+print(10 + "20")
+
+# ValueError
+number = int("사과")</code></pre>
+</div>
+<p class="mini"><b>TypeError</b>는 자료형끼리 맞지 않는 경우, <b>ValueError</b>는 함수가 요구하는 형태와 실제 값이 맞지 않는 경우로 생각하면 쉽습니다.</p>
+</div>
+<div class="card">
+<h4>IndexError는 리스트 길이를 먼저 확인</h4>
+<div class="code-wrap">
+<button class="copy">복사</button>
+<pre><code>scores = [80, 90, 100]
+
+print(scores[0])  # 80
+print(scores[2])  # 100</code></pre>
+</div>
+<p class="mini">요소가 3개라면 사용할 수 있는 인덱스는 <code>0, 1, 2</code>입니다. <code>scores[3]</code>은 존재하지 않아 <code>IndexError</code>가 발생합니다.</p>
+</div>
+</div>
+<div class="card exam" style="margin-top:16px"><h4>실기에서 특히 확인할 에러</h4><div class="error-check-list"><div class="error-check-item"><b>① TypeError</b> — input()은 문자열이라는 점을 놓친 경우가 많음</div><div class="error-check-item"><b>② NameError</b> — 변수 이름 오타</div><div class="error-check-item"><b>③ SyntaxError / IndentationError</b> — 콜론과 들여쓰기</div><div class="error-check-item"><b>④ IndexError</b> — 리스트 인덱스 범위 확인</div></div></div>
+<div class="beginner-box" style="margin-top:16px">
+<h4>에러 메시지 예시 읽어보기</h4>
+<div class="code-wrap">
+<button class="copy">복사</button>
+<pre><code>TypeError: unsupported operand type(s) for +: 'int' and 'str'</code></pre>
+</div>
+<p><code>TypeError</code>가 발생했고, <code>int</code>와 <code>str</code>을 <code>+</code>로 계산하려 했다는 뜻입니다.</p>
+<p>예를 들어 <code>num = input()</code>으로 받은 값은 문자열이므로 숫자로 계산해야 한다면 <code>num = int(input())</code>처럼 바꾸어야 합니다.</p>
+</div>
+</div>
+
+</section>
 <section class="section" id="mock-hub">
 <div class="overview-kicker">BASIC PRACTICE</div>
 <div class="section-head">
@@ -6448,7 +6638,152 @@ print(result)</div>
 <div class="answer-note"><b>정답과 설명</b><br/><br/><code>result = double(add(3, 4))</code><div class="answer-explain">먼저 add(3, 4)로 3과 4의 합인 7을 구합니다. 그 결과 7을 double() 함수에 전달하면 14가 되므로, 두 함수를 안쪽부터 차례대로 호출해 result에 저장합니다. 덧셈은 순서를 바꿔도 결과가 같으므로 add(4, 3)으로 작성해도 정답으로 인정됩니다.</div></div>
 </div>
 </div>
-</section><section class="section" id="past-hub">
+</section><section class="section bank-exam" id="problem-bank">
+<div class="mock-exam-head"><div><div class="overview-kicker">TEXTBOOK · PYTHON QUESTION BANK</div>
+<h3>Python 문제은행</h3><div class="mock-meta">교재 실기 기반 · 파이썬 기초 문법 30문제 · 현재 문제 <span class="bank-current">1</span>/30</div></div></div>
+<div class="mock-hub-intro">(2급)_SW미래채움_강사_자격증_수험서(실기__A형) 문제 중 시험 범위와 관련된 문제만 모았습니다.</div>
+<div class="mock-progress bank-progress"><button class="mock-dot active" data-q="0" type="button">1</button><button class="mock-dot" data-q="1" type="button">2</button><button class="mock-dot" data-q="2" type="button">3</button><button class="mock-dot" data-q="3" type="button">4</button><button class="mock-dot" data-q="4" type="button">5</button><button class="mock-dot" data-q="5" type="button">6</button><button class="mock-dot" data-q="6" type="button">7</button><button class="mock-dot" data-q="7" type="button">8</button><button class="mock-dot" data-q="8" type="button">9</button><button class="mock-dot" data-q="9" type="button">10</button><button class="mock-dot" data-q="10" type="button">11</button><button class="mock-dot" data-q="11" type="button">12</button><button class="mock-dot" data-q="12" type="button">13</button><button class="mock-dot" data-q="13" type="button">14</button><button class="mock-dot" data-q="14" type="button">15</button><button class="mock-dot" data-q="15" type="button">16</button><button class="mock-dot" data-q="16" type="button">17</button><button class="mock-dot" data-q="17" type="button">18</button><button class="mock-dot" data-q="18" type="button">19</button><button class="mock-dot" data-q="19" type="button">20</button><button class="mock-dot" data-q="20" type="button">21</button><button class="mock-dot" data-q="21" type="button">22</button><button class="mock-dot" data-q="22" type="button">23</button><button class="mock-dot" data-q="23" type="button">24</button><button class="mock-dot" data-q="24" type="button">25</button><button class="mock-dot" data-q="25" type="button">26</button><button class="mock-dot" data-q="26" type="button">27</button><button class="mock-dot" data-q="27" type="button">28</button><button class="mock-dot" data-q="28" type="button">29</button><button class="mock-dot" data-q="29" type="button">30</button></div><div class="mock-question active" data-q="0"><div class="mock-question-head"><span class="mock-qno">문제 1</span><span class="mock-cat">자료형·조건문</span><span class="mock-level">하</span></div><div class="practice-card mock-practice"><h4>문자열의 참·거짓 확인</h4><div class="real-exam-stem">다음은 문자열이 비어 있는지 확인하는 Python 프로그램이다. bool() 함수를 사용하여 a에 문자열이 들어 있을 때 '사과가 있습니다.'가 출력되도록 빈칸을 완성하시오.</div><div class="real-code-label">【Python 코드】</div><div class="practice-code mock-code">a = "사과"
+
+if <input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input" data-answer="bool(a)|a|len(a) &gt; 0|len(a)&gt;0" placeholder="ⓐ" spellcheck="false" type="text"/>:
+    print("사과가 있습니다.")
+else:
+    print("사과가 없습니다.")</div><div class="mock-output"><b>【실행 결과】</b> 사과가 있습니다.</div><div class="mock-bottom-bar"><div class="practice-actions"><button class="check-answer" type="button">정답 확인</button><button class="reset-answer" type="button">다시 풀기</button></div><div class="feedback"></div><div class="real-inline-nav"><button class="bank-prev-inline" disabled="" type="button">← 이전</button><button class="bank-next-inline" type="button">다음 →</button></div></div><div class="answer-note"><b>정답과 설명</b><br/><br/><code>bool(a)</code><div class="answer-explain">비어 있지 않은 문자열은 True로 평가됩니다. 따라서 bool(a)를 사용하면 문자열이 비어 있는지 확인할 수 있습니다. a != ""도 같은 결과가 나오지만, 이 문제는 bool() 함수를 사용하라는 조건이 있으므로 정답은 bool(a)입니다.</div></div></div></div><div class="mock-question" data-q="1"><div class="mock-question-head"><span class="mock-qno">문제 2</span><span class="mock-cat">함수</span><span class="mock-level">중</span></div><div class="practice-card mock-practice"><h4>두 수를 더하는 함수</h4><div class="real-exam-stem">두 수의 합을 반환하는 함수와 함수 호출 부분을 완성하시오.</div><div class="real-code-label">【Python 코드】</div><div class="practice-code mock-code">def add(a, b):
+    <input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input" data-answer="return a + b|return a+b" placeholder="ⓐ" spellcheck="false" type="text"/>
+
+x = 7
+y = 5
+result = <input aria-label="빈칸 ⓑ" autocomplete="off" class="blank-input" data-answer="add(x, y)|add(x,y)" placeholder="ⓑ" spellcheck="false" type="text"/>
+print("두 수의 합:", result)</div><div class="mock-output"><b>【실행 결과】</b> 두 수의 합: 12</div><div class="mock-bottom-bar"><div class="practice-actions"><button class="check-answer" type="button">정답 확인</button><button class="reset-answer" type="button">다시 풀기</button></div><div class="feedback"></div><div class="real-inline-nav"><button class="bank-prev-inline" type="button">← 이전</button><button class="bank-next-inline" type="button">다음 →</button></div></div><div class="answer-note"><b>정답과 설명</b><br/><br/><strong>ⓐ</strong> <code>return a + b</code><div class="answer-explain">계산 결과를 함수 밖으로 돌려주기 위해 return을 사용합니다.</div><br/><br/><strong>ⓑ</strong> <code>add(x, y)</code><div class="answer-explain">정의한 함수에 x와 y를 전달하여 호출합니다.</div></div></div></div><div class="mock-question" data-q="2"><div class="mock-question-head"><span class="mock-qno">문제 3</span><span class="mock-cat">조건문·반복문</span><span class="mock-level">상</span></div><div class="practice-card mock-practice"><h4>짝수의 합 구하기</h4><div class="real-exam-stem">1부터 10까지의 수 중 짝수만 골라 합을 구하도록 조건식과 누적 코드를 완성하시오.</div><div class="real-code-label">【Python 코드】</div><div class="practice-code mock-code">total = 0
+for i in range(1, 11):
+    if <input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input" data-answer="i % 2 == 0|i%2==0|i % 2 != 1|i%2!=1|not i % 2|not i%2" placeholder="ⓐ" spellcheck="false" type="text"/>:
+        <input aria-label="빈칸 ⓑ" autocomplete="off" class="blank-input" data-answer="total += i|total+=i|total = total + i|total=total+i" placeholder="ⓑ" spellcheck="false" type="text"/>
+print("짝수의 합:", total)</div><div class="mock-output"><b>【실행 결과】</b> 짝수의 합: 30</div><div class="mock-bottom-bar"><div class="practice-actions"><button class="check-answer" type="button">정답 확인</button><button class="reset-answer" type="button">다시 풀기</button></div><div class="feedback"></div><div class="real-inline-nav"><button class="bank-prev-inline" type="button">← 이전</button><button class="bank-next-inline" type="button">다음 →</button></div></div><div class="answer-note"><b>정답과 설명</b><br/><br/><strong>ⓐ</strong> <code>i % 2 == 0</code><div class="answer-explain">짝수는 2로 나누었을 때 나머지가 0입니다.</div><br/><br/><strong>ⓑ</strong> <code>total += i</code><div class="answer-explain">조건을 만족한 i를 total에 계속 누적합니다.</div></div></div></div><div class="mock-question" data-q="3"><div class="mock-question-head"><span class="mock-qno">문제 4</span><span class="mock-cat">연산자</span><span class="mock-level">하</span></div><div class="practice-card mock-practice"><h4>입력값의 제곱 계산</h4><div class="real-exam-stem">num의 값이 달라져도 제곱이 계산되도록 식을 완성하시오.</div><div class="real-code-label">【Python 코드】</div><div class="practice-code mock-code">num = 4
+result = <input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input" data-answer="num * num|num*num|num ** 2|num**2|pow(num, 2)|pow(num,2)" placeholder="ⓐ" spellcheck="false" type="text"/>
+print("제곱값:", result)</div><div class="mock-output"><b>【실행 결과】</b> 제곱값: 16</div><div class="mock-bottom-bar"><div class="practice-actions"><button class="check-answer" type="button">정답 확인</button><button class="reset-answer" type="button">다시 풀기</button></div><div class="feedback"></div><div class="real-inline-nav"><button class="bank-prev-inline" type="button">← 이전</button><button class="bank-next-inline" type="button">다음 →</button></div></div><div class="answer-note"><b>정답과 설명</b><br/><br/><code>num * num</code><div class="answer-explain">상수를 직접 쓰지 않고 변수 num을 이용해야 값이 바뀌어도 동작합니다.</div></div></div></div><div class="mock-question" data-q="4"><div class="mock-question-head"><span class="mock-qno">문제 5</span><span class="mock-cat">함수</span><span class="mock-level">중</span></div><div class="practice-card mock-practice"><h4>두 수의 차를 구하는 함수</h4><div class="real-exam-stem">두 수의 차를 반환하는 함수와 호출 부분을 완성하시오.</div><div class="real-code-label">【Python 코드】</div><div class="practice-code mock-code">def subtract(a, b):
+    <input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input" data-answer="return a - b|return a-b" placeholder="ⓐ" spellcheck="false" type="text"/>
+
+x = 8
+y = 5
+result = <input aria-label="빈칸 ⓑ" autocomplete="off" class="blank-input" data-answer="subtract(x, y)|subtract(x,y)" placeholder="ⓑ" spellcheck="false" type="text"/>
+print("두 수의 차:", result)</div><div class="mock-output"><b>【실행 결과】</b> 두 수의 차: 3</div><div class="mock-bottom-bar"><div class="practice-actions"><button class="check-answer" type="button">정답 확인</button><button class="reset-answer" type="button">다시 풀기</button></div><div class="feedback"></div><div class="real-inline-nav"><button class="bank-prev-inline" type="button">← 이전</button><button class="bank-next-inline" type="button">다음 →</button></div></div><div class="answer-note"><b>정답과 설명</b><br/><br/><strong>ⓐ</strong> <code>return a - b</code><div class="answer-explain">a에서 b를 뺀 결과를 반환합니다.</div><br/><br/><strong>ⓑ</strong> <code>subtract(x, y)</code><div class="answer-explain">subtract 함수에 x와 y를 전달합니다.</div></div></div></div><div class="mock-question" data-q="5"><div class="mock-question-head"><span class="mock-qno">문제 6</span><span class="mock-cat">중첩 반복문</span><span class="mock-level">상</span></div><div class="practice-card mock-practice"><h4>2단부터 4단까지 구구단</h4><div class="real-exam-stem">곱셈 결과가 앞의 문자열과 연결될 수 있도록 빈칸을 완성하시오.</div><div class="real-code-label">【Python 코드】</div><div class="practice-code mock-code">for i in range(2, 5):
+    print("[" + str(i) + "단]")
+    for j in range(1, 10):
+        print(str(i) + " x " + str(j) + " = " + <input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input" data-answer="str(i * j)|str(i*j)" placeholder="ⓐ" spellcheck="false" type="text"/>)
+    print()</div><div class="mock-output"><b>【실행 결과】</b> 2 x 1 = 2 ... 4 x 9 = 36</div><div class="mock-bottom-bar"><div class="practice-actions"><button class="check-answer" type="button">정답 확인</button><button class="reset-answer" type="button">다시 풀기</button></div><div class="feedback"></div><div class="real-inline-nav"><button class="bank-prev-inline" type="button">← 이전</button><button class="bank-next-inline" type="button">다음 →</button></div></div><div class="answer-note"><b>정답과 설명</b><br/><br/><code>str(i * j)</code><div class="answer-explain">숫자인 i*j의 결과를 문자열과 연결하려면 str()로 변환해야 합니다.</div></div></div></div><div class="mock-question" data-q="6"><div class="mock-question-head"><span class="mock-qno">문제 7</span><span class="mock-cat">자료형·비교</span><span class="mock-level">하</span></div><div class="practice-card mock-practice"><h4>문자열 숫자와 정수 비교</h4><div class="real-exam-stem">문자열 "10"을 정수로 변환해 정수 10과 비교하도록 완성하시오.</div><div class="real-code-label">【Python 코드】</div><div class="practice-code mock-code">s = "10"
+n = 10
+check = <input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input" data-answer="int(s) == n|int(s)==n|n == int(s)|n==int(s)" placeholder="ⓐ" spellcheck="false" type="text"/>
+print("같음:", check)</div><div class="mock-output"><b>【실행 결과】</b> 같음: True</div><div class="mock-bottom-bar"><div class="practice-actions"><button class="check-answer" type="button">정답 확인</button><button class="reset-answer" type="button">다시 풀기</button></div><div class="feedback"></div><div class="real-inline-nav"><button class="bank-prev-inline" type="button">← 이전</button><button class="bank-next-inline" type="button">다음 →</button></div></div><div class="answer-note"><b>정답과 설명</b><br/><br/><code>int(s) == n</code><div class="answer-explain">문자열 s를 int()로 정수형으로 바꾼 뒤 비교합니다.</div></div></div></div><div class="mock-question" data-q="7"><div class="mock-question-head"><span class="mock-qno">문제 8</span><span class="mock-cat">조건문·반복문</span><span class="mock-level">중</span></div><div class="practice-card mock-practice"><h4>1부터 50까지 홀수의 합</h4><div class="real-exam-stem">1부터 50까지의 수 중 홀수만 골라 합을 구하도록 완성하시오.</div><div class="real-code-label">【Python 코드】</div><div class="practice-code mock-code">total = 0
+for i in range(1, 51):
+    if <input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input" data-answer="i % 2 == 1|i%2==1|i % 2 != 0|i%2!=0" placeholder="ⓐ" spellcheck="false" type="text"/>:
+        <input aria-label="빈칸 ⓑ" autocomplete="off" class="blank-input" data-answer="total += i|total+=i|total = total + i|total=total+i" placeholder="ⓑ" spellcheck="false" type="text"/>
+print("홀수의 합:", total)</div><div class="mock-output"><b>【실행 결과】</b> 홀수의 합: 625</div><div class="mock-bottom-bar"><div class="practice-actions"><button class="check-answer" type="button">정답 확인</button><button class="reset-answer" type="button">다시 풀기</button></div><div class="feedback"></div><div class="real-inline-nav"><button class="bank-prev-inline" type="button">← 이전</button><button class="bank-next-inline" type="button">다음 →</button></div></div><div class="answer-note"><b>정답과 설명</b><br/><br/><strong>ⓐ</strong> <code>i % 2 == 1</code><div class="answer-explain">홀수는 2로 나눈 나머지가 1입니다.</div><br/><br/><strong>ⓑ</strong> <code>total += i</code><div class="answer-explain">조건을 만족한 값을 total에 누적합니다.</div></div></div></div><div class="mock-question" data-q="8"><div class="mock-question-head"><span class="mock-qno">문제 9</span><span class="mock-cat">디버깅</span><span class="mock-level">상</span></div><div class="practice-card mock-practice"><h4>input() 자료형 오류 수정</h4><div class="real-exam-stem">다음 프로그램은 입력한 숫자를 계속 더해 합이 20 이상이 되면 종료하려고 한다. input()의 결과가 문자열이라 오류가 발생하지 않도록 입력문 한 줄을 수정하시오. 입력 안내 문구는 "숫자 입력: "으로 작성할 것.</div><div class="real-code-label">【Python 코드】</div><div class="practice-code mock-code">total = 0
+while total &lt; 20:
+    <input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input" data-answer="num = int(input(&quot;숫자 입력: &quot;))|num=int(input(&quot;숫자 입력: &quot;))|num = int(input('숫자 입력: '))|num=int(input('숫자 입력: '))" placeholder="ⓐ" spellcheck="false" type="text"/>
+    total += num
+    print("현재 합:", total)
+print("계산이 종료되었습니다")</div><div class="mock-output"><b>【실행 결과】</b> 누적 합이 20 이상이면 반복 종료</div><div class="mock-bottom-bar"><div class="practice-actions"><button class="check-answer" type="button">정답 확인</button><button class="reset-answer" type="button">다시 풀기</button></div><div class="feedback"></div><div class="real-inline-nav"><button class="bank-prev-inline" type="button">← 이전</button><button class="bank-next-inline" type="button">다음 →</button></div></div><div class="answer-note"><b>정답과 설명</b><br/><br/><code>num = int(input("숫자 입력: "))</code><div class="answer-explain">input()은 문자열을 반환하므로 정수로 변환해야 total과 더할 수 있습니다.</div></div></div></div><div class="mock-question" data-q="9"><div class="mock-question-head"><span class="mock-qno">문제 10</span><span class="mock-cat">함수·반복문</span><span class="mock-level">하</span></div><div class="practice-card mock-practice"><h4>반복 코드를 함수로 바꾸기</h4><div class="real-exam-stem">인사말을 한 번 출력하는 greet() 함수와 이를 세 번 호출하는 반복문을 완성하시오.</div><div class="real-code-label">【Python 코드】</div><div class="practice-code mock-code">def greet():
+    <input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input" data-answer="print(&quot;안녕하세요!&quot;)|print('안녕하세요!')" placeholder="ⓐ" spellcheck="false" type="text"/>
+
+for i in range(3):
+    <input aria-label="빈칸 ⓑ" autocomplete="off" class="blank-input" data-answer="greet()" placeholder="ⓑ" spellcheck="false" type="text"/></div><div class="mock-output"><b>【실행 결과】</b> 안녕하세요! 가 3번 출력</div><div class="mock-bottom-bar"><div class="practice-actions"><button class="check-answer" type="button">정답 확인</button><button class="reset-answer" type="button">다시 풀기</button></div><div class="feedback"></div><div class="real-inline-nav"><button class="bank-prev-inline" type="button">← 이전</button><button class="bank-next-inline" type="button">다음 →</button></div></div><div class="answer-note"><b>정답과 설명</b><br/><br/><strong>ⓐ</strong> <code>print("안녕하세요!")</code><div class="answer-explain">함수 안에는 인사말을 한 번 출력하는 print()가 들어갑니다.</div><br/><br/><strong>ⓑ</strong> <code>greet()</code><div class="answer-explain">반복문 안에서 greet()를 호출하면 총 세 번 실행됩니다.</div></div></div></div><div class="mock-question" data-q="10"><div class="mock-question-head"><span class="mock-qno">문제 11</span><span class="mock-cat">while 반복문</span><span class="mock-level">중</span></div><div class="practice-card mock-practice"><h4>while문으로 누적 합 구하기</h4><div class="real-exam-stem">입력한 n부터 1까지 더하도록 반복 조건과 출력 변수를 완성하시오.</div><div class="real-code-label">【Python 코드】</div><div class="practice-code mock-code">total = 0
+n = int(input("정수를 입력하세요: "))
+while <input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input" data-answer="n &gt; 0|n&gt;0|n &gt;= 1|n&gt;=1" placeholder="ⓐ" spellcheck="false" type="text"/>:
+    total += n
+    n -= 1
+print("합계:", <input aria-label="빈칸 ⓑ" autocomplete="off" class="blank-input" data-answer="total" placeholder="ⓑ" spellcheck="false" type="text"/>)</div><div class="mock-output"><b>【실행 결과】</b> 5 입력 시 합계: 15</div><div class="mock-bottom-bar"><div class="practice-actions"><button class="check-answer" type="button">정답 확인</button><button class="reset-answer" type="button">다시 풀기</button></div><div class="feedback"></div><div class="real-inline-nav"><button class="bank-prev-inline" type="button">← 이전</button><button class="bank-next-inline" type="button">다음 →</button></div></div><div class="answer-note"><b>정답과 설명</b><br/><br/><strong>ⓐ</strong> <code>n &gt; 0</code><div class="answer-explain">n이 1 이상인 동안 반복하고 0이 되면 종료합니다.</div><br/><br/><strong>ⓑ</strong> <code>total</code><div class="answer-explain">누적된 최종 합계는 total에 저장됩니다.</div></div></div></div><div class="mock-question" data-q="11"><div class="mock-question-head"><span class="mock-qno">문제 12</span><span class="mock-cat">입력·자료형</span><span class="mock-level">상</span></div><div class="practice-card mock-practice"><h4>입력값을 알맞은 자료형으로 변환</h4><div class="real-exam-stem">학생 수는 정수, 평균은 실수, 등록 여부 0/1은 논리값으로 사용하도록 완성하시오.</div><div class="real-code-label">【Python 코드】</div><div class="practice-code mock-code">data1 = str(input())
+data2 = <input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input" data-answer="int(input())" placeholder="ⓐ" spellcheck="false" type="text"/>
+data3 = <input aria-label="빈칸 ⓑ" autocomplete="off" class="blank-input" data-answer="float(input())" placeholder="ⓑ" spellcheck="false" type="text"/>
+data4 = <input aria-label="빈칸 ⓒ" autocomplete="off" class="blank-input" data-answer="bool(int(input()))|bool(float(input()))" placeholder="ⓒ" spellcheck="false" type="text"/>
+print("출생연도는 " + data1 + "년입니다.")
+print("학생 수:", data2 + 5)
+print("평균 점수:", data3 + 0.7)
+print("등록 여부:", data4)</div><div class="mock-output"><b>【실행 결과】</b> 2010, 25, 89.3, 0 입력 시 등록 여부 False</div><div class="mock-bottom-bar"><div class="practice-actions"><button class="check-answer" type="button">정답 확인</button><button class="reset-answer" type="button">다시 풀기</button></div><div class="feedback"></div><div class="real-inline-nav"><button class="bank-prev-inline" type="button">← 이전</button><button class="bank-next-inline" type="button">다음 →</button></div></div><div class="answer-note"><b>정답과 설명</b><br/><br/><strong>ⓐ</strong> <code>int(input())</code><div class="answer-explain">학생 수는 정수 연산에 사용되므로 int가 필요합니다.</div><br/><br/><strong>ⓑ</strong> <code>float(input())</code><div class="answer-explain">소수 계산이 가능한 float로 변환합니다.</div><br/><br/><strong>ⓒ</strong> <code>bool(int(input()))</code><div class="answer-explain">0 또는 1을 숫자로 받은 뒤 bool()로 논리값으로 바꿉니다.</div></div></div></div><div class="mock-question" data-q="12"><div class="mock-question-head"><span class="mock-qno">문제 13</span><span class="mock-cat">자료형·연산</span><span class="mock-level">하</span></div><div class="practice-card mock-practice"><h4>자료형에 따른 연산 결과</h4><div class="real-exam-stem">첫 번째는 문자열 연결, 두 번째는 수치 계산이 되도록 두 빈칸을 완성하시오.</div><div class="real-code-label">【Python 코드】</div><div class="practice-code mock-code">a = 10
+b = "20"
+c = 3.5
+print(<input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input" data-answer="str(a) + b|str(a)+b" placeholder="ⓐ" spellcheck="false" type="text"/>)
+print(<input aria-label="빈칸 ⓑ" autocomplete="off" class="blank-input" data-answer="a + int(b) + c|a+int(b)+c" placeholder="ⓑ" spellcheck="false" type="text"/>)</div><div class="mock-output"><b>【실행 결과】</b> 1020 / 33.5</div><div class="mock-bottom-bar"><div class="practice-actions"><button class="check-answer" type="button">정답 확인</button><button class="reset-answer" type="button">다시 풀기</button></div><div class="feedback"></div><div class="real-inline-nav"><button class="bank-prev-inline" type="button">← 이전</button><button class="bank-next-inline" type="button">다음 →</button></div></div><div class="answer-note"><b>정답과 설명</b><br/><br/><strong>ⓐ</strong> <code>str(a) + b</code><div class="answer-explain">문자열 b와 연결하려면 a도 문자열로 바꿉니다.</div><br/><br/><strong>ⓑ</strong> <code>a + int(b) + c</code><div class="answer-explain">수치 계산에서는 b를 int로 변환해야 합니다.</div></div></div></div><div class="mock-question" data-q="13"><div class="mock-question-head"><span class="mock-qno">문제 14</span><span class="mock-cat">조건문·반복문</span><span class="mock-level">중</span></div><div class="practice-card mock-practice"><h4>조건문 안에서 반복 실행</h4><div class="real-exam-stem">사용자가 "커피"를 입력했을 때만 준비 과정이 세 번 출력되도록 조건식을 완성하시오.</div><div class="real-code-label">【Python 코드】</div><div class="practice-code mock-code">menu = input("음료를 선택하세요 (커피/없음): ")
+if <input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input" data-answer="menu == &quot;커피&quot;|menu==&quot;커피&quot;|menu == '커피'|menu=='커피'" placeholder="ⓐ" spellcheck="false" type="text"/>:
+    for i in range(3):
+        print("커피 준비 중... 단계", i + 1)
+else:
+    print("선택된 음료가 없습니다.")</div><div class="mock-output"><b>【실행 결과】</b> 커피 입력 시 준비 과정 3번 출력</div><div class="mock-bottom-bar"><div class="practice-actions"><button class="check-answer" type="button">정답 확인</button><button class="reset-answer" type="button">다시 풀기</button></div><div class="feedback"></div><div class="real-inline-nav"><button class="bank-prev-inline" type="button">← 이전</button><button class="bank-next-inline" type="button">다음 →</button></div></div><div class="answer-note"><b>정답과 설명</b><br/><br/><code>menu == "커피"</code><div class="answer-explain">입력값 menu가 문자열 "커피"와 같은지 비교합니다.</div></div></div></div><div class="mock-question" data-q="14"><div class="mock-question-head"><span class="mock-qno">문제 15</span><span class="mock-cat">함수·리스트</span><span class="mock-level">상</span></div><div class="practice-card mock-practice"><h4>양의 정수만 골라 평균 계산</h4><div class="real-exam-stem">공백으로 입력된 값 중 양수만 리스트에 넣고 평균을 반환하도록 완성하시오.</div><div class="real-code-label">【Python 코드】</div><div class="practice-code mock-code">def get_numbers():
+    data = input("정수를 입력하세요(공백으로 구분): ").split()
+    nums = []
+    for n in data:
+        if <input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input" data-answer="int(n) &gt; 0|int(n)&gt;0" placeholder="ⓐ" spellcheck="false" type="text"/>:
+            nums.append(int(n))
+    return nums
+
+def get_avg(data):
+    return <input aria-label="빈칸 ⓑ" autocomplete="off" class="blank-input" data-answer="sum(data) / len(data)|sum(data)/len(data)" placeholder="ⓑ" spellcheck="false" type="text"/>
+
+numbers = get_numbers()
+average = get_avg(numbers)
+print("양의 정수의 평균:", round(average, 1))</div><div class="mock-output"><b>【실행 결과】</b> 10 20 -5 30 입력 시 평균: 20.0</div><div class="mock-bottom-bar"><div class="practice-actions"><button class="check-answer" type="button">정답 확인</button><button class="reset-answer" type="button">다시 풀기</button></div><div class="feedback"></div><div class="real-inline-nav"><button class="bank-prev-inline" type="button">← 이전</button><button class="bank-next-inline" type="button">다음 →</button></div></div><div class="answer-note"><b>정답과 설명</b><br/><br/><strong>ⓐ</strong> <code>int(n) &gt; 0</code><div class="answer-explain">입력된 n은 문자열이므로 정수로 바꾼 뒤 0보다 큰지 확인합니다.</div><br/><br/><strong>ⓑ</strong> <code>sum(data) / len(data)</code><div class="answer-explain">평균은 합계를 요소 개수로 나눕니다.</div></div></div></div><div class="mock-question" data-q="15"><div class="mock-question-head"><span class="mock-qno">문제 16</span><span class="mock-cat">for 반복문</span><span class="mock-level">하</span></div><div class="practice-card mock-practice"><h4>1부터 n까지 합 구하기</h4><div class="real-exam-stem">range()가 n까지 포함하도록 종료값을 완성하시오.</div><div class="real-code-label">【Python 코드】</div><div class="practice-code mock-code">n = int(input("정수를 입력하세요: "))
+total = 0
+for i in range(1, <input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input" data-answer="n + 1|n+1" placeholder="ⓐ" spellcheck="false" type="text"/>):
+    total += i
+print("합계:", total)</div><div class="mock-output"><b>【실행 결과】</b> 5 입력 시 합계: 15</div><div class="mock-bottom-bar"><div class="practice-actions"><button class="check-answer" type="button">정답 확인</button><button class="reset-answer" type="button">다시 풀기</button></div><div class="feedback"></div><div class="real-inline-nav"><button class="bank-prev-inline" type="button">← 이전</button><button class="bank-next-inline" type="button">다음 →</button></div></div><div class="answer-note"><b>정답과 설명</b><br/><br/><code>n + 1</code><div class="answer-explain">range의 종료값은 포함되지 않으므로 n+1을 사용합니다.</div></div></div></div><div class="mock-question" data-q="16"><div class="mock-question-head"><span class="mock-qno">문제 17</span><span class="mock-cat">자료형·연산</span><span class="mock-level">중</span></div><div class="practice-card mock-practice"><h4>상품 정보 형변환 후 계산</h4><div class="real-exam-stem">문자열로 저장된 단가와 할인율을 계산 가능한 자료형으로 변환하시오.</div><div class="real-code-label">【Python 코드】</div><div class="practice-code mock-code">price = "2000"
+count = 2
+discount = "0.1"
+is_member = "True"
+total = <input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input" data-answer="int(price)" placeholder="ⓐ" spellcheck="false" type="text"/> * count
+if bool(is_member):
+    total = total * (1 - <input aria-label="빈칸 ⓑ" autocomplete="off" class="blank-input" data-answer="float(discount)" placeholder="ⓑ" spellcheck="false" type="text"/>)
+print("총 결제 금액:", total)</div><div class="mock-output"><b>【실행 결과】</b> 총 결제 금액: 3600.0</div><div class="mock-bottom-bar"><div class="practice-actions"><button class="check-answer" type="button">정답 확인</button><button class="reset-answer" type="button">다시 풀기</button></div><div class="feedback"></div><div class="real-inline-nav"><button class="bank-prev-inline" type="button">← 이전</button><button class="bank-next-inline" type="button">다음 →</button></div></div><div class="answer-note"><b>정답과 설명</b><br/><br/><strong>ⓐ</strong> <code>int(price)</code><div class="answer-explain">단가는 정수 계산에 사용되므로 int로 변환합니다.</div><br/><br/><strong>ⓑ</strong> <code>float(discount)</code><div class="answer-explain">할인율 0.1은 실수이므로 float로 변환합니다.</div></div></div></div><div class="mock-question" data-q="17"><div class="mock-question-head"><span class="mock-qno">문제 18</span><span class="mock-cat">중첩 반복문</span><span class="mock-level">상</span></div><div class="practice-card mock-practice"><h4>짝수의 제곱과 세제곱 출력</h4><div class="real-exam-stem">1부터 6까지에서 짝수만 골라 제곱과 세제곱을 출력하도록 반복 범위와 조건을 완성하시오.</div><div class="real-code-label">【Python 코드】</div><div class="practice-code mock-code">for i in range(1, 7):
+    for j in <input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input" data-answer="range(2, 4)|range(2,4)" placeholder="ⓐ" spellcheck="false" type="text"/>:
+        if <input aria-label="빈칸 ⓑ" autocomplete="off" class="blank-input" data-answer="i % 2 == 0|i%2==0" placeholder="ⓑ" spellcheck="false" type="text"/>:
+            print(i ** j, end=" ")
+    print()</div><div class="mock-output"><b>【실행 결과】</b> 4 8 / 16 64 / 36 216</div><div class="mock-bottom-bar"><div class="practice-actions"><button class="check-answer" type="button">정답 확인</button><button class="reset-answer" type="button">다시 풀기</button></div><div class="feedback"></div><div class="real-inline-nav"><button class="bank-prev-inline" type="button">← 이전</button><button class="bank-next-inline" type="button">다음 →</button></div></div><div class="answer-note"><b>정답과 설명</b><br/><br/><strong>ⓐ</strong> <code>range(2, 4)</code><div class="answer-explain">지수 2와 3이 나오도록 range(2,4)를 사용합니다.</div><br/><br/><strong>ⓑ</strong> <code>i % 2 == 0</code><div class="answer-explain">짝수는 2로 나눈 나머지가 0입니다.</div></div></div></div><div class="mock-question" data-q="18"><div class="mock-question-head"><span class="mock-qno">문제 19</span><span class="mock-cat">조건문</span><span class="mock-level">중</span></div><div class="practice-card mock-practice"><h4>짝수·홀수 판별</h4><div class="real-exam-stem">입력한 정수가 짝수인지 홀수인지 판별하도록 조건식을 완성하시오.</div><div class="real-code-label">【Python 코드】</div><div class="practice-code mock-code">num = int(input("숫자를 입력하세요: "))
+if <input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input" data-answer="num % 2 == 0|num%2==0" placeholder="ⓐ" spellcheck="false" type="text"/>:
+    result = "짝수"
+else:
+    result = "홀수"
+print(f"입력한 수는 {result}입니다.")</div><div class="mock-output"><b>【실행 결과】</b> 8 입력 시 → 입력한 수는 짝수입니다.</div><div class="mock-bottom-bar"><div class="practice-actions"><button class="check-answer" type="button">정답 확인</button><button class="reset-answer" type="button">다시 풀기</button></div><div class="feedback"></div><div class="real-inline-nav"><button class="bank-prev-inline" type="button">← 이전</button><button class="bank-next-inline" type="button">다음 →</button></div></div><div class="answer-note"><b>정답과 설명</b><br/><br/><code>num % 2 == 0</code><div class="answer-explain">짝수 판별은 2로 나눈 나머지가 0인지 확인합니다.</div></div></div></div><div class="mock-question" data-q="19"><div class="mock-question-head"><span class="mock-qno">문제 20</span><span class="mock-cat">문자열·연산자</span><span class="mock-level">하</span></div><div class="practice-card mock-practice"><h4>문자열 반복으로 구분선 만들기</h4><div class="real-exam-stem">반복문 없이 = 문자를 15개 이어 붙인 구분선을 만드시오.</div><div class="real-code-label">【Python 코드】</div><div class="practice-code mock-code">symbol = "="
+line = <input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input" data-answer="symbol * 15|symbol*15|15 * symbol|15*symbol" placeholder="ⓐ" spellcheck="false" type="text"/>
+print(line)
+print(" Program Start ")
+print(line)</div><div class="mock-output"><b>【실행 결과】</b> =============== / Program Start / ===============</div><div class="mock-bottom-bar"><div class="practice-actions"><button class="check-answer" type="button">정답 확인</button><button class="reset-answer" type="button">다시 풀기</button></div><div class="feedback"></div><div class="real-inline-nav"><button class="bank-prev-inline" type="button">← 이전</button><button class="bank-next-inline" type="button">다음 →</button></div></div><div class="answer-note"><b>정답과 설명</b><br/><br/><code>symbol * 15</code><div class="answer-explain">문자열에 *를 사용하면 지정한 횟수만큼 반복됩니다.</div></div></div></div><div class="mock-question" data-q="20"><div class="mock-question-head"><span class="mock-qno">문제 21</span><span class="mock-cat">자료형·문자열</span><span class="mock-level">상</span></div><div class="practice-card mock-practice"><h4>중첩 형변환 후 문자열 연결</h4><div class="real-exam-stem">문자열 점수와 정수 점수를 더한 뒤 안내 문장과 연결하도록 빈칸 전체를 완성하시오.</div><div class="real-code-label">【Python 코드】</div><div class="practice-code mock-code">str_score = "50"
+int_score = 30
+print("총점은 " + <input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input" data-answer="str(int(str_score) + int_score)|str(int(str_score)+int_score)|str(int_score + int(str_score))|str(int_score+int(str_score))" placeholder="ⓐ" spellcheck="false" type="text"/> + "점입니다.")</div><div class="mock-output"><b>【실행 결과】</b> 총점은 80점입니다.</div><div class="mock-bottom-bar"><div class="practice-actions"><button class="check-answer" type="button">정답 확인</button><button class="reset-answer" type="button">다시 풀기</button></div><div class="feedback"></div><div class="real-inline-nav"><button class="bank-prev-inline" type="button">← 이전</button><button class="bank-next-inline" type="button">다음 →</button></div></div><div class="answer-note"><b>정답과 설명</b><br/><br/><code>str(int(str_score) + int_score)</code><div class="answer-explain">먼저 숫자로 바꾸어 더하고, 결과를 다시 문자열로 변환합니다.</div></div></div></div><div class="mock-question" data-q="21"><div class="mock-question-head"><span class="mock-qno">문제 22</span><span class="mock-cat">함수·리스트</span><span class="mock-level">상</span></div><div class="practice-card mock-practice"><h4>리스트의 두 요소씩 함수에 전달</h4><div class="real-exam-stem">리스트를 앞에서부터 두 요소씩 묶어 sum_pair() 함수에 전달하도록 완성하시오.</div><div class="real-code-label">【Python 코드】</div><div class="practice-code mock-code">def sum_pair(a, b):
+    return a + b
+numbers = [10, 20, 30, 40]
+total = 0
+for i in range(len(numbers) // 2):
+    total += <input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input" data-answer="sum_pair(numbers[i * 2], numbers[i * 2 + 1])|sum_pair(numbers[i*2], numbers[i*2+1])|sum_pair(numbers[2 * i], numbers[2 * i + 1])|sum_pair(numbers[2*i], numbers[2*i+1])|sum_pair(numbers[i * 2 + 1], numbers[i * 2])|sum_pair(numbers[i*2+1], numbers[i*2])" placeholder="ⓐ" spellcheck="false" type="text"/>
+print(f"총합: {total}")</div><div class="mock-output"><b>【실행 결과】</b> 총합: 100</div><div class="mock-bottom-bar"><div class="practice-actions"><button class="check-answer" type="button">정답 확인</button><button class="reset-answer" type="button">다시 풀기</button></div><div class="feedback"></div><div class="real-inline-nav"><button class="bank-prev-inline" type="button">← 이전</button><button class="bank-next-inline" type="button">다음 →</button></div></div><div class="answer-note"><b>정답과 설명</b><br/><br/><code>sum_pair(numbers[i * 2], numbers[i * 2 + 1])</code><div class="answer-explain">i가 0일 때 0·1번, i가 1일 때 2·3번 요소를 전달해야 합니다.</div></div></div></div><div class="mock-question" data-q="22"><div class="mock-question-head"><span class="mock-qno">문제 23</span><span class="mock-cat">문자열</span><span class="mock-level">하</span></div><div class="practice-card mock-practice"><h4>문자열 숫자 이어 붙이기</h4><div class="real-exam-stem">문자열 "77"과 "33"을 숫자 덧셈이 아니라 이어 붙이도록 완성하시오.</div><div class="real-code-label">【Python 코드】</div><div class="practice-code mock-code">str1 = "77"
+str2 = "33"
+result = <input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input" data-answer="str1 + str2|str1+str2" placeholder="ⓐ" spellcheck="false" type="text"/>
+print(f"출력값: {result}")</div><div class="mock-output"><b>【실행 결과】</b> 출력값: 7733</div><div class="mock-bottom-bar"><div class="practice-actions"><button class="check-answer" type="button">정답 확인</button><button class="reset-answer" type="button">다시 풀기</button></div><div class="feedback"></div><div class="real-inline-nav"><button class="bank-prev-inline" type="button">← 이전</button><button class="bank-next-inline" type="button">다음 →</button></div></div><div class="answer-note"><b>정답과 설명</b><br/><br/><code>str1 + str2</code><div class="answer-explain">문자열의 + 연산은 두 문자열을 순서대로 이어 붙입니다.</div></div></div></div><div class="mock-question" data-q="23"><div class="mock-question-head"><span class="mock-qno">문제 24</span><span class="mock-cat">리스트·중첩 반복문</span><span class="mock-level">중</span></div><div class="practice-card mock-practice"><h4>2차원 리스트 전체 합산</h4><div class="real-exam-stem">현재 행 scores[i]의 길이를 이용해 모든 열을 순회하도록 안쪽 반복 범위를 완성하시오.</div><div class="real-code-label">【Python 코드】</div><div class="practice-code mock-code">scores = [[10, 20], [30, 40], [50, 60]]
+total = 0
+for i in range(len(scores)):
+    for j in <input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input" data-answer="range(len(scores[i]))|range( len(scores[i]) )" placeholder="ⓐ" spellcheck="false" type="text"/>:
+        total += scores[i][j]
+print(f"총합: {total}")</div><div class="mock-output"><b>【실행 결과】</b> 총합: 210</div><div class="mock-bottom-bar"><div class="practice-actions"><button class="check-answer" type="button">정답 확인</button><button class="reset-answer" type="button">다시 풀기</button></div><div class="feedback"></div><div class="real-inline-nav"><button class="bank-prev-inline" type="button">← 이전</button><button class="bank-next-inline" type="button">다음 →</button></div></div><div class="answer-note"><b>정답과 설명</b><br/><br/><code>range(len(scores[i]))</code><div class="answer-explain">현재 행의 요소 개수만큼 열 인덱스를 순회합니다.</div></div></div></div><div class="mock-question" data-q="24"><div class="mock-question-head"><span class="mock-qno">문제 25</span><span class="mock-cat">함수·리스트</span><span class="mock-level">상</span></div><div class="practice-card mock-practice"><h4>최솟값을 제외한 합계</h4><div class="real-exam-stem">리스트에서 최솟값을 직접 찾고, 그 값을 제외한 합계를 반환하는 함수를 완성하시오.</div><div class="real-code-label">【Python 코드】</div><div class="practice-code mock-code">def sum_excluding_min(numbers):
+    min_val = numbers[0]
+    for num in numbers:
+        if <input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input" data-answer="num &lt; min_val|num&lt;min_val" placeholder="ⓐ" spellcheck="false" type="text"/>:
+            min_val = num
+    return sum(numbers) - min_val
+
+scores = [90, 85, 70, 95]
+final_result = <input aria-label="빈칸 ⓑ" autocomplete="off" class="blank-input" data-answer="sum_excluding_min(scores)" placeholder="ⓑ" spellcheck="false" type="text"/>
+print(f"최솟값 제외 합계: {final_result}")</div><div class="mock-output"><b>【실행 결과】</b> 최솟값 제외 합계: 270</div><div class="mock-bottom-bar"><div class="practice-actions"><button class="check-answer" type="button">정답 확인</button><button class="reset-answer" type="button">다시 풀기</button></div><div class="feedback"></div><div class="real-inline-nav"><button class="bank-prev-inline" type="button">← 이전</button><button class="bank-next-inline" type="button">다음 →</button></div></div><div class="answer-note"><b>정답과 설명</b><br/><br/><strong>ⓐ</strong> <code>num &lt; min_val</code><div class="answer-explain">현재 값이 기존 최솟값보다 작을 때 최솟값을 갱신합니다.</div><br/><br/><strong>ⓑ</strong> <code>sum_excluding_min(scores)</code><div class="answer-explain">scores 리스트를 함수의 인수로 전달합니다.</div></div></div></div><div class="mock-question" data-q="25"><div class="mock-question-head"><span class="mock-qno">문제 26</span><span class="mock-cat">변수·연산자</span><span class="mock-level">하</span></div><div class="practice-card mock-practice"><h4>거스름돈 계산</h4><div class="real-exam-stem">지불 금액에서 전체 구매 금액을 빼도록 식을 완성하시오.</div><div class="real-code-label">【Python 코드】</div><div class="practice-code mock-code">money = 10000
+price = 2000
+count = 3
+change = <input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input" data-answer="money - price * count|money-price*count|money - (price * count)|money-(price*count)" placeholder="ⓐ" spellcheck="false" type="text"/>
+print(f"거스름돈: {change}원")</div><div class="mock-output"><b>【실행 결과】</b> 거스름돈: 4000원</div><div class="mock-bottom-bar"><div class="practice-actions"><button class="check-answer" type="button">정답 확인</button><button class="reset-answer" type="button">다시 풀기</button></div><div class="feedback"></div><div class="real-inline-nav"><button class="bank-prev-inline" type="button">← 이전</button><button class="bank-next-inline" type="button">다음 →</button></div></div><div class="answer-note"><b>정답과 설명</b><br/><br/><code>money - price * count</code><div class="answer-explain">price*count로 총 구매 금액을 구한 뒤 money에서 뺍니다.</div></div></div></div><div class="mock-question" data-q="26"><div class="mock-question-head"><span class="mock-qno">문제 27</span><span class="mock-cat">중첩 반복문</span><span class="mock-level">중</span></div><div class="practice-card mock-practice"><h4>역삼각형 별 출력</h4><div class="real-exam-stem">첫 줄 5개에서 마지막 줄 1개까지 별 수가 줄어들도록 안쪽 for문 전체를 작성하시오.</div><div class="real-code-label">【Python 코드】</div><div class="practice-code mock-code">for i in range(5):
+    <input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input" data-answer="for j in range(5 - i):|for j in range(5-i):|for j in range(i, 5):|for j in range(i,5):" placeholder="ⓐ" spellcheck="false" type="text"/>
+        print("*", end="")
+    print()</div><div class="mock-output"><b>【실행 결과】</b> ***** / **** / *** / ** / *</div><div class="mock-bottom-bar"><div class="practice-actions"><button class="check-answer" type="button">정답 확인</button><button class="reset-answer" type="button">다시 풀기</button></div><div class="feedback"></div><div class="real-inline-nav"><button class="bank-prev-inline" type="button">← 이전</button><button class="bank-next-inline" type="button">다음 →</button></div></div><div class="answer-note"><b>정답과 설명</b><br/><br/><code>for j in range(5 - i):</code><div class="answer-explain">i가 증가할수록 안쪽 반복 횟수가 5,4,3,2,1로 줄어들어야 합니다.</div></div></div></div><div class="mock-question" data-q="27"><div class="mock-question-head"><span class="mock-qno">문제 28</span><span class="mock-cat">함수·리스트</span><span class="mock-level">중</span></div><div class="practice-card mock-practice"><h4>리스트 평균을 반환하는 함수</h4><div class="real-exam-stem">sum()과 len()을 이용해 리스트 평균을 반환하도록 완성하시오.</div><div class="real-code-label">【Python 코드】</div><div class="practice-code mock-code">def calculate_average(scores):
+    return <input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input" data-answer="sum(scores) / len(scores)|sum(scores)/len(scores)" placeholder="ⓐ" spellcheck="false" type="text"/>
+student_scores = [80, 90, 100]
+avg = calculate_average(student_scores)
+print(f"평균 점수: {avg}")</div><div class="mock-output"><b>【실행 결과】</b> 평균 점수: 90.0</div><div class="mock-bottom-bar"><div class="practice-actions"><button class="check-answer" type="button">정답 확인</button><button class="reset-answer" type="button">다시 풀기</button></div><div class="feedback"></div><div class="real-inline-nav"><button class="bank-prev-inline" type="button">← 이전</button><button class="bank-next-inline" type="button">다음 →</button></div></div><div class="answer-note"><b>정답과 설명</b><br/><br/><code>sum(scores) / len(scores)</code><div class="answer-explain">평균은 전체 합을 요소 개수로 나눕니다.</div></div></div></div><div class="mock-question" data-q="28"><div class="mock-question-head"><span class="mock-qno">문제 29</span><span class="mock-cat">반복문·연산자</span><span class="mock-level">하</span></div><div class="practice-card mock-practice"><h4>복합 대입 연산자로 누적 합</h4><div class="real-exam-stem">1부터 5까지의 값을 += 연산자로 total에 누적하시오.</div><div class="real-code-label">【Python 코드】</div><div class="practice-code mock-code">total = 0
+for i in range(1, 6):
+    <input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input" data-answer="total += i|total+=i" placeholder="ⓐ" spellcheck="false" type="text"/>
+print(f"1부터 5까지의 합: {total}")</div><div class="mock-output"><b>【실행 결과】</b> 1부터 5까지의 합: 15</div><div class="mock-bottom-bar"><div class="practice-actions"><button class="check-answer" type="button">정답 확인</button><button class="reset-answer" type="button">다시 풀기</button></div><div class="feedback"></div><div class="real-inline-nav"><button class="bank-prev-inline" type="button">← 이전</button><button class="bank-next-inline" type="button">다음 →</button></div></div><div class="answer-note"><b>정답과 설명</b><br/><br/><code>total += i</code><div class="answer-explain">+=는 기존 값에 현재 값을 더해 다시 저장하는 복합 대입 연산자입니다.</div></div></div></div><div class="mock-question" data-q="29"><div class="mock-question-head"><span class="mock-qno">문제 30</span><span class="mock-cat">리스트·자료형</span><span class="mock-level">상</span></div><div class="practice-card mock-practice"><h4>리스트 값 형변환 후 곱셈</h4><div class="real-exam-stem">첫 요소는 float, 두 번째 요소는 int로 바꾸어 곱한 뒤 문자열과 연결할 수 있도록 완성하시오.</div><div class="real-code-label">【Python 코드】</div><div class="practice-code mock-code">data = ["4.5", "10"]
+print("계산 결과: " + <input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input" data-answer="str(float(data[0]) * int(data[1]))|str(float(data[0])*int(data[1]))|str(int(data[1]) * float(data[0]))|str(int(data[1])*float(data[0]))" placeholder="ⓐ" spellcheck="false" type="text"/>)</div><div class="mock-output"><b>【실행 결과】</b> 계산 결과: 45.0</div><div class="mock-bottom-bar"><div class="practice-actions"><button class="check-answer" type="button">정답 확인</button><button class="reset-answer" type="button">다시 풀기</button></div><div class="feedback"></div><div class="real-inline-nav"><button class="bank-prev-inline" type="button">← 이전</button><button class="bank-next-inline" type="button">완료</button></div></div><div class="answer-note"><b>정답과 설명</b><br/><br/><code>str(float(data[0]) * int(data[1]))</code><div class="answer-explain">두 요소를 지정된 숫자형으로 변환해 곱하고 최종 결과를 str()로 변환합니다.</div></div></div></div></section><section class="section" id="past-hub">
 <div class="overview-kicker">PAST QUESTIONS</div>
 <div class="section-head">
 <div class="step">Q</div>
@@ -7503,6 +7838,39 @@ document.querySelectorAll('.past-year').forEach(section=>{
 
   section.querySelector('.past-home')?.addEventListener('click', ()=>{
     showSection('past-hub');
+  });
+});
+
+
+// 교재 기반 Python 문제은행: 1~30번 연속 이동
+let bankState = 0;
+function showBankQuestion(index){
+  const section = document.querySelector('#problem-bank');
+  if(!section) return;
+  const questions = [...section.querySelectorAll('.mock-question')];
+  const dots = [...section.querySelectorAll('.mock-dot')];
+  const max = questions.length - 1;
+  const safeIndex = Math.max(0, Math.min(index, max));
+  questions.forEach((q,i)=>q.classList.toggle('active', i===safeIndex));
+  dots.forEach((d,i)=>d.classList.toggle('active', i===safeIndex));
+  const current = section.querySelector('.bank-current');
+  if(current) current.textContent = safeIndex + 1;
+  const active = questions[safeIndex];
+  const prev = active?.querySelector('.bank-prev-inline');
+  const next = active?.querySelector('.bank-next-inline');
+  if(prev) prev.disabled = safeIndex === 0;
+  if(next) next.textContent = safeIndex === max ? '처음으로' : '다음 →';
+  bankState = safeIndex;
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+document.querySelectorAll('#problem-bank .mock-dot').forEach(dot=>{
+  dot.addEventListener('click', ()=>showBankQuestion(Number(dot.dataset.q)));
+});
+document.querySelectorAll('#problem-bank .mock-question').forEach((question,index)=>{
+  question.querySelector('.bank-prev-inline')?.addEventListener('click', ()=>showBankQuestion(index - 1));
+  question.querySelector('.bank-next-inline')?.addEventListener('click', ()=>{
+    const total = document.querySelectorAll('#problem-bank .mock-question').length;
+    showBankQuestion(index >= total - 1 ? 0 : index + 1);
   });
 });
 
