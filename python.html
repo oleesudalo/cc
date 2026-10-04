@@ -2403,7 +2403,6 @@ print(avg)   # 90.0</div>
 <p class="subtitle">에러 메시지를 읽고 원인을 찾아 수정하기</p>
 </div>
 </div>
-
 <div class="theory-panel">
 <div class="beginner-box">
 <h4>에러 메시지는 무서운 문장이 아니라 힌트입니다.</h4>
@@ -2518,7 +2517,6 @@ print(scores[2])  # 100</code></pre>
 <p>예를 들어 <code>num = input()</code>으로 받은 값은 문자열이므로 숫자로 계산해야 한다면 <code>num = int(input())</code>처럼 바꾸어야 합니다.</p>
 </div>
 </div>
-
 </section>
 <section class="section" id="mock-hub">
 <div class="overview-kicker">BASIC PRACTICE</div>
@@ -7019,7 +7017,7 @@ print(numbers)</div>
 </div>
 <button class="past-home mock-home" type="button">기출문제 목록</button>
 </div>
-<div class="mock-progress"><button class="mock-dot active" data-q="0" type="button">1</button><button class="mock-dot" data-q="1" type="button">2</button><button class="mock-dot" data-q="2" type="button">3</button><button class="mock-dot" data-q="3" type="button">4</button></div>
+<div class="mock-progress"><button class="mock-dot active" data-q="0" type="button">2</button><button class="mock-dot" data-q="1" type="button">3</button><button class="mock-dot" data-q="2" type="button">4</button><button class="mock-dot" data-q="3" type="button">5</button></div>
 <div class="mock-question active" data-q="0">
 <div class="mock-question-head">
 <span class="mock-qno">문제 1</span>
@@ -7027,7 +7025,7 @@ print(numbers)</div>
 <span class="mock-level">기출 복원</span>
 </div>
 <div class="practice-card mock-practice">
-<h4>10보다 작으면 반복해서 문자 출력</h4>
+<h4>2번 보다 작으면 반복해서 문자 출력</h4>
 <div class="real-exam-stem">다음은 count가 10보다 작은 동안 문자를 반복해서 출력하는 Python 프로그램이다. 반복 조건이 되도록 빈 줄 전체의 코드를 작성하시오.</div>
 <div class="real-code-label">【Python 코드】</div>
 <div class="practice-code mock-code">count = 0
@@ -7052,7 +7050,7 @@ print(numbers)</div>
 </div>
 <div class="mock-question" data-q="1">
 <div class="mock-question-head">
-<span class="mock-qno">문제 2</span>
+<span class="mock-qno">문제 3</span>
 <span class="mock-cat">조건문</span>
 <span class="mock-level">기출 복원</span>
 </div>
@@ -7083,7 +7081,7 @@ else:
 </div>
 <div class="mock-question" data-q="2">
 <div class="mock-question-head">
-<span class="mock-qno">문제 3</span>
+<span class="mock-qno">문제 5</span>
 <span class="mock-cat">리스트</span>
 <span class="mock-level">기출 복원</span>
 </div>
@@ -7113,7 +7111,7 @@ print(numbers)</div>
 </div>
 <div class="mock-question" data-q="3">
 <div class="mock-question-head">
-<span class="mock-qno">문제 4</span>
+<span class="mock-qno">문제 7</span>
 <span class="mock-cat">반복문</span>
 <span class="mock-level">기출 복원</span>
 </div>
@@ -7124,7 +7122,7 @@ print(numbers)</div>
 <div class="practice-code mock-code">floor = 14
 
 for i in range(floor):
-    <input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input full-line-blank" data-answer="print(&quot; &quot; * (floor - i - 1), end=&quot;&quot;)|print(' ' * (floor - i - 1), end='')|print(&quot; &quot;*(floor-i-1),end=&quot;&quot;)" placeholder="한 줄 전체 코드 입력" spellcheck="false" type="text"/>
+    <input aria-label="빈칸 ⓐ" autocomplete="off" class="blank-input full-line-blank" data-answer="print(&quot; &quot; * (floor - i - 1), end=&quot;&quot;)|print(' ' * (floor - i - 1), end='')|print(&quot; &quot;*(floor-i-1),end=&quot;&quot;)|print(&quot; &quot; * (floor - 1 - i), end=&quot;&quot;)|print(' ' * (floor - 1 - i), end='')|print(&quot; &quot; * (floor-1-i), end=&quot;&quot;)|print(' ' * (floor-1-i), end='')" placeholder="한 줄 전체 코드 입력" spellcheck="false" type="text"/>
     print("*" * (i * 2 + 1))</div>
 <div class="mock-output"><b>【실행 결과】</b> 첫 줄 공백 13칸 + 별 1개 → 마지막 줄 별 27개</div>
 <div class="mock-bottom-bar">
@@ -7138,7 +7136,7 @@ for i in range(floor):
 <button class="past-next-inline" type="button">목록</button>
 </div>
 </div>
-<div class="answer-note"><b>정답과 설명</b><br/><br/><code>print(" " * (floor - i - 1), end="")</code><div class="answer-explain">첫 줄에서 i가 0이고 floor가 14이므로 floor-i-1은 13이 되어 공백 13칸을 만듭니다. end=""를 사용해야 다음 별 출력이 같은 줄에 이어집니다.</div></div>
+<div class="answer-note"><b>정답과 설명</b><br/><br/><code>print(" " * (floor - i - 1), end="")</code><div class="answer-explain">첫 줄에서 i가 0이고 floor가 14이므로 floor-i-1은 13이 되어 공백 13칸을 만듭니다. end=""를 사용해야 다음 별 출력이 같은 줄에 이어집니다. 또한 floor - i - 1과 floor - 1 - i는 같은 값을 계산하므로 둘 다 정답으로 인정됩니다.</div></div>
 </div>
 </div>
 </section><div class="footer">SW·AI 교육강사 2급 실기 대비용 Python 기초 학습 웹앱 · 학습용 레퍼런스</div>
@@ -7998,6 +7996,34 @@ resetPageScrollToTop();
   updateFullscreenButton();
 })();
 
+</script>
+<script>
+// 소스 보기·개발자도구 단축키 일부 차단
+document.addEventListener('contextmenu', function(e){
+  e.preventDefault();
+});
+
+document.addEventListener('keydown', function(e){
+  const key = e.key.toLowerCase();
+
+  // Ctrl+U : 페이지 소스 보기
+  if ((e.ctrlKey || e.metaKey) && key === 'u') {
+    e.preventDefault();
+    return false;
+  }
+
+  // F12 : 개발자도구
+  if (e.key === 'F12') {
+    e.preventDefault();
+    return false;
+  }
+
+  // Ctrl+Shift+I / J / C : 개발자도구 관련
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && ['i', 'j', 'c'].includes(key)) {
+    e.preventDefault();
+    return false;
+  }
+});
 </script>
 </body>
 </html>
