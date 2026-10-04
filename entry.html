@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="ko">
 <head>
@@ -49,7 +48,6 @@
     margin:0 0 22px 0;
     object-fit:contain;
   }
-
 
   .logo-team-text{
     margin:-12px 0 18px 0;
@@ -676,5 +674,39 @@ const checks = [...document.querySelectorAll('input[type="checkbox"][data-q]')];
   checks.forEach(c => c.addEventListener('change', updateProgress));
   updateProgress();
 </script>
+
+<script>
+(function(){
+  // 우클릭 메뉴 차단
+  document.addEventListener('contextmenu', function(e){
+    e.preventDefault();
+  });
+
+  // 일반적인 개발자도구 / 소스보기 단축키 차단
+  document.addEventListener('keydown', function(e){
+    const key = (e.key || '').toLowerCase();
+    const blocked =
+      e.key === 'F12' ||
+      (e.ctrlKey && e.shiftKey && ['i','j','c'].includes(key)) ||
+      (e.ctrlKey && ['u','s'].includes(key)) ||
+      (e.metaKey && e.altKey && ['i','j','c'].includes(key)) ||
+      (e.metaKey && ['u','s'].includes(key));
+
+    if(blocked){
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    }
+  }, true);
+
+  // 이미지 드래그 방지
+  document.addEventListener('dragstart', function(e){
+    if(e.target && e.target.tagName === 'IMG'){
+      e.preventDefault();
+    }
+  });
+})();
+</script>
+
 </body>
 </html>
