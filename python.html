@@ -17,7 +17,7 @@ body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",
 a{color:inherit;text-decoration:none}
 .layout{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
 .sidebar{position:sticky;top:0;height:100vh;background:#10121a;color:white;padding:26px 20px;overflow:auto}
-.brand{font-size:14px;color:#bfc5d2;margin-bottom:8px}
+.brand{font-size:12px;color:#bfc5d2;margin-bottom:8px}
 .sidebar h1{font-size:22px;line-height:1.35;margin:0 0 22px}
 .badge{display:inline-block;background:#302b61;color:#ded9ff;border:1px solid #51489d;border-radius:999px;padding:5px 10px;font-size:12px;margin-bottom:22px}
 .nav-title{font-size:12px;color:#8e95a5;margin:18px 8px 8px}
@@ -1151,11 +1151,23 @@ html.fallback-fullscreen .main{
 .error-check-item{
   line-height:1.7;
 }
+
+/* 로고 하단 팀명 */
+.sidebar-team-text{
+  margin:-6px 0 26px 0;
+  color:#ffffff;
+  font-size:14px;
+  font-weight:800;
+  line-height:1.45;
+  letter-spacing:-0.02em;
+  word-break:keep-all;
+  text-align:left;
+}
 </style>
 </head>
 <body>
 <div class="layout">
-<aside class="sidebar"><div class="sidebar-logo"><img alt="미래채움 로고" src="./mc_logo_blk.png"/></div>
+<aside class="sidebar"><div class="sidebar-logo"><img alt="미래채움 로고" src="./mc_logo_blk.png"/></div><div class="sidebar-team-text">광주 SW미래채움 고급강사 자격증팀</div>
 <div class="brand">SW·AI 교육강사 자격 실기 대비</div>
 <h1>Python 기초<br/>한눈에 보는 레퍼런스</h1>
 <div class="badge">2급 · 텍스트 프로그래밍</div>
