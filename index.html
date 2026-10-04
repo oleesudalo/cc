@@ -17,6 +17,19 @@
             font-family: 'Inter', 'Noto Sans KR', sans-serif;
             background-color: #f4f7f9;
             overflow: hidden;
+            /* 텍스트 선택(드래그) 방지 css 추가 */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        /* 입력창은 텍스트 선택이 가능하도록 예외 처리 */
+        input {
+            -webkit-user-select: auto;
+            -moz-user-select: auto;
+            -ms-user-select: auto;
+            user-select: auto;
         }
         
         .text-gradient {
@@ -67,7 +80,7 @@
         }
     </style>
 </head>
-<body class="text-slate-800 antialiased h-screen flex flex-col selection:bg-slate-200 selection:text-slate-900 relative">
+<body class="text-slate-800 antialiased h-screen flex flex-col relative" oncontextmenu="return false" ondragstart="return false" onselectstart="return false">
 
     <div class="bg-blur-blob bg-slate-200 w-96 h-96 top-0 left-0 -translate-x-1/2 -translate-y-1/2"></div>
     <div class="bg-blur-blob bg-gray-200 w-96 h-96 bottom-0 right-0 translate-x-1/3 translate-y-1/3"></div>
@@ -362,6 +375,41 @@
     </div>
 
     <script>
+        // --- 소스 보기 및 개발자 도구 차단 스크립트 ---
+        // 1. 우클릭 차단 (HTML 태그의 oncontextmenu 와 이중 적용)
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        // 2. 키보드 단축키 차단
+        document.addEventListener('keydown', function(e) {
+            // F12 차단
+            if (e.keyCode === 123) {
+                e.preventDefault();
+                return false;
+            }
+            // Ctrl + Shift + I (개발자 도구) 차단
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
+                e.preventDefault();
+                return false;
+            }
+            // Ctrl + Shift + J (콘솔) 차단
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 74) {
+                e.preventDefault();
+                return false;
+            }
+            // Ctrl + Shift + C (요소 검사) 차단
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 67) {
+                e.preventDefault();
+                return false;
+            }
+            // Ctrl + U (페이지 소스 보기) 차단
+            if (e.ctrlKey && e.keyCode === 85) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
         document.addEventListener("DOMContentLoaded", () => {
             // 메인 요소
             const passwordScreen = document.getElementById('password-screen');
