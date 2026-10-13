@@ -20,7 +20,7 @@
             transition: opacity 1.5s ease-in-out;
         }
         
-        /* 파이썬 동적 입력칸 스타일 */
+        /* 파이썬 동적 입력칸 스타일 (2회차와 동일) */
         .py-input {
             background-color: transparent;
             border: none;
@@ -33,6 +33,7 @@
             padding: 0 4px;
             margin: 0 4px;
             min-width: 100px;
+            display: inline-block;
             transition: all 0.2s;
         }
         .py-input:focus {
@@ -64,7 +65,7 @@
     <!-- 1. 시작 화면 (급수 선택) -->
     <div id="intro-screen" class="hidden flex-col items-center justify-center h-full w-full bg-gray-100 p-6">
         <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-2xl text-center">
-            <div class="mb-6">
+            <div class="flex justify-between items-center mb-6">
                 <h1 class="text-3xl font-bold text-gray-800">통합CBT 모의고사 1회</h1>
             </div>
             <p class="text-gray-500 mb-8">응시할 시험의 급수를 선택한 후 시작 버튼을 눌러주세요.</p>
@@ -87,26 +88,26 @@
                 </div>
             </div>
 
-            <!-- 배포파일 다운로드 버튼 영역 (실제 링크 연결) -->
+            <!-- 배포파일 다운로드 버튼 영역 (연한 노란색, 주소창 없는 팝업) -->
             <div class="grid grid-cols-2 gap-6 mb-10">
                 <!-- 3급 배포파일 -->
                 <div>
-                    <button onclick="openDistFile('https://naver.me/IMZvfetx')" class="flex items-center justify-center w-full bg-yellow-50 hover:bg-yellow-100 text-yellow-800 font-bold py-3 px-4 rounded-xl border border-yellow-300 transition-colors shadow-sm text-sm">
+                    <a href="https://naver.me/IMZvfetx" target="_blank" class="flex items-center justify-center w-full bg-yellow-50 hover:bg-yellow-100 text-yellow-800 font-bold py-3 px-4 rounded-xl border border-yellow-300 transition-colors shadow-sm text-sm" onclick="window.open(this.href, '_blank', 'width=1200,height=800,location=no,menubar=no,toolbar=no,status=no'); return false;">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
                         배포파일
-                    </button>
+                    </a>
                 </div>
                 
                 <!-- 2급 배포파일 -->
                 <div class="flex space-x-3">
-                    <button onclick="openDistFile('https://naver.me/GB3o8JtV')" class="flex items-center justify-center flex-1 bg-yellow-50 hover:bg-yellow-100 text-yellow-800 font-bold py-3 px-2 rounded-xl border border-yellow-300 transition-colors shadow-sm text-sm whitespace-nowrap">
+                    <a href="https://naver.me/GB3o8JtV" target="_blank" class="flex items-center justify-center flex-1 bg-yellow-50 hover:bg-yellow-100 text-yellow-800 font-bold py-3 px-2 rounded-xl border border-yellow-300 transition-colors shadow-sm text-sm whitespace-nowrap" onclick="window.open(this.href, '_blank', 'width=1200,height=800,location=no,menubar=no,toolbar=no,status=no'); return false;">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
                         배포파일 1
-                    </button>
-                    <button onclick="openDistFile('https://naver.me/GWWdgnh3')" class="flex items-center justify-center flex-1 bg-yellow-50 hover:bg-yellow-100 text-yellow-800 font-bold py-3 px-2 rounded-xl border border-yellow-300 transition-colors shadow-sm text-sm whitespace-nowrap">
+                    </a>
+                    <a href="https://naver.me/GWWdgnh3" target="_blank" class="flex items-center justify-center flex-1 bg-yellow-50 hover:bg-yellow-100 text-yellow-800 font-bold py-3 px-2 rounded-xl border border-yellow-300 transition-colors shadow-sm text-sm whitespace-nowrap" onclick="window.open(this.href, '_blank', 'width=1200,height=800,location=no,menubar=no,toolbar=no,status=no'); return false;">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
                         배포파일 2
-                    </button>
+                    </a>
                 </div>
             </div>
 
@@ -140,9 +141,7 @@
 
         <!-- 문항 번호 네비게이션 & 로고 영역 -->
         <div class="bg-gray-100 px-6 py-2 border-b border-gray-200 flex justify-between items-center shrink-0 shadow-inner">
-            <!-- py-2, px-2를 통해 원이 잘리지 않도록 여백 확보 -->
             <div id="question-nav" class="flex space-x-3 overflow-x-auto items-center py-2 px-2"></div>
-            <!-- 로고 크기 h-9 적용 -->
             <img src="https://github.com/oleesudalo/cc/blob/main/mc_logo_blk.png?raw=true" alt="MC Logo" class="h-9 ml-4 opacity-75 shrink-0 object-contain">
         </div>
 
@@ -511,11 +510,6 @@
             `;
         }
 
-        /* 배포파일 새 창(팝업) 열기 */
-        function openDistFile(url) {
-            window.open(url, "_blank", "width=1200,height=800,location=no,menubar=no,toolbar=no,status=no,scrollbars=yes,resizable=yes");
-        }
-
         function selectLevel(level) {
             currentLevel = level;
             const card3 = document.getElementById('card-level-3');
@@ -535,7 +529,7 @@
         }
 
         function startExam() {
-            timeRemaining = currentLevel === '3급' ? 50 * 60 : 60 * 60;
+            timeRemaining = currentLevel === '3급' ? 50 * 60 : 60 * 60; // 2급 60분
             currentQuestionIndex = 0;
             savedStatus = new Array(questionsData[currentLevel].length).fill(false);
             pythonAnswers = {};
@@ -616,7 +610,8 @@
                 let savedInputs = pythonAnswers[currentQuestionIndex] || [];
                 let inputCounter = 0;
                 
-                const parts = qData.skeletonCode.split('______________________________');
+                // 1회차 뼈대코드의 밑줄은 정확히 20개(____________________)이므로 정확히 자릅니다.
+                const parts = qData.skeletonCode.split('____________________');
                 
                 parts.forEach((part, idx) => {
                     const span = document.createElement('span');
